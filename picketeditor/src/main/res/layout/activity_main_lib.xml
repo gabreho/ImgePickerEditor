@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
-    tools:context=".picker.activity.PickerActivity">
+    android:background="#000">
+
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera_view"
@@ -53,8 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="-2px"
                 android:minHeight="194dp"
-                app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
-                android:layout_marginStart="-2px">
+                app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerView"
@@ -63,8 +62,7 @@
                     android:layout_marginLeft="-2px"
                     android:layout_marginTop="56dp"
                     android:background="#fff"
-                    android:visibility="invisible"
-                    android:layout_marginStart="-2px" />
+                    android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/fastscroll_bubble"
@@ -79,14 +77,13 @@
                     android:maxLines="1"
                     android:textSize="14sp"
                     android:visibility="gone"
-                    tools:textColor="#000"
-                    android:layout_marginEnd="52dp" />
+                    tools:textColor="#000" />
 
                 <FrameLayout
                     android:id="@+id/fastscroll_scrollbar"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="end"
+                    android:layout_gravity="right"
                     android:layout_marginTop="56dp"
                     android:minWidth="20dp"
                     android:visibility="gone">
@@ -95,7 +92,7 @@
                         android:id="@+id/fastscroll_track"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_gravity="end"
+                        android:layout_gravity="right"
                         android:minWidth="45dp"
                         tools:ignore="ContentDescription" />
 
@@ -104,12 +101,11 @@
                         android:id="@+id/fastscroll_handle"
                         android:layout_width="40dp"
                         android:layout_height="50dp"
-                        android:layout_gravity="end"
+                        android:layout_gravity="right"
                         android:elevation="8dp"
                         android:minWidth="20dp"
                         android:paddingLeft="5dp"
-                        android:src="@drawable/handle"
-                        android:paddingStart="5dp" />
+                        android:src="@drawable/handle" />
 
                 </FrameLayout>
 
@@ -130,43 +126,38 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="15dp"
-                            android:src="@drawable/ic_arrow_back_black_24dp"
-                            android:layout_marginStart="15dp" />
+                            android:src="@drawable/ic_arrow_back_black_24dp" />
 
                         <TextView
                             android:id="@+id/selection_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|start"
+                            android:layout_gravity="center_vertical|left"
                             android:layout_marginLeft="50dp"
                             android:layout_marginRight="10dp"
                             android:gravity="center_vertical"
                             android:textColor="#fff"
-                            android:textSize="20sp"
-                            android:layout_marginStart="50dp"
-                            android:layout_marginEnd="10dp" />
+                            android:textSize="20sp" />
 
                         <TextView
                             android:id="@+id/selection_ok"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|end"
+                            android:layout_gravity="center_vertical|right"
                             android:layout_marginRight="20dp"
                             android:gravity="center_vertical"
                             android:text="@string/ok"
                             android:textColor="#fff"
-                            android:textSize="20sp"
-                            android:layout_marginEnd="20dp" />
+                            android:textSize="20sp" />
 
                         <ImageView
                             android:id="@+id/selection_check"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical|start"
+                            android:layout_gravity="center_vertical|right"
                             android:layout_marginRight="20dp"
                             android:gravity="center_vertical"
-                            android:src="@drawable/ic_check_box"
-                            android:layout_marginEnd="20dp" />
+                            android:src="@drawable/ic_check_box" />
                     </FrameLayout>
 
                     <android.support.v7.widget.RecyclerView
@@ -182,7 +173,7 @@
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
+            android:layout_gravity="right|bottom"
             android:layout_marginBottom="100dp"
             android:visibility="gone">
 
@@ -197,13 +188,12 @@
                 android:id="@+id/img_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
+                android:layout_gravity="right|bottom"
                 android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp"
                 android:padding="5dp"
                 android:textColor="#fff"
-                android:textSize="11sp"
-                android:layout_marginEnd="8dp" />
+                android:textSize="11sp" />
         </FrameLayout>
 
         <FrameLayout
@@ -218,34 +208,29 @@
                 android:layout_height="70dp"
                 android:layout_gravity="center|bottom"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/ring"
-                android:onClick="capture"/>
+                android:background="@drawable/ring" />
 
             <ImageView
+                android:id="@+id/flash"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_gravity="top|start"
+                android:layout_gravity="top|left"
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="7dp"
                 android:background="@drawable/circle"
                 android:padding="11dp"
-                android:id="@+id/flash"
-                android:src="@drawable/ic_flash_off_black_24dp"
-                android:layout_marginStart="50dp"
-                android:onClick="flashClickAction"/>
+                android:src="@drawable/ic_flash_off_black_24dp"/>
 
             <ImageView
                 android:id="@+id/front"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_gravity="top|end"
+                android:layout_gravity="top|right"
                 android:layout_marginRight="50dp"
                 android:layout_marginTop="7dp"
                 android:background="@drawable/circle"
                 android:padding="11dp"
-                android:src="@drawable/ic_photo_camera"
-                android:onClick="cameraFacingClickAction"
-                android:layout_marginEnd="50dp" />
+                android:src="@drawable/ic_photo_camera" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -260,5 +245,3 @@
     </FrameLayout>
 
 </FrameLayout>
-
-
