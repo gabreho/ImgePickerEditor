@@ -298,50 +298,6 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     }
 
     private void onClickMethods() {
-        findViewById(R.id.clickme).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                cameraView.addCameraListener(new CameraListener() {
-                    @Override
-                    public void onPictureTaken(byte[] jpeg) {
-
-                        Utility.decodeBitmap(jpeg, new BitmapCallback() {
-                            @Override
-                            public void onBitmapReady(Bitmap bitmap) {
-
-                            }
-                        });
-                    }
-                });
-
-                cameraView.capturePicture();
-
-//                fotoapparat.takePicture().toBitmap().transform(new Function1<BitmapPhoto, Bitmap>() {
-//                    @Override
-//                    public Bitmap invoke(BitmapPhoto bitmapPhoto) {
-//                        Log.e("my pick transform", bitmapPhoto.toString());
-//                        fotoapparat.stop();
-//                        return Utility.rotate(bitmapPhoto.bitmap, -bitmapPhoto.rotationDegrees);
-//                    }
-//                }).whenAvailable(new Function1<Bitmap, Unit>() {
-//                    @Override
-//                    public Unit invoke(Bitmap bitmap) {
-//                        if (bitmap != null) {
-//                            Log.e("my pick", bitmap.toString());
-//                            synchronized (bitmap) {
-//                                File photo = Utility.writeImage(bitmap);
-//                                Log.e("my pick saved", bitmap.toString() + "    ->  " + photo.length() / 1024);
-//                                selectionList.clear();
-//                                selectionList.add(new Img("", "", photo.getAbsolutePath(), ""));
-//                                returnObjects();
-//                            }
-//                        }
-//                        return null;
-//                    }
-//                });
-            }
-        });
 
         findViewById(R.id.selection_ok).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -701,10 +657,51 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     // *********************************************************************************************
     // region Click Action
 
+    public void capture(View view) {
+        cameraView.addCameraListener(new CameraListener() {
+            @Override
+            public void onPictureTaken(byte[] jpeg) {
+
+                Utility.decodeBitmap(jpeg, new BitmapCallback() {
+                    @Override
+                    public void onBitmapReady(Bitmap bitmap) {
+
+                    }
+                });
+            }
+        });
+
+        cameraView.capturePicture();
+
+//                fotoapparat.takePicture().toBitmap().transform(new Function1<BitmapPhoto, Bitmap>() {
+//                    @Override
+//                    public Bitmap invoke(BitmapPhoto bitmapPhoto) {
+//                        Log.e("my pick transform", bitmapPhoto.toString());
+//                        fotoapparat.stop();
+//                        return Utility.rotate(bitmapPhoto.bitmap, -bitmapPhoto.rotationDegrees);
+//                    }
+//                }).whenAvailable(new Function1<Bitmap, Unit>() {
+//                    @Override
+//                    public Unit invoke(Bitmap bitmap) {
+//                        if (bitmap != null) {
+//                            Log.e("my pick", bitmap.toString());
+//                            synchronized (bitmap) {
+//                                File photo = Utility.writeImage(bitmap);
+//                                Log.e("my pick saved", bitmap.toString() + "    ->  " + photo.length() / 1024);
+//                                selectionList.clear();
+//                                selectionList.add(new Img("", "", photo.getAbsolutePath(), ""));
+//                                returnObjects();
+//                            }
+//                        }
+//                        return null;
+//                    }
+//                });
+    }
+
     // endregion
 
     // *********************************************************************************************
-    // region
+    // region Listeners
 
     private CameraListener mCameraListener = new CameraListener() {
         @Override

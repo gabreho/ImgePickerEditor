@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000">
-
+    android:background="#000"
+    tools:context=".picker.activity.PickerActivity">
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera_view"
@@ -208,23 +208,20 @@
                 android:layout_height="70dp"
                 android:layout_gravity="center|bottom"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/ring" />
+                android:background="@drawable/ring"
+                android:onClick="capture"/>
 
-            <FrameLayout
-                android:id="@+id/flash"
+            <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="top|left"
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="7dp"
                 android:background="@drawable/circle"
-                android:padding="11dp">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_flash_off_black_24dp" />
-            </FrameLayout>
+                android:padding="11dp"
+                android:id="@+id/flash"
+                android:src="@drawable/ic_flash_off_black_24dp"
+                android:layout_marginStart="50dp" />
 
             <ImageView
                 android:id="@+id/front"
