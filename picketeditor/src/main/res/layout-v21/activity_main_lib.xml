@@ -86,7 +86,7 @@
                     android:id="@+id/fastscroll_scrollbar"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="end"
+                    android:layout_gravity="right"
                     android:layout_marginTop="56dp"
                     android:minWidth="20dp"
                     android:visibility="gone">
@@ -95,7 +95,7 @@
                         android:id="@+id/fastscroll_track"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_gravity="end"
+                        android:layout_gravity="right"
                         android:minWidth="45dp"
                         tools:ignore="ContentDescription" />
 
@@ -104,12 +104,11 @@
                         android:id="@+id/fastscroll_handle"
                         android:layout_width="40dp"
                         android:layout_height="50dp"
-                        android:layout_gravity="end"
+                        android:layout_gravity="right"
                         android:elevation="8dp"
                         android:minWidth="20dp"
                         android:paddingLeft="5dp"
-                        android:src="@drawable/handle"
-                        android:paddingStart="5dp" />
+                        android:src="@drawable/handle" />
 
                 </FrameLayout>
 
@@ -130,8 +129,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="15dp"
-                            android:src="@drawable/ic_arrow_back_black_24dp"
-                            android:layout_marginStart="15dp" />
+                            android:src="@drawable/ic_arrow_back_black_24dp" />
 
                         <TextView
                             android:id="@+id/selection_count"
@@ -155,8 +153,7 @@
                             android:gravity="center_vertical"
                             android:text="@string/ok"
                             android:textColor="#fff"
-                            android:textSize="20sp"
-                            android:layout_marginEnd="20dp" />
+                            android:textSize="20sp" />
 
                         <ImageView
                             android:id="@+id/selection_check"
@@ -165,8 +162,7 @@
                             android:layout_gravity="center_vertical|start"
                             android:layout_marginRight="20dp"
                             android:gravity="center_vertical"
-                            android:src="@drawable/ic_check_box"
-                            android:layout_marginEnd="20dp" />
+                            android:src="@drawable/ic_check_box" />
                     </FrameLayout>
 
                     <android.support.v7.widget.RecyclerView
@@ -182,7 +178,7 @@
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
+            android:layout_gravity="right|bottom"
             android:layout_marginBottom="100dp"
             android:visibility="gone">
 
@@ -197,13 +193,12 @@
                 android:id="@+id/img_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
+                android:layout_gravity="right|bottom"
                 android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp"
                 android:padding="5dp"
                 android:textColor="#fff"
-                android:textSize="11sp"
-                android:layout_marginEnd="8dp" />
+                android:textSize="11sp" />
         </FrameLayout>
 
         <FrameLayout
@@ -224,7 +219,7 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_gravity="top|start"
+                android:layout_gravity="top|left"
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="7dp"
                 android:background="@drawable/circle"
@@ -238,14 +233,13 @@
                 android:id="@+id/front"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_gravity="top|end"
+                android:layout_gravity="top|right"
                 android:layout_marginRight="50dp"
                 android:layout_marginTop="7dp"
                 android:background="@drawable/circle"
                 android:padding="11dp"
                 android:src="@drawable/ic_photo_camera"
-                android:onClick="cameraFacingClickAction"
-                android:layout_marginEnd="50dp" />
+                android:onClick="cameraFacingClickAction"/>
 
             <TextView
                 android:layout_width="wrap_content"

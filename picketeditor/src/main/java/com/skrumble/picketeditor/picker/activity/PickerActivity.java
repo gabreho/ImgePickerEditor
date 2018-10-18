@@ -103,8 +103,6 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
 
     private TextView selection_count;
 
-    private FrameLayout flash;
-    private ImageView front;
     private boolean isback = true;
     private int flashDrawable;
 
@@ -236,8 +234,6 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
         cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
 
-        flash = findViewById(R.id.flash);
-        front = findViewById(R.id.front);
         topbar = findViewById(R.id.topbar);
         selection_count = findViewById(R.id.selection_count);
         selection_back = findViewById(R.id.selection_back);
@@ -333,67 +329,6 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                 DrawableCompat.setTint(selection_back.getDrawable(), Color.parseColor("#ffffff"));
                 LongSelection = true;
                 selection_check.setVisibility(View.GONE);
-            }
-        });
-
-        final ImageView iv = (ImageView) flash.getChildAt(0);
-
-        flash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final int height = flash.getHeight();
-                iv.animate().translationY(height).setDuration(100).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        iv.setTranslationY(-(height / 2));
-                        if (flashDrawable == R.drawable.ic_flash_auto_black_24dp) {
-                            flashDrawable = R.drawable.ic_flash_off_black_24dp;
-                            iv.setImageResource(flashDrawable);
-                            cameraView.setFlash(Flash.OFF);
-
-                        } else if (flashDrawable == R.drawable.ic_flash_off_black_24dp) {
-                            flashDrawable = R.drawable.ic_flash_on_black_24dp;
-                            iv.setImageResource(flashDrawable);
-                            cameraView.setFlash(Flash.ON);
-
-                        } else {
-                            flashDrawable = R.drawable.ic_flash_auto_black_24dp;
-                            iv.setImageResource(flashDrawable);
-                            cameraView.setFlash(Flash.AUTO);
-                        }
-
-                        iv.animate().translationY(0).setDuration(50).setListener(null).start();
-                    }
-                }).start();
-            }
-        });
-
-        front.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                final ObjectAnimator oa1 = ObjectAnimator.ofFloat(front, "scaleX", 1f, 0f).setDuration(150);
-                final ObjectAnimator oa2 = ObjectAnimator.ofFloat(front, "scaleX", 0f, 1f).setDuration(150);
-
-                oa1.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        front.setImageResource(R.drawable.ic_photo_camera);
-                        oa2.start();
-                    }
-                });
-
-                oa1.start();
-
-                if (isback) {
-                    isback = false;
-                    cameraView.setFacing(Facing.FRONT);
-                } else {
-                    isback = true;
-                    cameraView.setFacing(Facing.BACK);
-                }
             }
         });
     }
@@ -656,6 +591,66 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
 
     // *********************************************************************************************
     // region Click Action
+
+    public void cameraFacingClickAction(View view){
+
+        final ImageView front = (ImageView) view;
+
+        final ObjectAnimator oa1 = ObjectAnimator.ofFloat(front, "scaleX", 1f, 0f).setDuration(150);
+        final ObjectAnimator oa2 = ObjectAnimator.ofFloat(front, "scaleX", 0f, 1f).setDuration(150);
+
+        oa1.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                front.setImageResource(R.drawable.ic_photo_camera);
+                oa2.start();
+            }
+        });
+
+        oa1.start();
+
+        if (isback) {
+            isback = false;
+            cameraView.setFacing(Facing.FRONT);
+        } else {
+            isback = true;
+            cameraView.setFacing(Facing.BACK);
+        }
+    }
+
+    public void flashClickAction(final View view){
+        final int height = view.getHeight();
+
+        final ImageView imageView = (ImageView) view;
+
+        imageView.animate().translationY(height).setDuration(100).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+                imageView.setTranslationY(-(height / 2));
+
+                if (flashDrawable == R.drawable.ic_flash_auto_black_24dp) {
+                    flashDrawable = R.drawable.ic_flash_off_black_24dp;
+                    imageView.setImageResource(flashDrawable);
+                    cameraView.setFlash(Flash.OFF);
+
+                } else if (flashDrawable == R.drawable.ic_flash_off_black_24dp) {
+                    flashDrawable = R.drawable.ic_flash_on_black_24dp;
+                    imageView.setImageResource(flashDrawable);
+                    cameraView.setFlash(Flash.ON);
+
+                } else {
+                    flashDrawable = R.drawable.ic_flash_auto_black_24dp;
+                    imageView.setImageResource(flashDrawable);
+                    cameraView.setFlash(Flash.AUTO);
+                }
+
+                imageView.animate().translationY(0).setDuration(50).setListener(null).start();
+            }
+        }).start();
+    }
 
     public void capture(View view) {
         cameraView.addCameraListener(new CameraListener() {
