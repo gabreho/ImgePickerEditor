@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.net.Uri;
@@ -50,6 +51,7 @@ import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
 import com.skrumble.picketeditor.picker.modals.Img;
+import com.skrumble.picketeditor.picker.public_interface.BitmapCallback;
 import com.skrumble.picketeditor.picker.utility.Constants;
 import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
 import com.skrumble.picketeditor.picker.utility.ImageFetcher;
@@ -299,6 +301,19 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         findViewById(R.id.clickme).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                cameraView.addCameraListener(new CameraListener() {
+                    @Override
+                    public void onPictureTaken(byte[] jpeg) {
+
+                        Utility.decodeBitmap(jpeg, new BitmapCallback() {
+                            @Override
+                            public void onBitmapReady(Bitmap bitmap) {
+
+                            }
+                        });
+                    }
+                });
 
                 cameraView.capturePicture();
 
@@ -684,6 +699,11 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     }
 
     // *********************************************************************************************
+    // region Click Action
+
+    // endregion
+
+    // *********************************************************************************************
     // region
 
     private CameraListener mCameraListener = new CameraListener() {
@@ -700,11 +720,6 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         @Override
         public void onCameraError(@NonNull CameraException exception) {
             super.onCameraError(exception);
-        }
-
-        @Override
-        public void onPictureTaken(byte[] jpeg) {
-            super.onPictureTaken(jpeg);
         }
 
         @Override
