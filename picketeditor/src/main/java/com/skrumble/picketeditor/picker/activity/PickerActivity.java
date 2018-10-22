@@ -46,6 +46,7 @@ import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Gesture;
 import com.otaliastudios.cameraview.GestureAction;
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.editor.ImageCropActivity;
 import com.skrumble.picketeditor.picker.adapters.InstantImageAdapter;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
@@ -176,10 +177,16 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
             list.add(i.getUrl());
             Log.e(PickerActivity.class.getSimpleName() + " images", "img " + i.getUrl());
         }
-        Intent resultIntent = new Intent();
-        resultIntent.putStringArrayListExtra(IMAGE_RESULTS, list);
-        setResult(Activity.RESULT_OK, resultIntent);
-        finish();
+//        Intent resultIntent = new Intent();
+//        resultIntent.putStringArrayListExtra(IMAGE_RESULTS, list);
+//        setResult(Activity.RESULT_OK, resultIntent);
+//        finish();
+
+        Img next = selectionList.iterator().next();
+
+        Intent intent = new Intent(PickerActivity.this, ImageCropActivity.class);
+        intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, next.getUrl());
+        startActivity(intent);
     }
 
     @Override
@@ -661,6 +668,13 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                     @Override
                     public void onBitmapReady(Bitmap bitmap) {
 
+                        File file = Utility.writeImageToCatchFolder(bitmap, PickerActivity.this);
+
+                        if (file != null && file.exists()){
+                            Intent intent = new Intent(PickerActivity.this, ImageCropActivity.class);
+                            intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, file.getPath());
+                            startActivity(intent);
+                        }
                     }
                 });
             }

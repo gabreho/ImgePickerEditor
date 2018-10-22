@@ -14,6 +14,13 @@
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/ApplicationTheme"/>
+
+        <activity
+            android:name=".editor.ImageCropActivity"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/ApplicationTheme"/>
+
     </application>
 
 </manifest>

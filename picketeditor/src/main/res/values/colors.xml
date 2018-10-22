@@ -2,4 +2,7 @@
 <resources>
     <color name="colorPrimary">#075e54</color>
     <color name="colorPrimaryLight">#80075e54</color>
+
+    <color name="ally_accent_color">#d53c27</color>
+    <color name="white">#FFFFFF</color>
 </resources>
