@@ -1,6 +1,7 @@
 package com.skrumble.picketeditor.editor;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -32,10 +33,13 @@ import com.yalantis.ucrop.UCropFragmentCallback;
 import java.io.File;
 
 public class ImageCropActivity extends AppCompatActivity implements UCropFragmentCallback {
+    public static final String EXTRA_IMAGE_RESULT_SRC = "EXTRA_IMAGE_RESULT_SRC";
     public static final String EXTRA_IMAGE_SRC = "EXTRA_IMAGE_SRC";
     private Toolbar toolbar;
     private boolean mShowLoader = false;
     private UCropFragment fragment;
+
+    private Uri originalUri, destinationUri;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,9 +49,9 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
         String imagePath = getIntent().getStringExtra(EXTRA_IMAGE_SRC);
 
 
-        Uri originalUri = Uri.fromFile(new File(imagePath));
+        originalUri = Uri.fromFile(new File(imagePath));
 
-        Uri destinationUri = Uri.fromFile(Utility.getDestinationImagePath());
+        destinationUri = Uri.fromFile(Utility.getDestinationImagePath());
 
         UCrop uCrop = UCrop.of(originalUri, destinationUri);
 
@@ -196,6 +200,26 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
 
     @Override
     public void onCropFinish(UCropFragment.UCropResult result) {
+        Intent intent = new Intent();
+        switch (result.mResultCode) {
+            case RESULT_OK:
 
+                Uri output = UCrop.getOutput(result.mResultData);
+
+                if (output != null){
+                    intent.putExtra(EXTRA_IMAGE_RESULT_SRC, output.toString());
+                }else {
+                    intent.putExtra(EXTRA_IMAGE_RESULT_SRC, originalUri.toString());
+                }
+
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+            default:
+                intent.putExtra(EXTRA_IMAGE_RESULT_SRC, originalUri.toString());
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+        }
     }
 }

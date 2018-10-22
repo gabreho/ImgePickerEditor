@@ -184,9 +184,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
 
         Img next = selectionList.iterator().next();
 
-        Intent intent = new Intent(PickerActivity.this, ImageCropActivity.class);
-        intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, next.getUrl());
-        startActivity(intent);
+        goToImageCroppperActivity(next.getUrl());
     }
 
     @Override
@@ -671,9 +669,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                         File file = Utility.writeImageToCatchFolder(bitmap, PickerActivity.this);
 
                         if (file != null && file.exists()){
-                            Intent intent = new Intent(PickerActivity.this, ImageCropActivity.class);
-                            intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, file.getPath());
-                            startActivity(intent);
+                            goToImageCroppperActivity(file.getAbsolutePath());
                         }
                     }
                 });
@@ -934,6 +930,19 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
             return true;
         }
     };
+
+    // endregion
+
+    // *********************************************************************************************
+    // region Navigation
+
+    private void goToImageCroppperActivity(String absolutePath){
+        Intent intent = new Intent(PickerActivity.this, ImageCropActivity.class);
+        intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, absolutePath);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        finish();
+    }
 
     // endregion
 }
