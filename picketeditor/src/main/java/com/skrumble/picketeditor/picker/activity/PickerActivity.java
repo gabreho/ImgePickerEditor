@@ -176,7 +176,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         } catch (Exception e) {
             e.printStackTrace();
         }
-        colorPrimaryDark = ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme());
+        colorPrimaryDark = ResourcesCompat.getColor(getResources(), R.color.ally_accent_color, getTheme());
         cameraView = findViewById(R.id.camera_view);
         cameraView.setLifecycleOwner(this);
         cameraView.addCameraListener(mCameraListener);
@@ -204,6 +204,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         bottomButtons = findViewById(R.id.bottomButtons);
         TOPBAR_HEIGHT = Utility.convertDpToPixel(56, PickerActivity.this);
         status_bar_bg = findViewById(R.id.status_bar_bg);
+        status_bar_bg.setBackgroundColor(Color.BLACK);
         instantRecyclerView = findViewById(R.id.instantRecyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
