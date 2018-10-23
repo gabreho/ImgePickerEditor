@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.picker.activity.PickerActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void OnTextViewClick(View view) {
-        PickerActivity.start(MainActivity.this, 100, 1);
+        PickerEditor.startCamera(MainActivity.this, 100, 1);
     }
 
     @Override

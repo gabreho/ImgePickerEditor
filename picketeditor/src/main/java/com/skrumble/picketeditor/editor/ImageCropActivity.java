@@ -207,16 +207,16 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
                 Uri output = UCrop.getOutput(result.mResultData);
 
                 if (output != null){
-                    intent.putExtra(EXTRA_IMAGE_RESULT_SRC, output.toString());
+                    intent.putExtra(EXTRA_IMAGE_RESULT_SRC, output.getPath());
                 }else {
-                    intent.putExtra(EXTRA_IMAGE_RESULT_SRC, originalUri.toString());
+                    intent.putExtra(EXTRA_IMAGE_RESULT_SRC, originalUri.getPath());
                 }
 
                 setResult(RESULT_OK, intent);
                 finish();
                 break;
             default:
-                intent.putExtra(EXTRA_IMAGE_RESULT_SRC, originalUri.toString());
+                intent.putExtra(EXTRA_IMAGE_RESULT_SRC, originalUri.getPath());
                 setResult(RESULT_OK, intent);
                 finish();
                 break;
