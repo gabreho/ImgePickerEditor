@@ -4,21 +4,16 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
@@ -45,18 +40,16 @@ import com.otaliastudios.cameraview.Facing;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Gesture;
 import com.otaliastudios.cameraview.GestureAction;
+import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
-import com.skrumble.picketeditor.editor.ImageCropActivity;
 import com.skrumble.picketeditor.picker.adapters.InstantImageAdapter;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
-import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
 import com.skrumble.picketeditor.picker.modals.Img;
 import com.skrumble.picketeditor.picker.public_interface.BitmapCallback;
 import com.skrumble.picketeditor.picker.utility.Constants;
 import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
 import com.skrumble.picketeditor.picker.utility.ImageFetcher;
-import com.skrumble.picketeditor.picker.utility.PermUtil;
 import com.skrumble.picketeditor.picker.utility.Utility;
 import com.skrumble.picketeditor.picker.utility.ui.FastScrollStateChangeListener;
 
@@ -70,7 +63,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
 
     private static final int sBubbleAnimDuration = 1000;
     private static final int sScrollbarHideDelay = 1000;
-    private static final String SELECTION = "selection";
+    public static final String SELECTION = "selection";
     private static final int sTrackSnapRange = 5;
     public static String IMAGE_RESULTS = "image_results";
     public static float TOPBAR_HEIGHT;
@@ -107,49 +100,6 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     private boolean isback = true;
     private int flashDrawable;
 
-    public static void start(final Fragment context, final int requestCode, final int selectionCount) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PermUtil.checkForCamaraWritePermissions(context, new WorkFinish() {
-                @Override
-                public void onWorkFinish(Boolean check) {
-                    Intent i = new Intent(context.getActivity(), PickerActivity.class);
-                    i.putExtra(SELECTION, selectionCount);
-                    context.startActivityForResult(i, requestCode);
-                }
-            });
-        } else {
-            Intent i = new Intent(context.getActivity(), PickerActivity.class);
-            i.putExtra(SELECTION, selectionCount);
-            context.startActivityForResult(i, requestCode);
-        }
-
-    }
-
-    public static void start(Fragment context, int requestCode) {
-        start(context, requestCode, 1);
-    }
-
-    public static void start(final FragmentActivity context, final int requestCode, final int selectionCount) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PermUtil.checkForCamaraWritePermissions(context, new WorkFinish() {
-                @Override
-                public void onWorkFinish(Boolean check) {
-                    Intent i = new Intent(context, PickerActivity.class);
-                    i.putExtra(SELECTION, selectionCount);
-                    context.startActivityForResult(i, requestCode);
-                }
-            });
-        } else {
-            Intent i = new Intent(context, PickerActivity.class);
-            i.putExtra(SELECTION, selectionCount);
-            context.startActivityForResult(i, requestCode);
-        }
-    }
-
-    public static void start(final FragmentActivity context, int requestCode) {
-        start(context, requestCode, 1);
-    }
-
     private void hideScrollbar() {
         float transX = getResources().getDimensionPixelSize(R.dimen.fastscroll_scrollbar_padding_end);
         mScrollbarAnimator = mScrollbar.animate().translationX(transX).alpha(0f)
@@ -184,7 +134,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
 
         Img next = selectionList.iterator().next();
 
-        goToImageCroppperActivity(next.getUrl());
+        PickerEditor.starEditor(this, next.getUrl());
     }
 
     @Override
@@ -669,7 +619,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                         File file = Utility.writeImageToCatchFolder(bitmap, PickerActivity.this);
 
                         if (file != null && file.exists()){
-                            goToImageCroppperActivity(file.getAbsolutePath());
+                            PickerEditor.starEditor(PickerActivity.this, file.getAbsolutePath());
                         }
                     }
                 });
@@ -930,19 +880,6 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
             return true;
         }
     };
-
-    // endregion
-
-    // *********************************************************************************************
-    // region Navigation
-
-    private void goToImageCroppperActivity(String absolutePath){
-        Intent intent = new Intent(PickerActivity.this, ImageCropActivity.class);
-        intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, absolutePath);
-        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
-        finish();
-    }
 
     // endregion
 }
