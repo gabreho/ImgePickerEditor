@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void OnTextViewClick(View view) {
-        PickerEditor.startCamera(MainActivity.this, 100, 1);
+        PickerEditor.openPictureGallery(this);
     }
 
     @Override

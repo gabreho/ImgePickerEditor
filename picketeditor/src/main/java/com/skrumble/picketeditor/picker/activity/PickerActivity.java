@@ -94,6 +94,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     private boolean mHideScrollbar = true;
     private boolean LongSelection = false;
     private int SelectionCount = 1;
+    private View mBottomSheet;
 
     private TextView selection_count;
 
@@ -247,6 +248,18 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
 
         DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
         updateImages();
+
+        if (getIntent().getExtras().getBoolean("test")) {
+            setRecyclerViewPosition(200);
+            Utility.hideStatusBar(this);
+            instantRecyclerView.setVisibility(View.GONE);
+            topbar.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setOnClickListener(null);
+            cameraView.setVisibility(View.GONE);
+            bottomButtons.setVisibility(View.GONE);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
     }
 
     private void onClickMethods() {
@@ -331,8 +344,8 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     }
 
     private void setBottomSheetBehavior() {
-        View bottomSheet = findViewById(R.id.bottom_sheet);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        mBottomSheet = findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
         mBottomSheetBehavior.setPeekHeight((int) (Utility.convertDpToPixel(194, this)));
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
 

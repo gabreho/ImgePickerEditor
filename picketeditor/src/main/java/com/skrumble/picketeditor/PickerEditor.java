@@ -84,4 +84,10 @@ public class PickerEditor {
         activity.startActivity(intent);
         activity.finish();
     }
+
+    public static void openPictureGallery(Activity activity) {
+        Intent intent = new Intent(activity, PickerActivity.class);
+        intent.putExtra("test", true);
+        activity.startActivity(intent);
+    }
 }
