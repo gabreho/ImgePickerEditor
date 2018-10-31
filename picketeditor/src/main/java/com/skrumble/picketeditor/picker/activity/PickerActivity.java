@@ -192,57 +192,30 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         } catch (Exception e) {
             e.printStackTrace();
         }
-        colorPrimaryDark = ResourcesCompat.getColor(getResources(), R.color.ally_accent_color, getTheme());
+
+        // Setting Views
         cameraView = findViewById(R.id.camera_view);
-        cameraView.setLifecycleOwner(this);
-        cameraView.addCameraListener(mCameraListener);
-
-        zoom = 0.0f;
-
-        cameraView.setZoom(zoom);
-
-        cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
-        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
-        cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
-
-        topbar = findViewById(R.id.topbar);
-        selection_count = findViewById(R.id.selection_count);
-        selection_back = findViewById(R.id.selection_back);
-        selection_check = findViewById(R.id.selection_check);
-        selection_check.setVisibility((SelectionCount > 1) ? View.VISIBLE : View.GONE);
         sendButton = findViewById(R.id.sendButton);
         img_count = findViewById(R.id.img_count);
         mBubbleView = findViewById(R.id.fastscroll_bubble);
         mHandleView = findViewById(R.id.fastscroll_handle);
         mScrollbar = findViewById(R.id.fastscroll_scrollbar);
-        mScrollbar.setVisibility(View.GONE);
-        mBubbleView.setVisibility(View.GONE);
+        topbar = findViewById(R.id.topbar);
+        selection_count = findViewById(R.id.selection_count);
+        selection_back = findViewById(R.id.selection_back);
+        selection_check = findViewById(R.id.selection_check);
         bottomButtons = findViewById(R.id.bottomButtons);
-        TOPBAR_HEIGHT = Utility.convertDpToPixel(56, PickerActivity.this);
         status_bar_bg = findViewById(R.id.status_bar_bg);
-        status_bar_bg.setBackgroundColor(Color.BLACK);
         instantRecyclerView = findViewById(R.id.instantRecyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
+        FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
+
+        //Layout Managers
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        instantRecyclerView.setLayoutManager(linearLayoutManager);
-        initaliseadapter = new InstantImageAdapter(this);
-        initaliseadapter.addOnSelectionListener(onSelectionListener);
-        instantRecyclerView.setAdapter(initaliseadapter);
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.addOnScrollListener(mScrollListener);
-        FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
-        BottomBarHeight = Utility.getSoftButtonsBarSizePort(this);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT);
-        lp.setMargins(0, 0, 0, BottomBarHeight);
-        mainFrameLayout.setLayoutParams(lp);
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) sendButton.getLayoutParams();
-        layoutParams.setMargins(0, 0, (int) (Utility.convertDpToPixel(16, this)),
-                (int) (Utility.convertDpToPixel(174, this)));
-        sendButton.setLayoutParams(layoutParams);
-        mainImageAdapter = new MainImageAdapter(this);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(this, MainImageAdapter.SPAN_COUNT);
-        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, MainImageAdapter.SPAN_COUNT);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 if (mainImageAdapter.getItemViewType(position) == MainImageAdapter.HEADER) {
@@ -251,17 +224,57 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                 return 1;
             }
         });
-        recyclerView.setLayoutManager(mLayoutManager);
+
+        // Set Layout Managers
+        instantRecyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        // Adapters
+        initaliseadapter = new InstantImageAdapter(this);
+        initaliseadapter.addOnSelectionListener(onSelectionListener);
+        instantRecyclerView.setAdapter(initaliseadapter);
+
+        mainImageAdapter = new MainImageAdapter(this);
         mainImageAdapter.addOnSelectionListener(onSelectionListener);
+
+        // Set Adapters
         recyclerView.setAdapter(mainImageAdapter);
-        recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
 
-        mHandleView.setOnTouchListener(this);
-        onClickMethods();
+        // Layout Params
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT);
+        lp.setMargins(0, 0, 0, BottomBarHeight);
 
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) sendButton.getLayoutParams();
+        layoutParams.setMargins(0, 0, (int) (Utility.convertDpToPixel(16, this)),
+                (int) (Utility.convertDpToPixel(174, this)));
+
+        // Set Layout Params
+        mainFrameLayout.setLayoutParams(lp);
+        sendButton.setLayoutParams(layoutParams);
+
+        // Set Visibility
+        selection_check.setVisibility((SelectionCount > 1) ? View.VISIBLE : View.GONE);
+        mScrollbar.setVisibility(View.GONE);
+        mBubbleView.setVisibility(View.GONE);
+
+        // Set Variables
+        BottomBarHeight = Utility.getSoftButtonsBarSizePort(this);
         flashDrawable = R.drawable.ic_flash_off_black_24dp;
-
+        status_bar_bg.setBackgroundColor(Color.BLACK);
+        zoom = 0.0f;
+        cameraView.setZoom(zoom);
+        TOPBAR_HEIGHT = Utility.convertDpToPixel(56, PickerActivity.this);
+        mHandleView.setOnTouchListener(this);
+        recyclerView.addOnScrollListener(mScrollListener);
+        recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
         DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
+        cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
+        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
+        cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
+
+        // View Methods
+        onClickMethods();
         updateImages();
 
         if (getIntent().getExtras().getBoolean("test")) {
