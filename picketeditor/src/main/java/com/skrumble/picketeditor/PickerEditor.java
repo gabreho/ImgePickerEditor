@@ -82,12 +82,13 @@ public class PickerEditor {
         intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, originalImagePath);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         activity.startActivity(intent);
-        activity.finish();
+        if (finish) {
+            activity.finish();
+        }
     }
 
     public static void openPictureGallery(Activity activity) {
-        Intent intent = new Intent(activity, PickerActivity.class);
-        intent.putExtra("test", true);
+        Intent intent = new Intent(activity, GalleryActivity.class);
         activity.startActivity(intent);
     }
 }
