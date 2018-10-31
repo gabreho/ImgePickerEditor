@@ -61,45 +61,60 @@ import java.util.Set;
 
 public class PickerActivity extends AppCompatActivity implements View.OnTouchListener {
 
+    // Constants
     private static final int sBubbleAnimDuration = 1000;
     private static final int sScrollbarHideDelay = 1000;
     public static final String SELECTION = "selection";
     private static final int sTrackSnapRange = 5;
-    public static String IMAGE_RESULTS = "image_results";
+//    public static String IMAGE_RESULTS = "image_results";
+
+    // Variables
     public static float TOPBAR_HEIGHT;
     private int BottomBarHeight = 0;
     private int colorPrimaryDark;
-    private CameraView cameraView;
     private float zoom = 0.0f;
     private float dist = 0.0f;
-    private Handler handler = new Handler();
-    private FastScrollStateChangeListener mFastScrollStateChangeListener;
+    private float mViewHeight;
+    private boolean mHideScrollbar = true;
+    private boolean LongSelection = false;
+    private int SelectionCount = 1;
+    private boolean isback = true;
+    private int flashDrawable;
+    private Set<Img> selectionList = new HashSet<>();
+
+    // Views
+    private CameraView cameraView;
     private RecyclerView recyclerView, instantRecyclerView;
-    private BottomSheetBehavior mBottomSheetBehavior;
-    private InstantImageAdapter initaliseadapter;
     private View status_bar_bg, mScrollbar, topbar, bottomButtons, sendButton;
+    private View mBottomSheet;
     private TextView mBubbleView, img_count;
+    private TextView selection_count;
     private ImageView mHandleView, selection_back, selection_check;
+
+    // Adapters
+    private InstantImageAdapter initaliseadapter;
+    private MainImageAdapter mainImageAdapter;
+
+    // Handlers
+    private Handler handler = new Handler();
+
+    // Animators
     private ViewPropertyAnimator mScrollbarAnimator;
     private ViewPropertyAnimator mBubbleAnimator;
-    private Set<Img> selectionList = new HashSet<>();
+
+    // Behavior
+    private BottomSheetBehavior mBottomSheetBehavior;
+
+    // State Change Listener
+    private FastScrollStateChangeListener mFastScrollStateChangeListener;
+
+    // Runnables
     private Runnable mScrollbarHider = new Runnable() {
         @Override
         public void run() {
             hideScrollbar();
         }
     };
-    private MainImageAdapter mainImageAdapter;
-    private float mViewHeight;
-    private boolean mHideScrollbar = true;
-    private boolean LongSelection = false;
-    private int SelectionCount = 1;
-    private View mBottomSheet;
-
-    private TextView selection_count;
-
-    private boolean isback = true;
-    private int flashDrawable;
 
     private void hideScrollbar() {
         float transX = getResources().getDimensionPixelSize(R.dimen.fastscroll_scrollbar_padding_end);
