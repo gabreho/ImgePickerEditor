@@ -87,9 +87,8 @@ public class PickerEditor {
         }
     }
 
-    public static void openPictureGallery(Activity activity) {
+    public static void openPictureGallery(Activity activity, int requestCode) {
         Intent intent = new Intent(activity, GalleryActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, requestCode);
     }
 }
