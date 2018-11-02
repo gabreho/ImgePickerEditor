@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.editor;
+package com.skrumble.picketeditor.editor.image;
 
 import android.annotation.TargetApi;
 import android.content.Intent;

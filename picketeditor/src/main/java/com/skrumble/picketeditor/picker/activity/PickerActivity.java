@@ -100,42 +100,8 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     private boolean isback = true;
     private int flashDrawable;
 
-    private void hideScrollbar() {
-        float transX = getResources().getDimensionPixelSize(R.dimen.fastscroll_scrollbar_padding_end);
-        mScrollbarAnimator = mScrollbar.animate().translationX(transX).alpha(0f)
-                .setDuration(Constants.sScrollbarAnimDuration)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        mScrollbar.setVisibility(View.GONE);
-                        mScrollbarAnimator = null;
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                        super.onAnimationCancel(animation);
-                        mScrollbar.setVisibility(View.GONE);
-                        mScrollbarAnimator = null;
-                    }
-                });
-    }
-
-    public void returnObjects() {
-        ArrayList<String> list = new ArrayList<>();
-        for (Img i : selectionList) {
-            list.add(i.getUrl());
-            Log.e(PickerActivity.class.getSimpleName() + " images", "img " + i.getUrl());
-        }
-//        Intent resultIntent = new Intent();
-//        resultIntent.putStringArrayListExtra(IMAGE_RESULTS, list);
-//        setResult(Activity.RESULT_OK, resultIntent);
-//        finish();
-
-        Img next = selectionList.iterator().next();
-
-        PickerEditor.starEditor(this, next.getUrl());
-    }
+    // *********************************************************************************************
+    // region Life Cycle
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +129,89 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     protected void onPause() {
         cameraView.stop();
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (selectionList.size() > 0) {
+            for (Img img : selectionList) {
+                mainImageAdapter.getItemList().get(img.getPosition()).setSelected(false);
+                mainImageAdapter.notifyItemChanged(img.getPosition());
+                initaliseadapter.getItemList().get(img.getPosition()).setSelected(false);
+                initaliseadapter.notifyItemChanged(img.getPosition());
+            }
+            LongSelection = false;
+            if (SelectionCount > 1) {
+                selection_check.setVisibility(View.VISIBLE);
+            }
+            DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
+            topbar.setBackgroundColor(Color.parseColor("#ffffff"));
+            Animation anim = new ScaleAnimation(
+                    1f, 0f, // Start and end values for the X axis scaling
+                    1f, 0f, // Start and end values for the Y axis scaling
+                    Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+                    Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
+            anim.setFillAfter(true); // Needed to keep the result of the animation
+            anim.setDuration(300);
+            anim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    sendButton.setVisibility(View.GONE);
+                    sendButton.clearAnimation();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            sendButton.startAnimation(anim);
+            selectionList.clear();
+        } else if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    // endregion
+
+    private void hideScrollbar() {
+        float transX = getResources().getDimensionPixelSize(R.dimen.fastscroll_scrollbar_padding_end);
+        mScrollbarAnimator = mScrollbar.animate().translationX(transX).alpha(0f)
+                .setDuration(Constants.sScrollbarAnimDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        mScrollbar.setVisibility(View.GONE);
+                        mScrollbarAnimator = null;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        super.onAnimationCancel(animation);
+                        mScrollbar.setVisibility(View.GONE);
+                        mScrollbarAnimator = null;
+                    }
+                });
+    }
+
+    public void returnObjects() {
+        ArrayList<String> list = new ArrayList<>();
+        for (Img i : selectionList) {
+            list.add(i.getUrl());
+            Log.e(PickerActivity.class.getSimpleName() + " images", "img " + i.getUrl());
+        }
+
+        Img next = selectionList.iterator().next();
+
+        PickerEditor.starEditor(this, next.getUrl());
     }
 
     private void initialize() {
@@ -289,47 +338,6 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         });
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private void updateImages() {
-        mainImageAdapter.clearList();
-        Cursor cursor = Utility.getCursor(PickerActivity.this);
-        ArrayList<Img> INSTANTLIST = new ArrayList<>();
-        String header = "";
-        int limit = 100;
-        if (cursor.getCount() < 100) {
-            limit = cursor.getCount();
-        }
-        int date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-        int data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-        int contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-        Calendar calendar;
-        for (int i = 0; i < limit; i++) {
-            cursor.moveToNext();
-            Uri path = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + cursor.getInt(contentUrl));
-            calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(cursor.getLong(date));
-            String dateDifference = Utility.getDateDifference(PickerActivity.this, calendar);
-            if (!header.equalsIgnoreCase("" + dateDifference)) {
-                header = "" + dateDifference;
-                INSTANTLIST.add(new Img("" + dateDifference, "", "", ""));
-            }
-            INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), ""));
-        }
-        cursor.close();
-
-        new ImageFetcher(PickerActivity.this) {
-            @Override
-            protected void onPostExecute(ArrayList<Img> imgs) {
-                super.onPostExecute(imgs);
-                mainImageAdapter.addImageList(imgs);
-            }
-        }.execute(Utility.getCursor(PickerActivity.this));
-
-        initaliseadapter.addImageList(INSTANTLIST);
-        mainImageAdapter.addImageList(INSTANTLIST);
-        setBottomSheetBehavior();
-    }
-
     private void setBottomSheetBehavior() {
         View bottomSheet = findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
@@ -448,102 +456,53 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         }
     }
 
-    @Override
-    public boolean onTouch(View view, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (event.getX() < mHandleView.getX() - ViewCompat.getPaddingStart(mHandleView)) {
-                    return false;
-                }
-                mHandleView.setSelected(true);
-                handler.removeCallbacks(mScrollbarHider);
-                Utility.cancelAnimation(mScrollbarAnimator);
-                Utility.cancelAnimation(mBubbleAnimator);
 
-                if (!Utility.isViewVisible(mScrollbar) && (recyclerView.computeVerticalScrollRange() - mViewHeight > 0)) {
-                    mScrollbarAnimator = Utility.showScrollbar(mScrollbar, PickerActivity.this);
-                }
+    // *********************************************************************************************
+    // region Fill Image
 
-                if (mainImageAdapter != null) {
-                    showBubble();
-                }
-
-                if (mFastScrollStateChangeListener != null) {
-                    mFastScrollStateChangeListener.onFastScrollStart(this);
-                }
-            case MotionEvent.ACTION_MOVE:
-                final float y = event.getRawY();
-             /*   String text = mainImageAdapter.getSectionText(recyclerView.getVerticalScrollbarPosition()).trim();
-                mBubbleView.setText("hello------>"+text+"<--");
-                if (text.equalsIgnoreCase("")) {
-                    mBubbleView.setVisibility(View.GONE);
-                }
-                Log.e("hello"," -->> "+ mBubbleView.getText());*/
-                setViewPositions(y - TOPBAR_HEIGHT);
-                setRecyclerViewPosition(y);
-                return true;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mHandleView.setSelected(false);
-                if (mHideScrollbar) {
-                    handler.postDelayed(mScrollbarHider, sScrollbarHideDelay);
-                }
-                hideBubble();
-                if (mFastScrollStateChangeListener != null) {
-                    mFastScrollStateChangeListener.onFastScrollStop(this);
-                }
-                return true;
+    @SuppressLint("StaticFieldLeak")
+    private void updateImages() {
+        mainImageAdapter.clearList();
+        Cursor cursor = Utility.getCursor(PickerActivity.this);
+        ArrayList<Img> INSTANTLIST = new ArrayList<>();
+        String header = "";
+        int limit = 100;
+        if (cursor.getCount() < 100) {
+            limit = cursor.getCount();
         }
-        return super.onTouchEvent(event);
+        int date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
+        int data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+        int contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+        Calendar calendar;
+        for (int i = 0; i < limit; i++) {
+            cursor.moveToNext();
+            Uri path = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + cursor.getInt(contentUrl));
+            calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(cursor.getLong(date));
+            String dateDifference = Utility.getDateDifference(PickerActivity.this, calendar);
+            if (!header.equalsIgnoreCase("" + dateDifference)) {
+                header = "" + dateDifference;
+                INSTANTLIST.add(new Img("" + dateDifference, "", "", ""));
+            }
+            INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), ""));
+        }
+        cursor.close();
+
+        new ImageFetcher(PickerActivity.this) {
+            @Override
+            protected void onPostExecute(ArrayList<Img> imgs) {
+                super.onPostExecute(imgs);
+                mainImageAdapter.addImageList(imgs);
+            }
+        }.execute(Utility.getCursor(PickerActivity.this));
+
+        initaliseadapter.addImageList(INSTANTLIST);
+        mainImageAdapter.addImageList(INSTANTLIST);
+        setBottomSheetBehavior();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (selectionList.size() > 0) {
-            for (Img img : selectionList) {
-                mainImageAdapter.getItemList().get(img.getPosition()).setSelected(false);
-                mainImageAdapter.notifyItemChanged(img.getPosition());
-                initaliseadapter.getItemList().get(img.getPosition()).setSelected(false);
-                initaliseadapter.notifyItemChanged(img.getPosition());
-            }
-            LongSelection = false;
-            if (SelectionCount > 1) {
-                selection_check.setVisibility(View.VISIBLE);
-            }
-            DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
-            topbar.setBackgroundColor(Color.parseColor("#ffffff"));
-            Animation anim = new ScaleAnimation(
-                    1f, 0f, // Start and end values for the X axis scaling
-                    1f, 0f, // Start and end values for the Y axis scaling
-                    Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                    Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
-            anim.setFillAfter(true); // Needed to keep the result of the animation
-            anim.setDuration(300);
-            anim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
 
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    sendButton.setVisibility(View.GONE);
-                    sendButton.clearAnimation();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            sendButton.startAnimation(anim);
-            selectionList.clear();
-        } else if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        } else {
-            super.onBackPressed();
-        }
-    }
+    // endregion
 
     // *********************************************************************************************
     // region Click Action
@@ -628,36 +587,61 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         });
 
         cameraView.capturePicture();
-
-//                fotoapparat.takePicture().toBitmap().transform(new Function1<BitmapPhoto, Bitmap>() {
-//                    @Override
-//                    public Bitmap invoke(BitmapPhoto bitmapPhoto) {
-//                        Log.e("my pick transform", bitmapPhoto.toString());
-//                        fotoapparat.stop();
-//                        return Utility.rotate(bitmapPhoto.bitmap, -bitmapPhoto.rotationDegrees);
-//                    }
-//                }).whenAvailable(new Function1<Bitmap, Unit>() {
-//                    @Override
-//                    public Unit invoke(Bitmap bitmap) {
-//                        if (bitmap != null) {
-//                            Log.e("my pick", bitmap.toString());
-//                            synchronized (bitmap) {
-//                                File photo = Utility.writeImage(bitmap);
-//                                Log.e("my pick saved", bitmap.toString() + "    ->  " + photo.length() / 1024);
-//                                selectionList.clear();
-//                                selectionList.add(new Img("", "", photo.getAbsolutePath(), ""));
-//                                returnObjects();
-//                            }
-//                        }
-//                        return null;
-//                    }
-//                });
     }
 
     // endregion
 
     // *********************************************************************************************
     // region Listeners
+
+    @Override
+    public boolean onTouch(View view, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (event.getX() < mHandleView.getX() - ViewCompat.getPaddingStart(mHandleView)) {
+                    return false;
+                }
+                mHandleView.setSelected(true);
+                handler.removeCallbacks(mScrollbarHider);
+                Utility.cancelAnimation(mScrollbarAnimator);
+                Utility.cancelAnimation(mBubbleAnimator);
+
+                if (!Utility.isViewVisible(mScrollbar) && (recyclerView.computeVerticalScrollRange() - mViewHeight > 0)) {
+                    mScrollbarAnimator = Utility.showScrollbar(mScrollbar, PickerActivity.this);
+                }
+
+                if (mainImageAdapter != null) {
+                    showBubble();
+                }
+
+                if (mFastScrollStateChangeListener != null) {
+                    mFastScrollStateChangeListener.onFastScrollStart(this);
+                }
+            case MotionEvent.ACTION_MOVE:
+                final float y = event.getRawY();
+             /*   String text = mainImageAdapter.getSectionText(recyclerView.getVerticalScrollbarPosition()).trim();
+                mBubbleView.setText("hello------>"+text+"<--");
+                if (text.equalsIgnoreCase("")) {
+                    mBubbleView.setVisibility(View.GONE);
+                }
+                Log.e("hello"," -->> "+ mBubbleView.getText());*/
+                setViewPositions(y - TOPBAR_HEIGHT);
+                setRecyclerViewPosition(y);
+                return true;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mHandleView.setSelected(false);
+                if (mHideScrollbar) {
+                    handler.postDelayed(mScrollbarHider, sScrollbarHideDelay);
+                }
+                hideBubble();
+                if (mFastScrollStateChangeListener != null) {
+                    mFastScrollStateChangeListener.onFastScrollStop(this);
+                }
+                return true;
+        }
+        return super.onTouchEvent(event);
+    }
 
     private CameraListener mCameraListener = new CameraListener() {
         @Override

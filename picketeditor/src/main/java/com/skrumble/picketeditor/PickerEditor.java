@@ -6,7 +6,7 @@ import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
-import com.skrumble.picketeditor.editor.ImageCropActivity;
+import com.skrumble.picketeditor.editor.image.ImageCropActivity;
 import com.skrumble.picketeditor.picker.activity.PickerActivity;
 import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
 import com.skrumble.picketeditor.picker.utility.PermUtil;
