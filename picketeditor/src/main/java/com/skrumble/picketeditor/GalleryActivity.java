@@ -115,6 +115,12 @@ public class GalleryActivity  extends AppCompatActivity {
         Utility.getScreenSize(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        activity = null;
+    }
+
     @SuppressLint("StaticFieldLeak")
     private void updateImages() {
         mainImageAdapter.clearList();
