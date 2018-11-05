@@ -12,6 +12,10 @@ import com.skrumble.picketeditor.picker.activity.PickerActivity;
 import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
 import com.skrumble.picketeditor.picker.utility.PermUtil;
 
+import static com.skrumble.picketeditor.gallery.GalleryActivity.EXTRA_GALLERY_TYPE;
+import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO;
+import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PICTURE;
+import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_VIDEO;
 import static com.skrumble.picketeditor.picker.activity.PickerActivity.SELECTION;
 
 public class PickerEditor {
@@ -89,7 +93,20 @@ public class PickerEditor {
     }
 
     public static void openPictureGallery(Activity activity, int requestCode) {
+        openGallery(activity, requestCode, GAlLERY_TYPE_PICTURE);
+    }
+
+    public static void openVideoGallery(Activity activity, int requestCode) {
+        openGallery(activity, requestCode, GAlLERY_TYPE_VIDEO);
+    }
+
+    public static void openPictureAndVideoGallery(Activity activity, int requestCode) {
+        openGallery(activity, requestCode, GAlLERY_TYPE_PHOTO_AND_VIDEO);
+    }
+
+    private static void openGallery(Activity activity, int requestCode, int typeOfGallery) {
         Intent intent = new Intent(activity, GalleryActivity.class);
+        intent.putExtra(EXTRA_GALLERY_TYPE, typeOfGallery);
         activity.startActivityForResult(intent, requestCode);
     }
 }

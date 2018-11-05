@@ -26,6 +26,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.public_interface.BitmapCallback;
 
 import java.io.ByteArrayInputStream;
@@ -130,9 +131,12 @@ public class Utility {
         return topChild == null;
     }
 
-    public static Cursor getCursor(Context context) {
-        return context.getContentResolver().query(Constants.URI, Constants.PROJECTION,
-                null, null, Constants.ORDERBY);
+    public static Cursor getCursor(Context context, int typeOfGallery) {
+        return context.getContentResolver().query(
+                typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_URI : Constants.VIDEO_URI,
+                typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_PROJECTION : Constants.VIDEOS_PROJECTION,
+                null, null,
+                typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_ORDERBY : Constants.VIDEOS_ORDERBY);
     }
 
     public static boolean isViewVisible(View view) {

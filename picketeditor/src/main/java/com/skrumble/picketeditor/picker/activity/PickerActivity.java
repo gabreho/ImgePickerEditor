@@ -42,6 +42,7 @@ import com.otaliastudios.cameraview.Gesture;
 import com.otaliastudios.cameraview.GestureAction;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.adapters.InstantImageAdapter;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
@@ -504,7 +505,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     @SuppressLint("StaticFieldLeak")
     private void updateImages() {
         mainImageAdapter.clearList();
-        Cursor cursor = Utility.getCursor(PickerActivity.this);
+        Cursor cursor = Utility.getCursor(PickerActivity.this, GalleryActivity.GAlLERY_TYPE_PICTURE);
         ArrayList<Img> INSTANTLIST = new ArrayList<>();
         String header = "";
         int limit = 100;
@@ -535,7 +536,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                 super.onPostExecute(imgs);
                 mainImageAdapter.addImageList(imgs);
             }
-        }.execute(Utility.getCursor(PickerActivity.this));
+        }.execute(Utility.getCursor(PickerActivity.this, GalleryActivity.GAlLERY_TYPE_PICTURE));
 
         initaliseadapter.addImageList(INSTANTLIST);
         mainImageAdapter.addImageList(INSTANTLIST);
