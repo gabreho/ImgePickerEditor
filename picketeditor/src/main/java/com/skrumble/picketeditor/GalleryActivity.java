@@ -1,16 +1,26 @@
 package com.skrumble.picketeditor;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
+import android.annotation.TargetApi;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
@@ -27,6 +37,7 @@ public class GalleryActivity  extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MainImageAdapter mainImageAdapter;
     private OnSelectionListener onSelectionListener;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,10 +45,11 @@ public class GalleryActivity  extends AppCompatActivity {
         setContentView(R.layout.activity_gallery);
 
         Utility.getScreenSize(this);
-        Utility.setupStatusBarHidden(this);
-        Utility.hideStatusBar(this);
 
         recyclerView = findViewById(R.id.recyclerView);
+        toolbar = findViewById(R.id.toolbar);
+
+        setupAppBar();
 
         onSelectionListener = new OnSelectionListener() {
             @Override
@@ -67,6 +79,13 @@ public class GalleryActivity  extends AppCompatActivity {
             }
         });
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
         recyclerView.setLayoutManager(gridLayoutManager);
 
@@ -78,24 +97,18 @@ public class GalleryActivity  extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         Utility.getScreenSize(this);
-        Utility.setupStatusBarHidden(this);
-        Utility.hideStatusBar(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Utility.getScreenSize(this);
-        Utility.setupStatusBarHidden(this);
-        Utility.hideStatusBar(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Utility.getScreenSize(this);
-        Utility.setupStatusBarHidden(this);
-        Utility.hideStatusBar(this);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -129,4 +142,40 @@ public class GalleryActivity  extends AppCompatActivity {
         mainImageAdapter.addImageList(INSTANTLIST);
     }
 
+
+    private void setupAppBar() {
+        setStatusBarColor(Color.BLACK);
+
+        toolbar = findViewById(R.id.toolbar);
+
+        // Set all of the Toolbar coloring
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.ally_accent_color));
+
+        toolbar.setVisibility(View.VISIBLE);
+
+        // Color buttons inside the Toolbar
+        Drawable stateButtonDrawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_and_icn_back);
+        if (stateButtonDrawable != null) {
+            stateButtonDrawable.mutate();
+            stateButtonDrawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+            toolbar.setNavigationIcon(stateButtonDrawable);
+        }
+
+        setSupportActionBar(toolbar);
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setStatusBarColor(@ColorInt int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final Window window = getWindow();
+            if (window != null) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(color);
+            }
+        }
+    }
 }
