@@ -141,7 +141,7 @@ public class Utility {
 
         switch (typeOfGallery) {
             case GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO:
-                cursorUri = MediaStore.Files.getContentUri("external");
+                cursorUri = Constants.IMAGES_AND_VIDEO_URI;
                 cursorProjection = Constants.IMAGES_AND_VIDEOS_PROJECTION;
                 cursorSelection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                                 + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
