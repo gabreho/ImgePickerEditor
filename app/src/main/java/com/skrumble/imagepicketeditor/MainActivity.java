@@ -1,13 +1,12 @@
 package com.skrumble.imagepicketeditor;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 
 import com.skrumble.picketeditor.PickerEditor;
-import com.skrumble.picketeditor.picker.activity.PickerActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void OnTextViewClick(View view) {
-        PickerEditor.openPictureGallery(this);
+        PickerEditor.openPictureGallery(this, 1);
     }
 
     @Override
