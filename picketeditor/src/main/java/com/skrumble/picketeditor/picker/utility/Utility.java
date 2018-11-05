@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -133,25 +134,35 @@ public class Utility {
     }
 
     public static Cursor getCursor(Context context, int typeOfGallery) {
-        if (typeOfGallery == GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO) {
-            return context.getContentResolver().query(
-                    MediaStore.Files.getContentUri("external"),
-                    Constants.IMAGES_AND_VIDEOS_PROJECTION,
-                    MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                            + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
-                            + " OR "
-                            + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                            + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO,
-                    null,
-                    Constants.IMAGES_AND_VIDEOS_ORDERBY
-            );
-        } else {
-            return context.getContentResolver().query(
-                    typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_URI : Constants.VIDEO_URI,
-                    typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_PROJECTION : Constants.VIDEOS_PROJECTION,
-                    null, null,
-                    typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_ORDERBY : Constants.VIDEOS_ORDERBY);
+        Uri cursorUri;
+        String[] cursorProjection;
+        String cursorSelection = null;
+        String cursorOrderBy;
+
+        switch (typeOfGallery) {
+            case GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO:
+                cursorUri = MediaStore.Files.getContentUri("external");
+                cursorProjection = Constants.IMAGES_AND_VIDEOS_PROJECTION;
+                cursorSelection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                                + " OR "
+                                + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+                cursorOrderBy = Constants.IMAGES_AND_VIDEOS_ORDERBY;
+                break;
+            case GalleryActivity.GAlLERY_TYPE_VIDEO:
+                cursorUri = Constants.VIDEO_URI;
+                cursorProjection = Constants.VIDEOS_PROJECTION;
+                cursorOrderBy = Constants.VIDEOS_ORDERBY;
+                break;
+            case GalleryActivity.GAlLERY_TYPE_PICTURE:
+            default:
+                cursorUri = Constants.IMAGES_URI;
+                cursorProjection = Constants.IMAGES_PROJECTION;
+                cursorOrderBy = Constants.IMAGES_ORDERBY;
+                break;
         }
+        return context.getContentResolver().query(cursorUri, cursorProjection, cursorSelection, null, cursorOrderBy);
     }
 
     public static boolean isViewVisible(View view) {
