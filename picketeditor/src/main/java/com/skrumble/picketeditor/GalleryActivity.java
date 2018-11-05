@@ -34,6 +34,8 @@ import java.util.Calendar;
 public class GalleryActivity  extends AppCompatActivity {
 
 
+    public static GalleryActivity activity;
+
     private RecyclerView recyclerView;
     private MainImageAdapter mainImageAdapter;
     private OnSelectionListener onSelectionListener;
@@ -43,6 +45,8 @@ public class GalleryActivity  extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+
+        activity = this;
 
         Utility.getScreenSize(this);
 
@@ -54,7 +58,7 @@ public class GalleryActivity  extends AppCompatActivity {
         onSelectionListener = new OnSelectionListener() {
             @Override
             public void onClick(Img Img, View view, int position) {
-                PickerEditor.starEditor(GalleryActivity.this, Img.getUrl(), true);
+                PickerEditor.starEditor(GalleryActivity.this, Img.getUrl(), false);
             }
 
             @Override
