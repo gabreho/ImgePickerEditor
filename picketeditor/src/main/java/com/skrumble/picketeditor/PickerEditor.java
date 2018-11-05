@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
 import com.skrumble.picketeditor.editor.image.ImageCropActivity;
+import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.activity.PickerActivity;
 import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
 import com.skrumble.picketeditor.picker.utility.PermUtil;
@@ -82,6 +83,13 @@ public class PickerEditor {
         intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, originalImagePath);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         activity.startActivity(intent);
-        activity.finish();
+        if (finish) {
+            activity.finish();
+        }
+    }
+
+    public static void openPictureGallery(Activity activity, int requestCode) {
+        Intent intent = new Intent(activity, GalleryActivity.class);
+        activity.startActivityForResult(intent, requestCode);
     }
 }

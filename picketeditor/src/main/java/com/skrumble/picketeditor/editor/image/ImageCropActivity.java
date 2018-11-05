@@ -23,6 +23,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.picker.utility.Utility;
 import com.yalantis.ucrop.UCrop;
@@ -201,6 +202,9 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
     @Override
     public void onCropFinish(UCropFragment.UCropResult result) {
         Intent intent = new Intent();
+
+        GalleryActivity.activity.finish();
+
         switch (result.mResultCode) {
             case RESULT_OK:
 

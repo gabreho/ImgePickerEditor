@@ -61,44 +61,60 @@ import java.util.Set;
 
 public class PickerActivity extends AppCompatActivity implements View.OnTouchListener {
 
+    // Constants
     private static final int sBubbleAnimDuration = 1000;
     private static final int sScrollbarHideDelay = 1000;
     public static final String SELECTION = "selection";
     private static final int sTrackSnapRange = 5;
-    public static String IMAGE_RESULTS = "image_results";
+//    public static String IMAGE_RESULTS = "image_results";
+
+    // Variables
     public static float TOPBAR_HEIGHT;
     private int BottomBarHeight = 0;
     private int colorPrimaryDark;
-    private CameraView cameraView;
     private float zoom = 0.0f;
     private float dist = 0.0f;
-    private Handler handler = new Handler();
-    private FastScrollStateChangeListener mFastScrollStateChangeListener;
+    private float mViewHeight;
+    private boolean mHideScrollbar = true;
+    private boolean LongSelection = false;
+    private int SelectionCount = 1;
+    private boolean isback = true;
+    private int flashDrawable;
+    private Set<Img> selectionList = new HashSet<>();
+
+    // Views
+    private CameraView cameraView;
     private RecyclerView recyclerView, instantRecyclerView;
-    private BottomSheetBehavior mBottomSheetBehavior;
-    private InstantImageAdapter initaliseadapter;
     private View status_bar_bg, mScrollbar, topbar, bottomButtons, sendButton;
+    private View mBottomSheet;
     private TextView mBubbleView, img_count;
+    private TextView selection_count;
     private ImageView mHandleView, selection_back, selection_check;
+
+    // Adapters
+    private InstantImageAdapter initaliseadapter;
+    private MainImageAdapter mainImageAdapter;
+
+    // Handlers
+    private Handler handler = new Handler();
+
+    // Animators
     private ViewPropertyAnimator mScrollbarAnimator;
     private ViewPropertyAnimator mBubbleAnimator;
-    private Set<Img> selectionList = new HashSet<>();
+
+    // Behavior
+    private BottomSheetBehavior mBottomSheetBehavior;
+
+    // State Change Listener
+    private FastScrollStateChangeListener mFastScrollStateChangeListener;
+
+    // Runnables
     private Runnable mScrollbarHider = new Runnable() {
         @Override
         public void run() {
             hideScrollbar();
         }
     };
-    private MainImageAdapter mainImageAdapter;
-    private float mViewHeight;
-    private boolean mHideScrollbar = true;
-    private boolean LongSelection = false;
-    private int SelectionCount = 1;
-
-    private TextView selection_count;
-
-    private boolean isback = true;
-    private int flashDrawable;
 
     // *********************************************************************************************
     // region Life Cycle
@@ -225,57 +241,30 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         } catch (Exception e) {
             e.printStackTrace();
         }
-        colorPrimaryDark = ResourcesCompat.getColor(getResources(), R.color.ally_accent_color, getTheme());
+
+        // Setting Views
         cameraView = findViewById(R.id.camera_view);
-        cameraView.setLifecycleOwner(this);
-        cameraView.addCameraListener(mCameraListener);
-
-        zoom = 0.0f;
-
-        cameraView.setZoom(zoom);
-
-        cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
-        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
-        cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
-
-        topbar = findViewById(R.id.topbar);
-        selection_count = findViewById(R.id.selection_count);
-        selection_back = findViewById(R.id.selection_back);
-        selection_check = findViewById(R.id.selection_check);
-        selection_check.setVisibility((SelectionCount > 1) ? View.VISIBLE : View.GONE);
         sendButton = findViewById(R.id.sendButton);
         img_count = findViewById(R.id.img_count);
         mBubbleView = findViewById(R.id.fastscroll_bubble);
         mHandleView = findViewById(R.id.fastscroll_handle);
         mScrollbar = findViewById(R.id.fastscroll_scrollbar);
-        mScrollbar.setVisibility(View.GONE);
-        mBubbleView.setVisibility(View.GONE);
+        topbar = findViewById(R.id.topbar);
+        selection_count = findViewById(R.id.selection_count);
+        selection_back = findViewById(R.id.selection_back);
+        selection_check = findViewById(R.id.selection_check);
         bottomButtons = findViewById(R.id.bottomButtons);
-        TOPBAR_HEIGHT = Utility.convertDpToPixel(56, PickerActivity.this);
         status_bar_bg = findViewById(R.id.status_bar_bg);
-        status_bar_bg.setBackgroundColor(Color.BLACK);
         instantRecyclerView = findViewById(R.id.instantRecyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
+        FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
+
+        //Layout Managers
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        instantRecyclerView.setLayoutManager(linearLayoutManager);
-        initaliseadapter = new InstantImageAdapter(this);
-        initaliseadapter.addOnSelectionListener(onSelectionListener);
-        instantRecyclerView.setAdapter(initaliseadapter);
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.addOnScrollListener(mScrollListener);
-        FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
-        BottomBarHeight = Utility.getSoftButtonsBarSizePort(this);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT);
-        lp.setMargins(0, 0, 0, BottomBarHeight);
-        mainFrameLayout.setLayoutParams(lp);
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) sendButton.getLayoutParams();
-        layoutParams.setMargins(0, 0, (int) (Utility.convertDpToPixel(16, this)),
-                (int) (Utility.convertDpToPixel(174, this)));
-        sendButton.setLayoutParams(layoutParams);
-        mainImageAdapter = new MainImageAdapter(this);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(this, MainImageAdapter.SPAN_COUNT);
-        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, MainImageAdapter.SPAN_COUNT);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 if (mainImageAdapter.getItemViewType(position) == MainImageAdapter.HEADER) {
@@ -284,18 +273,70 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                 return 1;
             }
         });
-        recyclerView.setLayoutManager(mLayoutManager);
+
+        // Set Layout Managers
+        instantRecyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        // Adapters
+        initaliseadapter = new InstantImageAdapter(this);
+        initaliseadapter.addOnSelectionListener(onSelectionListener);
+        instantRecyclerView.setAdapter(initaliseadapter);
+
+        mainImageAdapter = new MainImageAdapter(this);
         mainImageAdapter.addOnSelectionListener(onSelectionListener);
+
+        // Set Adapters
         recyclerView.setAdapter(mainImageAdapter);
-        recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
 
-        mHandleView.setOnTouchListener(this);
-        onClickMethods();
+        // Layout Params
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT);
+        lp.setMargins(0, 0, 0, BottomBarHeight);
 
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) sendButton.getLayoutParams();
+        layoutParams.setMargins(0, 0, (int) (Utility.convertDpToPixel(16, this)),
+                (int) (Utility.convertDpToPixel(174, this)));
+
+        // Set Layout Params
+        mainFrameLayout.setLayoutParams(lp);
+        sendButton.setLayoutParams(layoutParams);
+
+        // Set Visibility
+        selection_check.setVisibility((SelectionCount > 1) ? View.VISIBLE : View.GONE);
+        mScrollbar.setVisibility(View.GONE);
+        mBubbleView.setVisibility(View.GONE);
+
+        // Set Variables
+        BottomBarHeight = Utility.getSoftButtonsBarSizePort(this);
         flashDrawable = R.drawable.ic_flash_off_black_24dp;
-
+        status_bar_bg.setBackgroundColor(Color.BLACK);
+        zoom = 0.0f;
+        cameraView.setZoom(zoom);
+        TOPBAR_HEIGHT = Utility.convertDpToPixel(56, PickerActivity.this);
+        mHandleView.setOnTouchListener(this);
+        recyclerView.addOnScrollListener(mScrollListener);
+        recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
         DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
+        cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
+        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
+        cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
+
+        // View Methods
+        onClickMethods();
         updateImages();
+
+        if (getIntent().getExtras().getBoolean("test")) {
+            setRecyclerViewPosition(200);
+            Utility.hideStatusBar(this);
+            instantRecyclerView.setVisibility(View.GONE);
+            topbar.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setOnClickListener(null);
+            cameraView.setVisibility(View.GONE);
+            bottomButtons.setVisibility(View.GONE);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
     }
 
     private void onClickMethods() {
@@ -339,8 +380,8 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     }
 
     private void setBottomSheetBehavior() {
-        View bottomSheet = findViewById(R.id.bottom_sheet);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        mBottomSheet = findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
         mBottomSheetBehavior.setPeekHeight((int) (Utility.convertDpToPixel(194, this)));
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
 
