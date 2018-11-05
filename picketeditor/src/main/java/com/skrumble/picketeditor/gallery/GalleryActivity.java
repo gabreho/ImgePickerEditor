@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor;
+package com.skrumble.picketeditor.gallery;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.skrumble.picketeditor.PickerEditor;
+import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.modals.Img;
