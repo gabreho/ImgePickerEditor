@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.support.annotation.WorkerThread;
 import android.support.media.ExifInterface;
 import android.support.v7.app.AppCompatActivity;
@@ -132,11 +133,25 @@ public class Utility {
     }
 
     public static Cursor getCursor(Context context, int typeOfGallery) {
-        return context.getContentResolver().query(
-                typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_URI : Constants.VIDEO_URI,
-                typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_PROJECTION : Constants.VIDEOS_PROJECTION,
-                null, null,
-                typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_ORDERBY : Constants.VIDEOS_ORDERBY);
+        if (typeOfGallery == GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO) {
+            return context.getContentResolver().query(
+                    MediaStore.Files.getContentUri("external"),
+                    Constants.IMAGES_AND_VIDEOS_PROJECTION,
+                    MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                            + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                            + " OR "
+                            + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                            + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO,
+                    null,
+                    Constants.IMAGES_AND_VIDEOS_ORDERBY
+            );
+        } else {
+            return context.getContentResolver().query(
+                    typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_URI : Constants.VIDEO_URI,
+                    typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_PROJECTION : Constants.VIDEOS_PROJECTION,
+                    null, null,
+                    typeOfGallery == GalleryActivity.GAlLERY_TYPE_PICTURE ? Constants.IMAGES_ORDERBY : Constants.VIDEOS_ORDERBY);
+        }
     }
 
     public static boolean isViewVisible(View view) {
