@@ -16,7 +16,7 @@
             android:theme="@style/ApplicationTheme"/>
 
         <activity
-            android:name=".editor.ImageCropActivity"
+            android:name=".editor.image.ImageCropActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/ApplicationTheme"/>
