@@ -112,6 +112,9 @@ public class GalleryActivity  extends AppCompatActivity {
     private void setGalleryType(Intent intent) {
         if (intent.getExtras().containsKey(EXTRA_GALLERY_TYPE)) {
             typeOfGallery = intent.getIntExtra(EXTRA_GALLERY_TYPE, GAlLERY_TYPE_PHOTO_AND_VIDEO);
+        } else {
+            // Default
+            typeOfGallery = GAlLERY_TYPE_PHOTO_AND_VIDEO;
         }
     }
 
