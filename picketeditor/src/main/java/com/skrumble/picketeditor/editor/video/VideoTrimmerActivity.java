@@ -1,36 +1,25 @@
 package com.skrumble.picketeditor.editor.video;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.editor.video.compress.VideoCompressor;
 import com.skrumble.picketeditor.editor.video.public_interface.VideoCompressListener;
 import com.skrumble.picketeditor.editor.video.public_interface.VideoTrimListener;
 import com.skrumble.picketeditor.editor.video.widget.VideoTrimmerView;
+import com.skrumble.picketeditor.picker.utility.Utility;
+
+import java.io.File;
 
 public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrimListener {
 
-    private static final String VIDEO_PATH_KEY = "video-file-path";
+    public static final String EXTRA_VIDEO_SRC = "EXTRA_VIDEO_SRC";
 
-    public static final int VIDEO_TRIM_REQUEST_CODE = 0x001;
     private ProgressDialog mProgressDialog;
     private VideoTrimmerView trimmerView;
-
-//    public static void call(FragmentActivity from, String videoPath) {
-//        if (!TextUtils.isEmpty(videoPath)) {
-//            Bundle bundle = new Bundle();
-//            bundle.putString(VIDEO_PATH_KEY, videoPath);
-//            Intent intent = new Intent(from, VideoTrimmerActivity.class);
-//            intent.putExtras(bundle);
-//            from.startActivityForResult(intent, VIDEO_TRIM_REQUEST_CODE);
-//        }
-//    }
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -43,7 +32,7 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
 
         String path = "";
 
-        if (bd != null) path = bd.getString(VIDEO_PATH_KEY);
+        if (bd != null) path = bd.getString(EXTRA_VIDEO_SRC);
         if (trimmerView != null) {
             trimmerView.setOnTrimVideoListener(this);
             trimmerView.initVideoByURI(Uri.parse(path));
@@ -75,10 +64,10 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
 
     @Override
     public void onFinishTrim(String in) {
-        //TODO: please handle your trimmed video url here!!!
-        String out = "/storage/emulated/0/Android/data/com.iknow.android/cache/compress.mp4";
+        File videoFile = Utility.getVideoFile();
+
         buildDialog(getResources().getString(R.string.compressing)).show();
-        VideoCompressor.compress(this, in, out, new VideoCompressListener() {
+        VideoCompressor.compress(this, in, videoFile.getAbsolutePath(), new VideoCompressListener() {
             @Override
             public void onSuccess(String message) {
             }

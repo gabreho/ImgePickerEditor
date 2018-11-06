@@ -70,7 +70,7 @@ public class GalleryActivity  extends AppCompatActivity {
         onSelectionListener = new OnSelectionListener() {
             @Override
             public void onClick(Img Img, View view, int position) {
-                PickerEditor.starEditor(GalleryActivity.this, Img.getUrl(), false);
+                PickerEditor.starEditor(GalleryActivity.this, Img.getUrl());
             }
 
             @Override

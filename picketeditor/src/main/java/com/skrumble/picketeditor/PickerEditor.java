@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
 import com.skrumble.picketeditor.editor.image.ImageCropActivity;
+import com.skrumble.picketeditor.editor.video.VideoTrimmerActivity;
 import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.activity.PickerActivity;
 import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
@@ -20,6 +21,32 @@ import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_VID
 import static com.skrumble.picketeditor.picker.activity.PickerActivity.SELECTION;
 
 public class PickerEditor {
+
+    // *********************************************************************************************
+    // region Picker
+
+    public static void openPictureGallery(Activity activity, int requestCode) {
+        openGallery(activity, requestCode, GAlLERY_TYPE_PICTURE);
+    }
+
+    public static void openVideoGallery(Activity activity, int requestCode) {
+        openGallery(activity, requestCode, GAlLERY_TYPE_VIDEO);
+    }
+
+    public static void openPictureAndVideoGallery(Activity activity, int requestCode) {
+        openGallery(activity, requestCode, GAlLERY_TYPE_PHOTO_AND_VIDEO);
+    }
+
+    private static void openGallery(Activity activity, int requestCode, int typeOfGallery) {
+        Intent intent = new Intent(activity, GalleryActivity.class);
+        intent.putExtra(EXTRA_GALLERY_TYPE, typeOfGallery);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    // endregion
+
+    // *********************************************************************************************
+    // region Camera
 
     public static void startCamera(final Fragment context, final int requestCode, final int selectionCount) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -64,50 +91,49 @@ public class PickerEditor {
         startCamera(context, requestCode, 1);
     }
 
-    public static void starEditor(Fragment fragment, String originalImagePath){
-        starEditor(fragment, originalImagePath, true);
-    }
+    // endregion
 
-    public static void starEditor(Fragment fragment, String originalImagePath, boolean finish){
+    // *********************************************************************************************
+    // region Image Editor
+
+    static void starEditor(Fragment fragment, String originalImagePath){
         Intent intent = new Intent(fragment.getActivity(), ImageCropActivity.class);
         intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, originalImagePath);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         fragment.startActivity(intent);
-
-        if (finish && fragment.getActivity() != null){
-            fragment.getActivity().finish();
-        }
     }
 
     public static void starEditor(Activity activity, String originalImagePath){
-        starEditor(activity, originalImagePath, true);
-    }
-
-    public static void starEditor(Activity activity, String originalImagePath, boolean finish){
         Intent intent = new Intent(activity, ImageCropActivity.class);
         intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, originalImagePath);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         activity.startActivity(intent);
-        if (finish) {
-            activity.finish();
-        }
     }
 
-    public static void openPictureGallery(Activity activity, int requestCode) {
-        openGallery(activity, requestCode, GAlLERY_TYPE_PICTURE);
-    }
-
-    public static void openVideoGallery(Activity activity, int requestCode) {
-        openGallery(activity, requestCode, GAlLERY_TYPE_VIDEO);
-    }
-
-    public static void openPictureAndVideoGallery(Activity activity, int requestCode) {
-        openGallery(activity, requestCode, GAlLERY_TYPE_PHOTO_AND_VIDEO);
-    }
-
-    private static void openGallery(Activity activity, int requestCode, int typeOfGallery) {
-        Intent intent = new Intent(activity, GalleryActivity.class);
-        intent.putExtra(EXTRA_GALLERY_TYPE, typeOfGallery);
+    public static void startEditorForResult(Activity activity, String originalImagePath, int requestCode){
+        Intent intent = new Intent(activity, ImageCropActivity.class);
+        intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, originalImagePath);
         activity.startActivityForResult(intent, requestCode);
     }
+
+    // endregion
+
+    // *********************************************************************************************
+    // region Video Editor
+
+    public static void starVideoEditor(Activity activity, String originalVideoPath){
+        Intent intent = new Intent(activity, VideoTrimmerActivity.class);
+        intent.putExtra(VideoTrimmerActivity.EXTRA_VIDEO_SRC, originalVideoPath);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        activity.startActivity(intent);
+    }
+
+    public static void starVideoEditorForResult(Activity activity, String originalVideoPath, int requestCode){
+        Intent intent = new Intent(activity, VideoTrimmerActivity.class);
+        intent.putExtra(VideoTrimmerActivity.EXTRA_VIDEO_SRC, originalVideoPath);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    // endregion
+
 }

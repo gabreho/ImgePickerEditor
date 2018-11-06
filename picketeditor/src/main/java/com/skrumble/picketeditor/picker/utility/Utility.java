@@ -230,6 +230,22 @@ public class Utility {
         ((Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(l);
     }
 
+    public static File getVideoFile(){
+        File dir = new File(Environment.getExternalStorageDirectory(), "/DCIM/Camera");
+        if (!dir.exists()){
+            dir.mkdir();
+        }
+
+        File photo = new File(dir, "Video_" + new SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.ENGLISH).format(new Date()) + ".mp4");
+
+        if (photo.exists()) {
+            photo.delete();
+        }
+
+        return photo;
+    }
+
+
     public static File writeImage(Bitmap bitmap) {
         File dir = new File(Environment.getExternalStorageDirectory(), "/DCIM/Camera");
         if (!dir.exists()){
