@@ -9,10 +9,12 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.support.annotation.WorkerThread;
 import android.support.media.ExifInterface;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +28,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.public_interface.BitmapCallback;
 
 import java.io.ByteArrayInputStream;
@@ -130,9 +133,36 @@ public class Utility {
         return topChild == null;
     }
 
-    public static Cursor getCursor(Context context) {
-        return context.getContentResolver().query(Constants.URI, Constants.PROJECTION,
-                null, null, Constants.ORDERBY);
+    public static Cursor getCursor(Context context, int typeOfGallery) {
+        Uri cursorUri;
+        String[] cursorProjection;
+        String cursorSelection = null;
+        String cursorOrderBy;
+
+        switch (typeOfGallery) {
+            case GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO:
+                cursorUri = Constants.IMAGES_AND_VIDEO_URI;
+                cursorProjection = Constants.IMAGES_AND_VIDEOS_PROJECTION;
+                cursorSelection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                                + " OR "
+                                + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+                cursorOrderBy = Constants.IMAGES_AND_VIDEOS_ORDERBY;
+                break;
+            case GalleryActivity.GAlLERY_TYPE_VIDEO:
+                cursorUri = Constants.VIDEO_URI;
+                cursorProjection = Constants.VIDEOS_PROJECTION;
+                cursorOrderBy = Constants.VIDEOS_ORDERBY;
+                break;
+            case GalleryActivity.GAlLERY_TYPE_PICTURE:
+            default:
+                cursorUri = Constants.IMAGES_URI;
+                cursorProjection = Constants.IMAGES_PROJECTION;
+                cursorOrderBy = Constants.IMAGES_ORDERBY;
+                break;
+        }
+        return context.getContentResolver().query(cursorUri, cursorProjection, cursorSelection, null, cursorOrderBy);
     }
 
     public static boolean isViewVisible(View view) {
