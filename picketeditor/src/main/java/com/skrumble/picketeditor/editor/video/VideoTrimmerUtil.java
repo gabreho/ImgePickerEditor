@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.Handler;
-import android.text.TextUtils;
 import android.util.TypedValue;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
@@ -15,6 +13,7 @@ import com.skrumble.picketeditor.BackgroundExecutor;
 import com.skrumble.picketeditor.PickerEditorApplication;
 import com.skrumble.picketeditor.editor.video.public_interface.OnCompletion;
 import com.skrumble.picketeditor.editor.video.public_interface.VideoTrimListener;
+import com.skrumble.picketeditor.picker.utility.Utility;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,11 +22,11 @@ import java.util.Locale;
 public class VideoTrimmerUtil {
 
     public static final long MIN_SHOOT_DURATION = 3000L;
-    public static final int VIDEO_MAX_TIME = 10;
+    public static final int VIDEO_MAX_TIME = 15;
     public static final long MAX_SHOOT_DURATION = VIDEO_MAX_TIME * 1000L;
     public static final int MAX_COUNT_RANGE = 10;
     private static final int SCREEN_WIDTH_FULL = PickerEditorApplication.sInstance.getResources().getDisplayMetrics().widthPixels;
-    public static final int RECYCLER_VIEW_PADDING = PickerEditorApplication.convertDpToPixels(35);
+    public static final int RECYCLER_VIEW_PADDING = (int) Utility.convertDpToPixel(35, PickerEditorApplication.sInstance);
     public static final int VIDEO_FRAMES_WIDTH = SCREEN_WIDTH_FULL - RECYCLER_VIEW_PADDING * 2;
     private static final int THUMB_WIDTH = (SCREEN_WIDTH_FULL - RECYCLER_VIEW_PADDING * 2) / VIDEO_MAX_TIME;
     private static final int THUMB_HEIGHT = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, PickerEditorApplication.sInstance.getResources().getDisplayMetrics());

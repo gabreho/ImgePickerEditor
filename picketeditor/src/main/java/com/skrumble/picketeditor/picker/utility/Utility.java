@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -498,7 +499,6 @@ public class Utility {
 
 
     private static int computeSampleSize(int width, int height, int maxWidth, int maxHeight) {
-        // https://developer.android.com/topic/performance/graphics/load-bitmap.html
         int inSampleSize = 1;
         if (height > maxHeight || width > maxWidth) {
             while ((height / inSampleSize) >= maxHeight
@@ -507,5 +507,30 @@ public class Utility {
             }
         }
         return inSampleSize;
+    }
+
+    public static String convertSecondsToTime(long seconds) {
+        DecimalFormat formatter = new DecimalFormat("00");
+        String timeStr;
+        int hour;
+        int minute;
+        int second;
+        if (seconds <= 0)
+            return "00:00";
+        else {
+            minute = (int)seconds / 60;
+            if (minute < 60) {
+                second = (int)seconds % 60;
+                timeStr = formatter.format(minute) + ":" + formatter.format(second);
+            } else {
+                hour = minute / 60;
+                if (hour > 99)
+                    return "99:59:59";
+                minute = minute % 60;
+                second = (int)(seconds - hour * 3600 - minute * 60);
+                timeStr = formatter.format(hour) + ":" + formatter.format(minute) + ":" + formatter.format(second);
+            }
+        }
+        return timeStr;
     }
 }

@@ -20,6 +20,7 @@ import android.view.ViewConfiguration;
 import com.skrumble.picketeditor.PickerEditorApplication;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerUtil;
+import com.skrumble.picketeditor.picker.utility.Utility;
 
 import java.text.DecimalFormat;
 
@@ -27,8 +28,8 @@ public class RangeSeekBarView extends View {
   private static final String TAG = RangeSeekBarView.class.getSimpleName();
   public static final int INVALID_POINTER_ID = 255;
   public static final int ACTION_POINTER_INDEX_MASK = 0x0000ff00, ACTION_POINTER_INDEX_SHIFT = 8;
-  private static final int TextPositionY = PickerEditorApplication.convertDpToPixels(7);
-  private static final int paddingTop = PickerEditorApplication.convertDpToPixels(10);
+  private static final int TextPositionY = (int) Utility.convertDpToPixel(7, PickerEditorApplication.sInstance);
+  private static final int paddingTop = (int) Utility.convertDpToPixel(10, PickerEditorApplication.sInstance);
   private int mActivePointerId = INVALID_POINTER_ID;
 
   private long mMinShootTime = VideoTrimmerUtil.MIN_SHOOT_DURATION;
@@ -93,8 +94,8 @@ public class RangeSeekBarView extends View {
 
     int width = thumbImageLeft.getWidth();
     int height = thumbImageLeft.getHeight();
-    int newWidth = PickerEditorApplication.convertDpToPixels(11);
-    int newHeight = PickerEditorApplication.convertDpToPixels(55);
+    int newWidth = (int) Utility.convertDpToPixel(11, getContext());
+    int newHeight = (int) Utility.convertDpToPixel(55, getContext());
     float scaleWidth = newWidth * 1.0f / width;
     float scaleHeight = newHeight * 1.0f / height;
     Matrix matrix = new Matrix();
@@ -151,8 +152,8 @@ public class RangeSeekBarView extends View {
     canvas.drawRect(leftRect, mShadow);
     canvas.drawRect(rightRect, mShadow);
 
-    canvas.drawRect(rangeL, thumbPaddingTop + paddingTop, rangeR, thumbPaddingTop + PickerEditorApplication.convertDpToPixels(2) + paddingTop, rectPaint);
-    canvas.drawRect(rangeL, getHeight() - PickerEditorApplication.convertDpToPixels(2), rangeR, getHeight(), rectPaint);
+    canvas.drawRect(rangeL, thumbPaddingTop + paddingTop, rangeR, thumbPaddingTop + (int) Utility.convertDpToPixel(2, getContext()) + paddingTop, rectPaint);
+    canvas.drawRect(rangeL, getHeight() - (int) Utility.convertDpToPixel(2, getContext()), rangeR, getHeight(), rectPaint);
 
     drawThumb(normalizedToScreen(normalizedMinValue), false, canvas, true);
     drawThumb(normalizedToScreen(normalizedMaxValue), false, canvas, false);
@@ -165,8 +166,8 @@ public class RangeSeekBarView extends View {
   }
 
   private void drawVideoTrimTimeText(Canvas canvas) {
-    String leftThumbsTime = PickerEditorApplication.convertSecondsToTime(mStartPosition);
-    String rightThumbsTime = PickerEditorApplication.convertSecondsToTime(mEndPosition);
+    String leftThumbsTime = Utility.convertSecondsToTime(mStartPosition);
+    String rightThumbsTime = Utility.convertSecondsToTime(mEndPosition);
     canvas.drawText(leftThumbsTime, normalizedToScreen(normalizedMinValue), TextPositionY, mVideoTrimTimePaintL);
     canvas.drawText(rightThumbsTime, normalizedToScreen(normalizedMaxValue), TextPositionY, mVideoTrimTimePaintR);
   }
@@ -183,19 +184,19 @@ public class RangeSeekBarView extends View {
     if (absoluteMaxValuePrim <= mMinShootTime) {
       return super.onTouchEvent(event);
     }
-    int pointerIndex;// 记录点击点的index
+    int pointerIndex;// Record the index of the click point
     final int action = event.getAction();
     switch (action & MotionEvent.ACTION_MASK) {
       case MotionEvent.ACTION_DOWN:
-        //记住最后一个手指点击屏幕的点的坐标x，mDownMotionX
+        //Remember the coordinates of the point where the last finger clicked on the screen, mDownMotionX
         mActivePointerId = event.getPointerId(event.getPointerCount() - 1);
         pointerIndex = event.findPointerIndex(mActivePointerId);
         mDownMotionX = event.getX(pointerIndex);
-        // 判断touch到的是最大值thumb还是最小值thumb
+        // Determine whether touch is the maximum value of thumb or minimum thumb
         pressedThumb = evalPressedThumb(mDownMotionX);
         if (pressedThumb == null) return super.onTouchEvent(event);
-        setPressed(true);// 设置该控件被按下了
-        onStartTrackingTouch();// 置mIsDragging为true，开始追踪touch事件
+        setPressed(true);// Set the control to be pressed
+        onStartTrackingTouch();// Set the control to be pressed
         trackTouchEvent(event);
         attemptClaimDrag();
         if (mRangeSeekBarChangeListener != null) {
@@ -210,11 +211,10 @@ public class RangeSeekBarView extends View {
           } else {
             // Scroll to follow the motion event
             pointerIndex = event.findPointerIndex(mActivePointerId);
-            final float x = event.getX(pointerIndex);// 手指在控件上点的X坐标
-            // 手指没有点在最大最小值上，并且在控件上有滑动事件
+            final float x = event.getX(pointerIndex);// The X coordinate of the finger on the control
+            // The finger is not at the maximum and minimum values, and there is a sliding event on the control.
             if (Math.abs(x - mDownMotionX) > mScaledTouchSlop) {
               setPressed(true);
-              Log.e(TAG, "没有拖住最大最小值");// 一直不会执行？
               invalidate();
               onStartTrackingTouch();
               trackTouchEvent(event);
@@ -243,11 +243,11 @@ public class RangeSeekBarView extends View {
           mRangeSeekBarChangeListener.onRangeSeekBarValuesChanged(this, getSelectedMinValue(), getSelectedMaxValue(), MotionEvent.ACTION_UP, isMin,
               pressedThumb);
         }
-        pressedThumb = null;// 手指抬起，则置被touch到的thumb为空
+        pressedThumb = null;// When the finger is raised, the thumb that is touched is empty.
         break;
       case MotionEvent.ACTION_POINTER_DOWN:
         final int index = event.getPointerCount() - 1;
-        // final int index = ev.getActionIndex();
+
         mDownMotionX = event.getX(index);
         mActivePointerId = event.getPointerId(index);
         invalidate();
@@ -282,7 +282,7 @@ public class RangeSeekBarView extends View {
   private void trackTouchEvent(MotionEvent event) {
     if (event.getPointerCount() > 1) return;
     Log.e(TAG, "trackTouchEvent: " + event.getAction() + " x: " + event.getX());
-    final int pointerIndex = event.findPointerIndex(mActivePointerId);// 得到按下点的index
+    final int pointerIndex = event.findPointerIndex(mActivePointerId);// Get the index of the pressed point
     float x = 0;
     try {
       x = event.getX(pointerIndex);
@@ -290,7 +290,6 @@ public class RangeSeekBarView extends View {
       return;
     }
     if (Thumb.MIN.equals(pressedThumb)) {
-      // screenToNormalized(x)-->得到规格化的0-1的值
       setNormalizedMinValue(screenToNormalized(x, 0));
     } else if (Thumb.MAX.equals(pressedThumb)) {
       setNormalizedMaxValue(screenToNormalized(x, 1));
@@ -309,7 +308,7 @@ public class RangeSeekBarView extends View {
       float rangeR = normalizedToScreen(normalizedMaxValue);
       double min = mMinShootTime / (absoluteMaxValuePrim - absoluteMinValuePrim) * (width - thumbWidth * 2);
 
-      if (absoluteMaxValuePrim > 5 * 60 * 1000) {//大于5分钟的精确小数四位
+      if (absoluteMaxValuePrim > 5 * 60 * 1000) { // Four decimal places with an accuracy of more than 5 minutes
         DecimalFormat df = new DecimalFormat("0.0000");
         min_width = Double.parseDouble(df.format(min));
       } else {
@@ -341,7 +340,7 @@ public class RangeSeekBarView extends View {
         double resultTime = (current_width - padding) / (width - 2 * thumbWidth);
         normalizedMinValueTime = Math.min(1d, Math.max(0d, resultTime));
         double result = (current_width - padding) / (width - 2 * padding);
-        return Math.min(1d, Math.max(0d, result));// 保证该该值为0-1之间，但是什么时候这个判断有用呢？
+        return Math.min(1d, Math.max(0d, result)); // Make sure the value is between 0-1, but when is this judgment useful?
       } else {
         if (isInThumbRange(screenCoord, normalizedMaxValue, 0.5)) {
           return normalizedMaxValue;
@@ -371,7 +370,7 @@ public class RangeSeekBarView extends View {
         resultTime = 1 - resultTime;
         normalizedMaxValueTime = Math.min(1d, Math.max(0d, resultTime));
         double result = (current_width - padding) / (width - 2 * padding);
-        return Math.min(1d, Math.max(0d, result));// 保证该该值为0-1之间，但是什么时候这个判断有用呢？
+        return Math.min(1d, Math.max(0d, result));// Make sure the value is between 0-1, but when is this judgment useful?
       }
     }
   }
@@ -380,19 +379,13 @@ public class RangeSeekBarView extends View {
     return (getWidth() - 2 * thumbWidth);
   }
 
-  /**
-   * 计算位于哪个Thumb内
-   *
-   * @param touchX touchX
-   * @return 被touch的是空还是最大值或最小值
-   */
   private Thumb evalPressedThumb(float touchX) {
     Thumb result = null;
-    boolean minThumbPressed = isInThumbRange(touchX, normalizedMinValue, 2);// 触摸点是否在最小值图片范围内
+    boolean minThumbPressed = isInThumbRange(touchX, normalizedMinValue, 2);// Whether the touch point is within the minimum picture range
     boolean maxThumbPressed = isInThumbRange(touchX, normalizedMaxValue, 2);
     if (minThumbPressed && maxThumbPressed) {
-      // 如果两个thumbs重叠在一起，无法判断拖动哪个，做以下处理
-      // 触摸点在屏幕右侧，则判断为touch到了最小值thumb，反之判断为touch到了最大值thumb
+      // If the two thumbs overlap, you can't judge which one to drag, do the following
+      // When the touch point is on the right side of the screen, it is judged that touch has reached the minimum value of thumb, and vice versa, it is judged that touch has reached the maximum value of thumb.
       result = (touchX / getWidth() > 0.5f) ? Thumb.MIN : Thumb.MAX;
     } else if (minThumbPressed) {
       result = Thumb.MIN;
@@ -403,20 +396,17 @@ public class RangeSeekBarView extends View {
   }
 
   private boolean isInThumbRange(float touchX, double normalizedThumbValue, double scale) {
-    // 当前触摸点X坐标-最小值图片中心点在屏幕的X坐标之差<=最小点图片的宽度的一般
-    // 即判断触摸点是否在以最小值图片中心为原点，宽度一半为半径的圆内。
+    // The current touch point X coordinate - the minimum value of the image center point in the X coordinate of the screen <= the minimum point width of the picture
+    // Determine whether the touch point is within the circle with the minimum image center as the origin and the width half the radius.
     return Math.abs(touchX - normalizedToScreen(normalizedThumbValue)) <= thumbHalfWidth * scale;
   }
 
   private boolean isInThumbRangeLeft(float touchX, double normalizedThumbValue, double scale) {
-    // 当前触摸点X坐标-最小值图片中心点在屏幕的X坐标之差<=最小点图片的宽度的一般
-    // 即判断触摸点是否在以最小值图片中心为原点，宽度一半为半径的圆内。
+    // The current touch point X coordinate - the minimum value of the image center point in the X coordinate of the screen <= the minimum point width of the picture
+    // Determine whether the touch point is within the circle with the minimum image center as the origin and the width half the radius.
     return Math.abs(touchX - normalizedToScreen(normalizedThumbValue) - thumbWidth) <= thumbHalfWidth * scale;
   }
 
-  /**
-   * 试图告诉父view不要拦截子控件的drag
-   */
   private void attemptClaimDrag() {
     if (getParent() != null) {
       getParent().requestDisallowInterceptTouchEvent(true);
@@ -469,12 +459,12 @@ public class RangeSeekBarView extends View {
 
   public void setNormalizedMinValue(double value) {
     normalizedMinValue = Math.max(0d, Math.min(1d, Math.min(value, normalizedMaxValue)));
-    invalidate();// 重新绘制此view
+    invalidate();
   }
 
   public void setNormalizedMaxValue(double value) {
     normalizedMaxValue = Math.max(0d, Math.min(1d, Math.max(value, normalizedMinValue)));
-    invalidate();// 重新绘制此view
+    invalidate();
   }
 
   public long getSelectedMinValue() {
@@ -489,9 +479,6 @@ public class RangeSeekBarView extends View {
     return (long) (absoluteMinValuePrim + normalized * (absoluteMaxValuePrim - absoluteMinValuePrim));
   }
 
-  /**
-   * 供外部activity调用，控制是都在拖动的时候打印log信息，默认是false不打印
-   */
   public boolean isNotifyWhileDragging() {
     return notifyWhileDragging;
   }
