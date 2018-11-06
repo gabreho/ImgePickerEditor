@@ -46,4 +46,7 @@ dependencies {
 
 /*** Image Crop */
     implementation 'com.github.yalantis:ucrop:2.2.2-native'
+
+/**** Vide Trimer */
+    implementation 'com.writingminds:FFmpegAndroid:0.3.2'
 }

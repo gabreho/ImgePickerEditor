@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 
-
 import com.skrumble.picketeditor.picker.modals.Img;
 
 import java.text.SimpleDateFormat;

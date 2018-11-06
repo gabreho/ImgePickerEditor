@@ -13,4 +13,7 @@
     <string name="send">Send</string>
     <string name="selection">Selection</string>
     <string name="back">Back</string>
+    <string name="video_shoot_tip"></string>
+    <string name="compressing">Compressing</string>
+    <string name="trimming">Trimming</string>
 </resources>

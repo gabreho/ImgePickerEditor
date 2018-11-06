@@ -12,6 +12,8 @@ import com.skrumble.picketeditor.picker.activity.PickerActivity;
 import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
 import com.skrumble.picketeditor.picker.utility.PermUtil;
 
+import java.io.File;
+
 import static com.skrumble.picketeditor.picker.activity.PickerActivity.SELECTION;
 
 public class PickerEditor {
@@ -92,4 +94,7 @@ public class PickerEditor {
         Intent intent = new Intent(activity, GalleryActivity.class);
         activity.startActivityForResult(intent, requestCode);
     }
+
+    // endregion
+
 }
