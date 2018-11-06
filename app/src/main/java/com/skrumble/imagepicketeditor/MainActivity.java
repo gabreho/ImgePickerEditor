@@ -18,11 +18,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void OnTextViewClick(View view) {
-        PickerEditor.openPictureGallery(this, 1);
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void OnVideoPickerClick(View view) {
+        PickerEditor.openVideoGallery(this, 1);
+    }
+
+    public void OnImagePickClick(View view) {
+        PickerEditor.openPictureGallery(this, 1);
+    }
+
+    public void onCameraClick(View view) {
+        PickerEditor.startCamera(this, 1);
     }
 }

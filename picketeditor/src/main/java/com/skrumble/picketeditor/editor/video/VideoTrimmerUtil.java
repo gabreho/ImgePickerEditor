@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.skrumble.picketeditor.BackgroundExecutor;
 import com.skrumble.picketeditor.PickerEditorApplication;
 import com.skrumble.picketeditor.editor.video.public_interface.OnCompletion;
 import com.skrumble.picketeditor.editor.video.public_interface.VideoTrimListener;
@@ -62,10 +63,9 @@ public class VideoTrimmerUtil {
     }
 
     public static void shootVideoThumbInBackground(final Context context, final Uri videoUri, final int totalThumbsCount, final long startPosition, final long endPosition, final OnCompletion<Bitmap, Integer> callback) {
-
-        new Handler().post(new Runnable() {
+        BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0, "") {
             @Override
-            public void run() {
+            public void execute() {
                 try {
                     MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
                     mediaMetadataRetriever.setDataSource(context, videoUri);
@@ -87,17 +87,6 @@ public class VideoTrimmerUtil {
                 }
             }
         });
-    }
-
-    public static String getVideoFilePath(String url) {
-        if (TextUtils.isEmpty(url) || url.length() < 5) return "";
-        if (url.substring(0, 4).equalsIgnoreCase("http")) {
-
-        } else {
-            url = "file://" + url;
-        }
-
-        return url;
     }
 
     private static String convertSecondsToTime(long seconds) {

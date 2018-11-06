@@ -24,7 +24,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.skrumble.picketeditor.BackgroundExecutor;
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.UiThreadExecutor;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerAdapter;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerUtil;
 import com.skrumble.picketeditor.editor.video.public_interface.OnCompletion;
@@ -134,12 +136,12 @@ public class VideoTrimmerView extends FrameLayout implements ViewDestroyInterfac
             @Override
             public void onCompleted(final Bitmap bitmap, final Integer interval) {
                 if (bitmap != null) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    UiThreadExecutor.runTask("", new Runnable() {
                         @Override
                         public void run() {
                             mVideoThumbAdapter.addBitmaps(bitmap);
                         }
-                    });
+                    }, 0);
                 }
             }
         });
@@ -389,7 +391,6 @@ public class VideoTrimmerView extends FrameLayout implements ViewDestroyInterfac
     }
 
     private Runnable mAnimationRunnable = new Runnable() {
-
         @Override
         public void run() {
             updateVideoProgress();
@@ -410,6 +411,7 @@ public class VideoTrimmerView extends FrameLayout implements ViewDestroyInterfac
 
     @Override
     public void onDestroy() {
-
+        BackgroundExecutor.cancelAll("", true);
+        UiThreadExecutor.cancelAll("");
     }
 }

@@ -11,7 +11,7 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".picker.activity.PickerActivity"
+            android:name=".picker.activity.CameraActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/ApplicationTheme"/>
@@ -23,6 +23,9 @@
             android:theme="@style/ApplicationTheme"/>
 
         <activity android:name=".gallery.GalleryActivity"
+            android:theme="@style/ApplicationTheme"/>
+
+        <activity android:name=".editor.video.VideoTrimmerActivity"
             android:theme="@style/ApplicationTheme"/>
 
     </application>

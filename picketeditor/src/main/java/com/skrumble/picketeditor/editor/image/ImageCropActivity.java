@@ -23,6 +23,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.utility.Utility;
@@ -34,7 +35,7 @@ import com.yalantis.ucrop.UCropFragmentCallback;
 import java.io.File;
 
 public class ImageCropActivity extends AppCompatActivity implements UCropFragmentCallback {
-    public static final String EXTRA_IMAGE_RESULT_SRC = "EXTRA_IMAGE_RESULT_SRC";
+
     public static final String EXTRA_IMAGE_SRC = "EXTRA_IMAGE_SRC";
     private Toolbar toolbar;
     private boolean mShowLoader = false;
@@ -213,16 +214,16 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
                 Uri output = UCrop.getOutput(result.mResultData);
 
                 if (output != null){
-                    intent.putExtra(EXTRA_IMAGE_RESULT_SRC, output.getPath());
+                    intent.putExtra(PickerEditor.RESULT_FILE, output.getPath());
                 }else {
-                    intent.putExtra(EXTRA_IMAGE_RESULT_SRC, originalUri.getPath());
+                    intent.putExtra(PickerEditor.RESULT_FILE, originalUri.getPath());
                 }
 
                 setResult(RESULT_OK, intent);
                 finish();
                 break;
             default:
-                intent.putExtra(EXTRA_IMAGE_RESULT_SRC, originalUri.getPath());
+                intent.putExtra(PickerEditor.RESULT_FILE, originalUri.getPath());
                 setResult(RESULT_OK, intent);
                 finish();
                 break;

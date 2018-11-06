@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import com.skrumble.picketeditor.editor.image.ImageCropActivity;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerActivity;
 import com.skrumble.picketeditor.gallery.GalleryActivity;
-import com.skrumble.picketeditor.picker.activity.PickerActivity;
+import com.skrumble.picketeditor.picker.activity.CameraActivity;
 import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
 import com.skrumble.picketeditor.picker.utility.PermUtil;
 
@@ -18,9 +18,11 @@ import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PHO
 import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PICTURE;
 import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_VIDEO;
 
-import static com.skrumble.picketeditor.picker.activity.PickerActivity.SELECTION;
+import static com.skrumble.picketeditor.picker.activity.CameraActivity.SELECTION;
 
 public class PickerEditor {
+
+    public static final String RESULT_FILE = "RESULT_FILE";
 
     // *********************************************************************************************
     // region Picker
@@ -53,13 +55,13 @@ public class PickerEditor {
             PermUtil.checkForCamaraWritePermissions(context, new WorkFinish() {
                 @Override
                 public void onWorkFinish(Boolean check) {
-                    Intent i = new Intent(context.getActivity(), PickerActivity.class);
+                    Intent i = new Intent(context.getActivity(), CameraActivity.class);
                     i.putExtra(SELECTION, selectionCount);
                     context.startActivityForResult(i, requestCode);
                 }
             });
         } else {
-            Intent i = new Intent(context.getActivity(), PickerActivity.class);
+            Intent i = new Intent(context.getActivity(), CameraActivity.class);
             i.putExtra(SELECTION, selectionCount);
             context.startActivityForResult(i, requestCode);
         }
@@ -70,24 +72,24 @@ public class PickerEditor {
         startCamera(context, requestCode, 1);
     }
 
-    public static void startCamera(final FragmentActivity context, final int requestCode, final int selectionCount) {
+    public static void startCamera(final Activity context, final int requestCode, final int selectionCount) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PermUtil.checkForCamaraWritePermissions(context, new WorkFinish() {
                 @Override
                 public void onWorkFinish(Boolean check) {
-                    Intent i = new Intent(context, PickerActivity.class);
+                    Intent i = new Intent(context, CameraActivity.class);
                     i.putExtra(SELECTION, selectionCount);
                     context.startActivityForResult(i, requestCode);
                 }
             });
         } else {
-            Intent i = new Intent(context, PickerActivity.class);
+            Intent i = new Intent(context, CameraActivity.class);
             i.putExtra(SELECTION, selectionCount);
             context.startActivityForResult(i, requestCode);
         }
     }
 
-    public static void startCamera(final FragmentActivity context, int requestCode) {
+    public static void startCamera(final Activity context, int requestCode) {
         startCamera(context, requestCode, 1);
     }
 

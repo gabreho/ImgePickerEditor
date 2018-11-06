@@ -34,7 +34,7 @@ import com.skrumble.picketeditor.picker.utility.Utility;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class GalleryActivity  extends AppCompatActivity {
+public class GalleryActivity  extends AppCompatActivity implements OnSelectionListener {
 
 
     public static GalleryActivity activity;
@@ -48,7 +48,6 @@ public class GalleryActivity  extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private MainImageAdapter mainImageAdapter;
-    private OnSelectionListener onSelectionListener;
     private Toolbar toolbar;
 
     @Override
@@ -67,20 +66,8 @@ public class GalleryActivity  extends AppCompatActivity {
 
         setupAppBar();
 
-        onSelectionListener = new OnSelectionListener() {
-            @Override
-            public void onClick(Img Img, View view, int position) {
-                PickerEditor.starEditor(GalleryActivity.this, Img.getUrl());
-            }
-
-            @Override
-            public void onLongClick(Img img, View view, int position) {
-
-            }
-        };
-
         mainImageAdapter = new MainImageAdapter(this);
-        mainImageAdapter.addOnSelectionListener(onSelectionListener);
+        mainImageAdapter.addOnSelectionListener(this);
 
         recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
 
@@ -101,7 +88,6 @@ public class GalleryActivity  extends AppCompatActivity {
                 finish();
             }
         });
-
 
         recyclerView.setLayoutManager(gridLayoutManager);
 
@@ -228,5 +214,29 @@ public class GalleryActivity  extends AppCompatActivity {
                 window.setStatusBarColor(color);
             }
         }
+    }
+
+    @Override
+    public void onClick(Img object, View view, int position) {
+
+        switch (typeOfGallery) {
+            case GAlLERY_TYPE_PICTURE:
+                PickerEditor.starEditor(GalleryActivity.this, object.getUrl());
+                break;
+            case GAlLERY_TYPE_VIDEO:
+                PickerEditor.starVideoEditor(this, object.getUrl());
+                break;
+            default:
+                Intent intent = new Intent();
+                intent.putExtra(PickerEditor.RESULT_FILE, object.getUrl());
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+        }
+    }
+
+    @Override
+    public void onLongClick(Img img, View view, int position) {
+
     }
 }

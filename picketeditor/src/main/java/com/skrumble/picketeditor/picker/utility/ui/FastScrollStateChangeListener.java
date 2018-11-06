@@ -16,17 +16,17 @@
 
 package com.skrumble.picketeditor.picker.utility.ui;
 
-import com.skrumble.picketeditor.picker.activity.PickerActivity;
+import com.skrumble.picketeditor.picker.activity.CameraActivity;
 
 public interface FastScrollStateChangeListener {
 
     /**
      * Called when fast scrolling begins
      */
-    void onFastScrollStart(PickerActivity fastScroller);
+    void onFastScrollStart(CameraActivity fastScroller);
 
     /**
      * Called when fast scrolling ends
      */
-    void onFastScrollStop(PickerActivity fastScroller);
+    void onFastScrollStop(CameraActivity fastScroller);
 }

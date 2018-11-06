@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000"
-    tools:context=".picker.activity.PickerActivity">
+    tools:context=".picker.activity.CameraActivity">
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera_view"

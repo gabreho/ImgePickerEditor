@@ -1,6 +1,7 @@
 package com.skrumble.picketeditor.editor.video;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -28,11 +29,11 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
         setContentView(R.layout.activity_video_trimmer);
         trimmerView = findViewById(R.id.trimmer_view);
 
-        Bundle bd = getIntent().getExtras();
+        Intent bd = getIntent();
 
         String path = "";
 
-        if (bd != null) path = bd.getString(EXTRA_VIDEO_SRC);
+        if (bd != null) path = bd.getStringExtra(EXTRA_VIDEO_SRC);
         if (trimmerView != null) {
             trimmerView.setOnTrimVideoListener(this);
             trimmerView.initVideoByURI(Uri.parse(path));

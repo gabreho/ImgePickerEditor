@@ -46,7 +46,7 @@ public abstract class PermUtil {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public static void checkForCamaraWritePermissions(final FragmentActivity activity, WorkFinish workFinish) {
+    public static void checkForCamaraWritePermissions(final Activity activity, WorkFinish workFinish) {
         List<String> permissionsNeeded = new ArrayList<String>();
         final List<String> permissionsList = new ArrayList<String>();
         if (!addPermission(permissionsList, Manifest.permission.CAMERA, activity))

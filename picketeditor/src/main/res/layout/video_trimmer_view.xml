@@ -12,7 +12,7 @@
         android:background="@android:color/black"
         android:gravity="center">
 
-        <com.iknow.android.widget.ZVideoView
+        <com.skrumble.picketeditor.editor.video.widget.ZVideoView
             android:id="@+id/video_loader"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -131,4 +131,5 @@
         </FrameLayout>
 
     </RelativeLayout>
+
 </RelativeLayout>

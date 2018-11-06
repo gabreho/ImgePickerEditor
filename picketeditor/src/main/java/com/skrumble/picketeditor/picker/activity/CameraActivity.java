@@ -59,7 +59,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PickerActivity extends AppCompatActivity implements View.OnTouchListener {
+public class CameraActivity extends AppCompatActivity implements View.OnTouchListener {
 
     // Constants
     private static final int sBubbleAnimDuration = 1000;
@@ -222,7 +222,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         ArrayList<String> list = new ArrayList<>();
         for (Img i : selectionList) {
             list.add(i.getUrl());
-            Log.e(PickerActivity.class.getSimpleName() + " images", "img " + i.getUrl());
+            Log.e(CameraActivity.class.getSimpleName() + " images", "img " + i.getUrl());
         }
 
         Img next = selectionList.iterator().next();
@@ -313,7 +313,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         status_bar_bg.setBackgroundColor(Color.BLACK);
         zoom = 0.0f;
         cameraView.setZoom(zoom);
-        TOPBAR_HEIGHT = Utility.convertDpToPixel(56, PickerActivity.this);
+        TOPBAR_HEIGHT = Utility.convertDpToPixel(56, CameraActivity.this);
         mHandleView.setOnTouchListener(this);
         recyclerView.addOnScrollListener(mScrollListener);
         recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
@@ -344,7 +344,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         findViewById(R.id.selection_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(PickerActivity.this, "fin", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraActivity.this, "fin", Toast.LENGTH_SHORT).show();
                 //Log.e("Hello", "onclick");
                 returnObjects();
             }
@@ -353,7 +353,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(PickerActivity.this, "fin", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraActivity.this, "fin", Toast.LENGTH_SHORT).show();
                 //Log.e("Hello", "onclick");
                 returnObjects();
             }
@@ -392,11 +392,11 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                Utility.manipulateVisibility(PickerActivity.this, slideOffset,
+                Utility.manipulateVisibility(CameraActivity.this, slideOffset,
                         instantRecyclerView, recyclerView, status_bar_bg,
                         topbar, bottomButtons, sendButton, LongSelection);
                 if (slideOffset == 1) {
-                    Utility.showScrollbar(mScrollbar, PickerActivity.this);
+                    Utility.showScrollbar(mScrollbar, CameraActivity.this);
                     mainImageAdapter.notifyDataSetChanged();
                     mViewHeight = mScrollbar.getMeasuredHeight();
                     handler.post(new Runnable() {
@@ -429,7 +429,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
 
     private void setViewPositions(float y) {
         int handleY = Utility.getValueInRange(0, (int) (mViewHeight - mHandleView.getHeight()), (int) (y - mHandleView.getHeight() / 2));
-        mBubbleView.setY(handleY + Utility.convertDpToPixel((56), PickerActivity.this));
+        mBubbleView.setY(handleY + Utility.convertDpToPixel((56), CameraActivity.this));
         mHandleView.setY(handleY);
     }
 
@@ -504,7 +504,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
     @SuppressLint("StaticFieldLeak")
     private void updateImages() {
         mainImageAdapter.clearList();
-        Cursor cursor = Utility.getCursor(PickerActivity.this, GalleryActivity.GAlLERY_TYPE_PICTURE);
+        Cursor cursor = Utility.getCursor(CameraActivity.this, GalleryActivity.GAlLERY_TYPE_PICTURE);
         ArrayList<Img> INSTANTLIST = new ArrayList<>();
         String header = "";
         int limit = 100;
@@ -520,7 +520,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
             Uri path = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + cursor.getInt(contentUrl));
             calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(date));
-            String dateDifference = Utility.getDateDifference(PickerActivity.this, calendar);
+            String dateDifference = Utility.getDateDifference(CameraActivity.this, calendar);
             if (!header.equalsIgnoreCase("" + dateDifference)) {
                 header = "" + dateDifference;
                 INSTANTLIST.add(new Img("" + dateDifference, "", "", ""));
@@ -529,13 +529,13 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         }
         cursor.close();
 
-        new ImageFetcher(PickerActivity.this) {
+        new ImageFetcher(CameraActivity.this) {
             @Override
             protected void onPostExecute(ArrayList<Img> imgs) {
                 super.onPostExecute(imgs);
                 mainImageAdapter.addImageList(imgs);
             }
-        }.execute(Utility.getCursor(PickerActivity.this, GalleryActivity.GAlLERY_TYPE_PICTURE));
+        }.execute(Utility.getCursor(CameraActivity.this, GalleryActivity.GAlLERY_TYPE_PICTURE));
 
         initaliseadapter.addImageList(INSTANTLIST);
         mainImageAdapter.addImageList(INSTANTLIST);
@@ -617,10 +617,10 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                     @Override
                     public void onBitmapReady(Bitmap bitmap) {
 
-                        File file = Utility.writeImageToCatchFolder(bitmap, PickerActivity.this);
+                        File file = Utility.writeImageToCatchFolder(bitmap, CameraActivity.this);
 
                         if (file != null && file.exists()){
-                            PickerEditor.starEditor(PickerActivity.this, file.getAbsolutePath());
+                            PickerEditor.starEditor(CameraActivity.this, file.getAbsolutePath());
                         }
                     }
                 });
@@ -648,7 +648,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                 Utility.cancelAnimation(mBubbleAnimator);
 
                 if (!Utility.isViewVisible(mScrollbar) && (recyclerView.computeVerticalScrollRange() - mViewHeight > 0)) {
-                    mScrollbarAnimator = Utility.showScrollbar(mScrollbar, PickerActivity.this);
+                    mScrollbarAnimator = Utility.showScrollbar(mScrollbar, CameraActivity.this);
                 }
 
                 if (mainImageAdapter != null) {
@@ -750,7 +750,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                         handler.removeCallbacks(mScrollbarHider);
                         Utility.cancelAnimation(mScrollbarAnimator);
                         if (!Utility.isViewVisible(mScrollbar) && (recyclerView.computeVerticalScrollRange() - mViewHeight > 0)) {
-                            mScrollbarAnimator = Utility.showScrollbar(mScrollbar, PickerActivity.this);
+                            mScrollbarAnimator = Utility.showScrollbar(mScrollbar, CameraActivity.this);
                         }
                         break;
                     case RecyclerView.SCROLL_STATE_IDLE:
@@ -776,7 +776,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
                     mainImageAdapter.select(false, position);
                 } else {
                     if (SelectionCount <= selectionList.size()) {
-                        Toast.makeText(PickerActivity.this, String.format(getResources().getString(R.string.selection_limiter), selectionList.size()), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CameraActivity.this, String.format(getResources().getString(R.string.selection_limiter), selectionList.size()), Toast.LENGTH_SHORT).show();
                         return;
                     }
                     img.setPosition(position);
@@ -841,7 +841,7 @@ public class PickerActivity extends AppCompatActivity implements View.OnTouchLis
         @Override
         public void onLongClick(Img img, View view, int position) {
             if (SelectionCount > 1) {
-                Utility.vibe(PickerActivity.this, 50);
+                Utility.vibe(CameraActivity.this, 50);
                 //Log.e("onLongClick", "onLongClick");
                 LongSelection = true;
                 if ((selectionList.size() == 0) && (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED)) {
