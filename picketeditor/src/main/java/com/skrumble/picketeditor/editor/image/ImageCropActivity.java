@@ -203,7 +203,9 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
     public void onCropFinish(UCropFragment.UCropResult result) {
         Intent intent = new Intent();
 
-        GalleryActivity.activity.finish();
+        if (GalleryActivity.activity != null) {
+            GalleryActivity.activity.finish();
+        }
 
         switch (result.mResultCode) {
             case RESULT_OK:

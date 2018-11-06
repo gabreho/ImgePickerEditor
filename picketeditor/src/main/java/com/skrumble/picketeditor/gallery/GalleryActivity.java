@@ -2,6 +2,7 @@ package com.skrumble.picketeditor.gallery;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -38,6 +39,13 @@ public class GalleryActivity  extends AppCompatActivity {
 
     public static GalleryActivity activity;
 
+    public static final String EXTRA_GALLERY_TYPE = "GALLERY_TYPE";
+    public static final int GAlLERY_TYPE_PICTURE = 1;
+    public static final int GAlLERY_TYPE_VIDEO = 2;
+    public static final int GAlLERY_TYPE_PHOTO_AND_VIDEO = 3;
+
+    private int typeOfGallery;
+
     private RecyclerView recyclerView;
     private MainImageAdapter mainImageAdapter;
     private OnSelectionListener onSelectionListener;
@@ -47,6 +55,8 @@ public class GalleryActivity  extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+
+        setGalleryType(getIntent());
 
         activity = this;
 
@@ -99,6 +109,15 @@ public class GalleryActivity  extends AppCompatActivity {
         updateImages();
     }
 
+    private void setGalleryType(Intent intent) {
+        if (intent.getExtras().containsKey(EXTRA_GALLERY_TYPE)) {
+            typeOfGallery = intent.getIntExtra(EXTRA_GALLERY_TYPE, GAlLERY_TYPE_PHOTO_AND_VIDEO);
+        } else {
+            // Default
+            typeOfGallery = GAlLERY_TYPE_PHOTO_AND_VIDEO;
+        }
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -126,16 +145,36 @@ public class GalleryActivity  extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     private void updateImages() {
         mainImageAdapter.clearList();
-        Cursor cursor = Utility.getCursor(GalleryActivity.this);
+        Cursor cursor = Utility.getCursor(GalleryActivity.this, typeOfGallery);
         ArrayList<Img> INSTANTLIST = new ArrayList<>();
         String header = "";
         int limit = 100;
         if (cursor.getCount() < 100) {
             limit = cursor.getCount();
         }
-        int date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-        int data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-        int contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+
+        int date;
+        int data;
+        int contentUrl;
+
+        switch (typeOfGallery) {
+            case GAlLERY_TYPE_PICTURE:
+                date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
+                data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+                break;
+            case GAlLERY_TYPE_VIDEO:
+                date = cursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN);
+                data = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
+                contentUrl = cursor.getColumnIndex(MediaStore.Video.Media._ID);
+                break;
+            case GAlLERY_TYPE_PHOTO_AND_VIDEO:
+            default:
+                date = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_ADDED);
+                data = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
+                contentUrl = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID);
+                break;
+        }
         Calendar calendar;
         for (int i = 0; i < limit; i++) {
             cursor.moveToNext();
