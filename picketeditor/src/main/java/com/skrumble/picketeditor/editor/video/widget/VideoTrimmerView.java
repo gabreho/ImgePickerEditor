@@ -72,7 +72,7 @@ public class VideoTrimmerView extends FrameLayout implements ViewDestroyInterfac
     private Handler mAnimationHandler = new Handler();
 
     public VideoTrimmerView(@NonNull Context context) {
-        super(context);
+        this(context, null, 0);
     }
 
     public VideoTrimmerView(Context context, AttributeSet attrs) {
