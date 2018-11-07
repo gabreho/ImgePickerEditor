@@ -1,5 +1,9 @@
 package com.skrumble.picketeditor.picker.modals;
 
+import android.provider.MediaStore;
+
+import com.skrumble.picketeditor.picker.utility.Constants;
+
 import java.io.Serializable;
 
 public class Img implements Serializable {
@@ -9,13 +13,27 @@ public class Img implements Serializable {
     private Boolean isSelected;
     private String scrollerDate;
     private int position;
+    private int type;
 
-    public Img(String headerDate, String contentUrl, String url, String scrollerDate) {
+    public Img(String headerDate, String contentUrl, String url, String scrollerDate, int type) {
         this.headerDate = headerDate;
         this.contentUrl = contentUrl;
         this.url = url;
         this.isSelected = false;
         this.scrollerDate = scrollerDate;
+        setType(type);
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    private void setType(int type) {
+        if (type == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) {
+            this.type = Constants.TYPE_IMAGE;
+        } else {
+            this.type = Constants.TYPE_VIDEO;
+        }
     }
 
     public int getPosition() {

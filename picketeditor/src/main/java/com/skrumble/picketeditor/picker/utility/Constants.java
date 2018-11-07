@@ -26,11 +26,14 @@ public class Constants {
     public static String[] IMAGES_AND_VIDEOS_PROJECTION = new String[] {
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DATA,
-            MediaStore.Files.FileColumns.DATE_ADDED,
+            MediaStore.Images.ImageColumns.DATE_TAKEN,
             MediaStore.Files.FileColumns.MEDIA_TYPE,
             MediaStore.Files.FileColumns.MIME_TYPE,
             MediaStore.Files.FileColumns.TITLE
     };
+
+    public static final int TYPE_IMAGE = 1;
+    public static final int TYPE_VIDEO = 2;
 
     public static Uri IMAGES_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
     public static Uri VIDEO_URI = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
