@@ -32,6 +32,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
+            android:onClick="onImageAndVideoClick"
+            android:padding="5dp"
+            android:text="Image and Video" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:onClick="onCameraClick"
             android:padding="5dp"
             android:text="Camera" />
