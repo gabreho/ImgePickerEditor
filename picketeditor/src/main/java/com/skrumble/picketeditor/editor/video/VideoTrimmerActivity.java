@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.skrumble.picketeditor.PickerEditor;
+import com.skrumble.picketeditor.PickerEditorApplication;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.editor.video.compress.VideoCompressor;
 import com.skrumble.picketeditor.editor.video.public_interface.VideoCompressListener;
@@ -25,6 +27,10 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+
+        if (PickerEditorApplication.sInstance == null) {
+            PickerEditorApplication.sInstance = new PickerEditorApplication();
+        }
 
         setContentView(R.layout.activity_video_trimmer);
         trimmerView = findViewById(R.id.trimmer_view);
