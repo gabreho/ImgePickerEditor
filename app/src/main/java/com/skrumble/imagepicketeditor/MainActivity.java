@@ -37,4 +37,8 @@ public class MainActivity extends AppCompatActivity {
     public void onCameraClick(View view) {
         PickerEditor.startCamera(this, 1);
     }
+
+    public void onImageAndVideoClick(View view) {
+        PickerEditor.openPictureAndVideoGallery(this, 1);
+    }
 }

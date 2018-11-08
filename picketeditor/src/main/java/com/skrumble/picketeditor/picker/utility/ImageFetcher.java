@@ -29,6 +29,7 @@ public class ImageFetcher extends AsyncTask<Cursor, Void, ArrayList<Img>> {
             int date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
             int data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
             int contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+            int type = cursor.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE);
             String header = "";
             int limit = 100;
             if (cursor.getCount() < 100) {
@@ -44,9 +45,9 @@ public class ImageFetcher extends AsyncTask<Cursor, Void, ArrayList<Img>> {
 
                 if (!header.equalsIgnoreCase(dateDifference)) {
                     header = dateDifference;
-                    LIST.add(new Img(dateDifference, "", "", dateFormat.format(calendar.getTime())));
+                    LIST.add(new Img(dateDifference, "", "", dateFormat.format(calendar.getTime()), 0));
                 }
-                LIST.add(new Img(header, curl.toString(), cursor.getString(data), dateFormat.format(calendar.getTime())));
+                LIST.add(new Img(header, curl.toString(), cursor.getString(data), dateFormat.format(calendar.getTime()), cursor.getInt(type)));
             }
             cursor.close();
         }

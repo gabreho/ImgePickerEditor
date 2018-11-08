@@ -16,13 +16,6 @@ public class PickerEditorApplication extends Application {
 
         sInstance = this;
 
-        try {
-            FFmpeg.getInstance(this).loadBinary(new LoadBinaryResponseHandler() {
-                @Override public void onFailure() {
-                }
-            });
-        } catch (FFmpegNotSupportedException e) {
-            e.printStackTrace();
-        }
+
     }
 }

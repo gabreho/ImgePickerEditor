@@ -8,6 +8,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -68,6 +70,10 @@ public class VideoTrimmerView extends FrameLayout implements ViewDestroyInterfac
     private int mThumbsTotalCount;
     private ValueAnimator mRedProgressAnimator;
     private Handler mAnimationHandler = new Handler();
+
+    public VideoTrimmerView(@NonNull Context context) {
+        this(context, null, 0);
+    }
 
     public VideoTrimmerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);

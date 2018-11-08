@@ -573,6 +573,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         int date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
         int data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
         int contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+        int type = MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
         Calendar calendar;
         for (int i = 0; i < limit; i++) {
             cursor.moveToNext();
@@ -582,9 +583,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             String dateDifference = Utility.getDateDifference(CameraActivity.this, calendar);
             if (!header.equalsIgnoreCase("" + dateDifference)) {
                 header = "" + dateDifference;
-                INSTANTLIST.add(new Img("" + dateDifference, "", "", ""));
+                INSTANTLIST.add(new Img("" + dateDifference, "", "", "", 0));
             }
-            INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), ""));
+            INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), "", cursor.getInt(type)));
         }
         cursor.close();
 

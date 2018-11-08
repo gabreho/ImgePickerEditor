@@ -28,6 +28,7 @@ import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.modals.Img;
+import com.skrumble.picketeditor.picker.utility.Constants;
 import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
 import com.skrumble.picketeditor.picker.utility.Utility;
 
@@ -142,23 +143,27 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
         int date;
         int data;
         int contentUrl;
+        int type;
 
         switch (typeOfGallery) {
             case GAlLERY_TYPE_PICTURE:
                 date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
                 data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+                type = MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
                 break;
             case GAlLERY_TYPE_VIDEO:
                 date = cursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN);
                 data = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
                 contentUrl = cursor.getColumnIndex(MediaStore.Video.Media._ID);
+                type = MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
                 break;
             case GAlLERY_TYPE_PHOTO_AND_VIDEO:
             default:
-                date = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_ADDED);
+                date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
                 data = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
                 contentUrl = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID);
+                type = cursor.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE);
                 break;
         }
         Calendar calendar;
@@ -170,9 +175,18 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
             String dateDifference = Utility.getDateDifference(GalleryActivity.this, calendar);
             if (!header.equalsIgnoreCase("" + dateDifference)) {
                 header = "" + dateDifference;
-                INSTANTLIST.add(new Img("" + dateDifference, "", "", ""));
+                INSTANTLIST.add(new Img("" + dateDifference, "", "", "", 1));
             }
-            INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), ""));
+            switch (typeOfGallery) {
+                case GAlLERY_TYPE_PICTURE:
+                case GAlLERY_TYPE_VIDEO:
+                    INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), "", type));
+                    break;
+                case GAlLERY_TYPE_PHOTO_AND_VIDEO:
+                    INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), "", cursor.getInt(type)));
+                    break;
+            }
+
         }
         cursor.close();
 
@@ -218,12 +232,11 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
 
     @Override
     public void onClick(Img object, View view, int position) {
-
-        switch (typeOfGallery) {
-            case GAlLERY_TYPE_PICTURE:
+        switch (object.getType()) {
+            case Constants.TYPE_IMAGE:
                 PickerEditor.starEditor(GalleryActivity.this, object.getUrl());
                 break;
-            case GAlLERY_TYPE_VIDEO:
+            case Constants.TYPE_VIDEO:
                 PickerEditor.starVideoEditor(this, object.getUrl());
                 break;
             default:
