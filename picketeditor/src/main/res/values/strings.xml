@@ -16,4 +16,5 @@
     <string name="video_shoot_tip"></string>
     <string name="compressing">Compressing</string>
     <string name="trimming">Trimming</string>
+    <string name="next">Next</string>
 </resources>

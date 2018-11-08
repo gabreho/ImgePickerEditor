@@ -4,8 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,14 +11,11 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.skrumble.picketeditor.PickerEditor;
@@ -37,11 +32,11 @@ import java.io.File;
 public class ImageCropActivity extends AppCompatActivity implements UCropFragmentCallback {
 
     public static final String EXTRA_IMAGE_SRC = "EXTRA_IMAGE_SRC";
-    private Toolbar toolbar;
     private boolean mShowLoader = false;
     private UCropFragment fragment;
-
     private Uri originalUri, destinationUri;
+    private TextView mCropTextView;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +44,6 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
         setContentView(R.layout.activity_image_crop);
 
         String imagePath = getIntent().getStringExtra(EXTRA_IMAGE_SRC);
-
 
         originalUri = Uri.fromFile(new File(imagePath));
 
@@ -63,6 +57,18 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment, UCropFragment.TAG).commitAllowingStateLoss();
 
         setStatusBarColor(Color.BLACK);
+
+        mCropTextView = findViewById(R.id.crop_text_view);
+        mProgressBar = findViewById(R.id.crop_progress_bar);
+        mProgressBar.setVisibility(View.GONE);
+
+        mCropTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mShowLoader = true;
+                fragment.cropAndSaveImage();
+            }
+        });
     }
 
     /**
@@ -126,7 +132,6 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
        */
 
         return uCrop.withOptions(options);
-
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -141,33 +146,11 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
     }
 
     @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.crop_activity_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_crop).setVisible(!mShowLoader);
-        menu.findItem(R.id.menu_loader).setVisible(mShowLoader);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_crop) {
-            if (fragment.isAdded())
-                fragment.cropAndSaveImage();
-        } else if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void loadingProgress(boolean showLoader) {
-        mShowLoader = showLoader;
-        supportInvalidateOptionsMenu();
+        if (mShowLoader){
+            mProgressBar.setVisibility(View.VISIBLE);
+            mCropTextView.setVisibility(View.GONE);
+        }
     }
 
     @Override
