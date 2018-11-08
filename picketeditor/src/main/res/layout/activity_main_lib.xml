@@ -22,8 +22,8 @@
         app:cameraPlaySounds="true"
         app:cameraSessionType="picture"
         app:cameraVideoCodec="deviceDefault"
-        app:cameraVideoMaxDuration="0"
-        app:cameraVideoMaxSize="0"
+        app:cameraVideoMaxDuration="-1"
+        app:cameraVideoMaxSize="-1"
         app:cameraVideoQuality="max480p"
         app:cameraWhiteBalance="auto" />
 
@@ -223,8 +223,7 @@
                 android:layout_gravity="center|bottom"
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/ring"
-                android:contentDescription="@string/capture"
-                android:onClick="capture"/>
+                android:contentDescription="@string/capture" />
 
             <ImageView
                 android:id="@+id/flash"
@@ -237,8 +236,7 @@
                 android:background="@drawable/circle"
                 android:contentDescription="@string/flash"
                 android:padding="11dp"
-                android:src="@drawable/ic_flash_off_black_24dp"
-                android:onClick="flashClickAction"/>
+                android:src="@drawable/ic_flash_off_black_24dp" />
 
             <ImageView
                 android:id="@+id/front"
@@ -251,10 +249,10 @@
                 android:background="@drawable/circle"
                 android:contentDescription="@string/contentfacing"
                 android:padding="11dp"
-                android:src="@drawable/ic_photo_camera"
-                android:onClick="cameraFacingClickAction"/>
+                android:src="@drawable/ic_photo_camera" />
 
             <TextView
+                android:id="@+id/camera_view_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"

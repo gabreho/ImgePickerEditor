@@ -246,21 +246,26 @@ public class Utility {
         return photo;
     }
 
-
-    public static File writeImage(Bitmap bitmap) {
-        File dir = new File(Environment.getExternalStorageDirectory(), "/DCIM/Camera");
+    public static File getVideoFileInCatchFolder(Context context){
+        File dir = context.getCacheDir();
         if (!dir.exists()){
             dir.mkdir();
         }
 
-        File photo = new File(dir, "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.ENGLISH).format(new Date()) + ".jpg");
+        File videoFile = new File(dir, "Video_" + new SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.ENGLISH).format(new Date()) + ".mp4");
 
-        if (photo.exists()) {
-            photo.delete();
+        if (videoFile.exists()) {
+            videoFile.delete();
         }
 
+        return videoFile;
+    }
+
+    public static File writeImage(Bitmap bitmap) {
+        File destinationImagePath = getImagePathInCameraFolder();
+
         try {
-            FileOutputStream fos = new FileOutputStream(photo.getPath());
+            FileOutputStream fos = new FileOutputStream(destinationImagePath.getPath());
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 40, fos);
             // fos.write(jpeg);
@@ -268,7 +273,7 @@ public class Utility {
         } catch (Exception e) {
             Log.e("PictureDemo", "Exception in photoCallback", e);
         }
-        return photo;
+        return destinationImagePath;
     }
 
     public static File writeImageToCatchFolder(Bitmap bitmap, Context context){
@@ -294,7 +299,7 @@ public class Utility {
         return photo;
     }
 
-    public static File getDestinationImagePath(){
+    public static File getImagePathInCameraFolder(){
         File dir = new File(Environment.getExternalStorageDirectory(), "/DCIM/Camera");
         if (!dir.exists()){
             dir.mkdir();
