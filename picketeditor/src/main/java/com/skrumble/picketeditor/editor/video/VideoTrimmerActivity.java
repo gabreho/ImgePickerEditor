@@ -69,7 +69,7 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
 
     @Override
     public void onFinishTrim(String in) {
-        File videoFile = Utility.getVideoFile();
+        final File videoFile = Utility.getVideoFile();
 
         buildDialog(getResources().getString(R.string.compressing)).show();
         VideoCompressor.compress(this, in, videoFile.getAbsolutePath(), new VideoCompressListener() {
@@ -84,6 +84,9 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
             @Override
             public void onFinish() {
                 if (mProgressDialog.isShowing()) mProgressDialog.dismiss();
+                Intent intent = new Intent();
+                intent.putExtra(PickerEditor.RESULT_FILE, videoFile.getAbsoluteFile());
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
