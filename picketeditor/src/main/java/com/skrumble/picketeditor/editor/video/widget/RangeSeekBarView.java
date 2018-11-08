@@ -17,7 +17,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.skrumble.picketeditor.PickerEditorApplication;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerUtil;
 import com.skrumble.picketeditor.picker.utility.Utility;

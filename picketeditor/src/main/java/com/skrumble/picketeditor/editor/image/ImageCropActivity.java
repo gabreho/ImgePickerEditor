@@ -62,7 +62,7 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
         fragment = uCrop.getFragment(uCrop.getIntent(this).getExtras());
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment, UCropFragment.TAG).commitAllowingStateLoss();
 
-        setupAppBar();
+        setStatusBarColor(Color.BLACK);
     }
 
     /**
@@ -126,37 +126,7 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
        */
 
         return uCrop.withOptions(options);
-    }
 
-    private void setupAppBar() {
-        setStatusBarColor(Color.BLACK);
-
-        toolbar = findViewById(R.id.toolbar);
-
-        // Set all of the Toolbar coloring
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.ally_accent_color));
-        toolbar.setTitleTextColor(Color.WHITE);
-
-
-        toolbar.setVisibility(View.VISIBLE);
-
-        final TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
-        toolbarTitle.setTextColor(Color.WHITE);
-        toolbarTitle.setText("");
-
-        // Color buttons inside the Toolbar
-        Drawable stateButtonDrawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_and_icn_back);
-        if (stateButtonDrawable != null) {
-            stateButtonDrawable.mutate();
-            stateButtonDrawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-            toolbar.setNavigationIcon(stateButtonDrawable);
-        }
-
-        setSupportActionBar(toolbar);
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -228,5 +198,9 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
                 finish();
                 break;
         }
+    }
+
+    public void backButtonClickAction(View view) {
+        finish();
     }
 }

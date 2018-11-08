@@ -12,7 +12,6 @@ import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.skrumble.picketeditor.BackgroundExecutor;
-import com.skrumble.picketeditor.PickerEditorApplication;
 import com.skrumble.picketeditor.editor.video.public_interface.OnCompletion;
 import com.skrumble.picketeditor.editor.video.public_interface.VideoTrimListener;
 import com.skrumble.picketeditor.picker.utility.Utility;

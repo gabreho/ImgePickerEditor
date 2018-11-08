@@ -62,6 +62,10 @@ import java.util.Set;
 
 public class CameraActivity extends AppCompatActivity implements View.OnTouchListener {
 
+    public static String EXTRA_CAMERA_TYPE = "EXTRA_CAMERA_TYPE";
+    public static int ARG_CAMERA_TYPE_PICTURE = 0;
+    public static int ARG_CAMERA_TYPE_VIDEO = 1;
+
     // Constants
     private static final int sBubbleAnimDuration = 1000;
     private static final int sScrollbarHideDelay = 1000;
@@ -395,6 +399,13 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
                 DrawableCompat.setTint(selection_back.getDrawable(), Color.parseColor("#ffffff"));
                 LongSelection = true;
                 selection_check.setVisibility(View.GONE);
+            }
+        });
+
+        captureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 

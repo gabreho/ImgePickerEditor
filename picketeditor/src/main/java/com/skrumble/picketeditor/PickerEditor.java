@@ -51,21 +51,10 @@ public class PickerEditor {
     // region Camera
 
     public static void startCamera(final Fragment context, final int requestCode, final int selectionCount) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PermUtil.checkForCamaraWritePermissions(context, new WorkFinish() {
-                @Override
-                public void onWorkFinish(Boolean check) {
-                    Intent i = new Intent(context.getActivity(), CameraActivity.class);
-                    i.putExtra(SELECTION, selectionCount);
-                    context.startActivityForResult(i, requestCode);
-                }
-            });
-        } else {
-            Intent i = new Intent(context.getActivity(), CameraActivity.class);
-            i.putExtra(SELECTION, selectionCount);
-            context.startActivityForResult(i, requestCode);
-        }
-
+        Intent i = new Intent(context.getActivity(), CameraActivity.class);
+        i.putExtra(SELECTION, selectionCount);
+        i.putExtra(CameraActivity.EXTRA_CAMERA_TYPE, CameraActivity.ARG_CAMERA_TYPE_PICTURE);
+        context.startActivityForResult(i, requestCode);
     }
 
     public static void startCamera(Fragment context, int requestCode) {
@@ -73,24 +62,26 @@ public class PickerEditor {
     }
 
     public static void startCamera(final Activity context, final int requestCode, final int selectionCount) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PermUtil.checkForCamaraWritePermissions(context, new WorkFinish() {
-                @Override
-                public void onWorkFinish(Boolean check) {
-                    Intent i = new Intent(context, CameraActivity.class);
-                    i.putExtra(SELECTION, selectionCount);
-                    context.startActivityForResult(i, requestCode);
-                }
-            });
-        } else {
-            Intent i = new Intent(context, CameraActivity.class);
-            i.putExtra(SELECTION, selectionCount);
-            context.startActivityForResult(i, requestCode);
-        }
+        Intent i = new Intent(context, CameraActivity.class);
+        i.putExtra(SELECTION, selectionCount);
+        i.putExtra(CameraActivity.EXTRA_CAMERA_TYPE, CameraActivity.ARG_CAMERA_TYPE_PICTURE);
+        context.startActivityForResult(i, requestCode);
     }
 
     public static void startCamera(final Activity context, int requestCode) {
         startCamera(context, requestCode, 1);
+    }
+
+    public static void startCameraForVideo(final Fragment context, final int requestCode) {
+        Intent i = new Intent(context.getActivity(), CameraActivity.class);
+        i.putExtra(CameraActivity.EXTRA_CAMERA_TYPE, CameraActivity.ARG_CAMERA_TYPE_VIDEO);
+        context.startActivityForResult(i, requestCode);
+    }
+
+    public static void startCameraForVideo(final Activity context, final int requestCode) {
+        Intent i = new Intent(context, CameraActivity.class);
+        i.putExtra(CameraActivity.EXTRA_CAMERA_TYPE, CameraActivity.ARG_CAMERA_TYPE_VIDEO);
+        context.startActivityForResult(i, requestCode);
     }
 
     // endregion
