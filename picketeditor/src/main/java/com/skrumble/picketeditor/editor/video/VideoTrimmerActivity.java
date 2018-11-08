@@ -90,7 +90,7 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
 
                 if (mProgressDialog.isShowing()) mProgressDialog.dismiss();
                 Intent intent = new Intent();
-                intent.putExtra(PickerEditor.RESULT_FILE, videoFile.getAbsoluteFile());
+                intent.putExtra(PickerEditor.RESULT_FILE, videoFile.getAbsolutePath());
                 setResult(RESULT_OK, intent);
                 finish();
             }
