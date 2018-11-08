@@ -13,6 +13,7 @@ import com.skrumble.picketeditor.editor.video.compress.VideoCompressor;
 import com.skrumble.picketeditor.editor.video.public_interface.VideoCompressListener;
 import com.skrumble.picketeditor.editor.video.public_interface.VideoTrimListener;
 import com.skrumble.picketeditor.editor.video.widget.VideoTrimmerView;
+import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.utility.Utility;
 
 import java.io.File;
@@ -83,6 +84,10 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
 
             @Override
             public void onFinish() {
+                if (GalleryActivity.activity != null) {
+                    GalleryActivity.activity.finish();
+                }
+
                 if (mProgressDialog.isShowing()) mProgressDialog.dismiss();
                 Intent intent = new Intent();
                 intent.putExtra(PickerEditor.RESULT_FILE, videoFile.getAbsoluteFile());
