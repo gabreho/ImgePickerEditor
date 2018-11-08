@@ -28,9 +28,7 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        if (PickerEditorApplication.sInstance == null) {
-            PickerEditorApplication.sInstance = new PickerEditorApplication();
-        }
+        VideoTrimmerUtil.init(this);
 
         setContentView(R.layout.activity_video_trimmer);
         trimmerView = findViewById(R.id.trimmer_view);

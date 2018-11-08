@@ -26,10 +26,10 @@ import java.text.DecimalFormat;
 
 public class RangeSeekBarView extends View {
   private static final String TAG = RangeSeekBarView.class.getSimpleName();
-  public static final int INVALID_POINTER_ID = 255;
-  public static final int ACTION_POINTER_INDEX_MASK = 0x0000ff00, ACTION_POINTER_INDEX_SHIFT = 8;
-  private static final int TextPositionY = (int) Utility.convertDpToPixel(7, PickerEditorApplication.sInstance);
-  private static final int paddingTop = (int) Utility.convertDpToPixel(10, PickerEditorApplication.sInstance);
+  public final int INVALID_POINTER_ID = 255;
+  public final int ACTION_POINTER_INDEX_MASK = 0x0000ff00, ACTION_POINTER_INDEX_SHIFT = 8;
+  private final int TextPositionY = (int) Utility.convertDpToPixel(7, getContext());
+  private final int paddingTop = (int) Utility.convertDpToPixel(10, getContext());
   private int mActivePointerId = INVALID_POINTER_ID;
 
   private long mMinShootTime = VideoTrimmerUtil.MIN_SHOOT_DURATION;

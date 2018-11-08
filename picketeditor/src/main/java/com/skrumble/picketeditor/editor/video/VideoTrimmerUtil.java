@@ -8,7 +8,9 @@ import android.util.TypedValue;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.skrumble.picketeditor.BackgroundExecutor;
 import com.skrumble.picketeditor.PickerEditorApplication;
 import com.skrumble.picketeditor.editor.video.public_interface.OnCompletion;
@@ -20,17 +22,36 @@ import java.util.Date;
 import java.util.Locale;
 
 public class VideoTrimmerUtil {
-
     public static final long MIN_SHOOT_DURATION = 3000L;
     public static final int VIDEO_MAX_TIME = 15;
     public static final long MAX_SHOOT_DURATION = VIDEO_MAX_TIME * 1000L;
     public static final int MAX_COUNT_RANGE = 10;
-    private static final int SCREEN_WIDTH_FULL = PickerEditorApplication.sInstance.getResources().getDisplayMetrics().widthPixels;
-    public static final int RECYCLER_VIEW_PADDING = (int) Utility.convertDpToPixel(35, PickerEditorApplication.sInstance);
-    public static final int VIDEO_FRAMES_WIDTH = SCREEN_WIDTH_FULL - RECYCLER_VIEW_PADDING * 2;
-    private static final int THUMB_WIDTH = (SCREEN_WIDTH_FULL - RECYCLER_VIEW_PADDING * 2) / VIDEO_MAX_TIME;
-    private static final int THUMB_HEIGHT = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, PickerEditorApplication.sInstance.getResources().getDisplayMetrics());
-    ;
+
+
+    private static int SCREEN_WIDTH_FULL;
+    public static  int RECYCLER_VIEW_PADDING;
+    public static  int VIDEO_FRAMES_WIDTH;
+    private static int THUMB_WIDTH;
+    private static int THUMB_HEIGHT;
+
+
+    static void init(Context context){
+        SCREEN_WIDTH_FULL = context.getResources().getDisplayMetrics().widthPixels;
+        RECYCLER_VIEW_PADDING = (int) Utility.convertDpToPixel(35, context);
+        VIDEO_FRAMES_WIDTH = SCREEN_WIDTH_FULL - RECYCLER_VIEW_PADDING * 2;
+        THUMB_WIDTH = (SCREEN_WIDTH_FULL - RECYCLER_VIEW_PADDING * 2) / VIDEO_MAX_TIME;
+        THUMB_HEIGHT = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, context.getResources().getDisplayMetrics());
+
+        try {
+            FFmpeg.getInstance(context).loadBinary(new LoadBinaryResponseHandler() {
+                @Override public void onFailure() {
+                }
+            });
+        } catch (FFmpegNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static void trim(Context context, String inputFile, String outputFile, long startMs, long endMs, final VideoTrimListener callback) {
         final String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
