@@ -345,14 +345,16 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         BottomBarHeight = Utility.getSoftButtonsBarSizePort(this);
         flashDrawable = R.drawable.ic_flash_off_black_24dp;
         status_bar_bg.setBackgroundColor(Color.BLACK);
-        zoom = 0.0f;
-        cameraView.setZoom(zoom);
+
         TOPBAR_HEIGHT = Utility.convertDpToPixel(56, CameraActivity.this);
         mHandleView.setOnTouchListener(this);
         recyclerView.addOnScrollListener(mScrollListener);
         recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
         DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
 
+        zoom = 0.0f;
+        cameraView.setLifecycleOwner(this);
+        cameraView.setZoom(zoom);
         cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
         cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
