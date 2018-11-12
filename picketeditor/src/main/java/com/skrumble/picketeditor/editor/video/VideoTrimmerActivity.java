@@ -6,11 +6,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.skrumble.picketeditor.PickerEditor;
+import com.skrumble.picketeditor.PickerEditorApplication;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.editor.video.compress.VideoCompressor;
 import com.skrumble.picketeditor.editor.video.public_interface.VideoCompressListener;
 import com.skrumble.picketeditor.editor.video.public_interface.VideoTrimListener;
 import com.skrumble.picketeditor.editor.video.widget.VideoTrimmerView;
+import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.utility.Utility;
 
 import java.io.File;
@@ -25,6 +28,8 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+
+        VideoTrimmerUtil.init(this);
 
         setContentView(R.layout.activity_video_trimmer);
         trimmerView = findViewById(R.id.trimmer_view);
@@ -65,7 +70,7 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
 
     @Override
     public void onFinishTrim(String in) {
-        File videoFile = Utility.getVideoFile();
+        final File videoFile = Utility.getVideoFile();
 
         buildDialog(getResources().getString(R.string.compressing)).show();
         VideoCompressor.compress(this, in, videoFile.getAbsolutePath(), new VideoCompressListener() {
@@ -79,7 +84,14 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
 
             @Override
             public void onFinish() {
+                if (GalleryActivity.activity != null) {
+                    GalleryActivity.activity.finish();
+                }
+
                 if (mProgressDialog.isShowing()) mProgressDialog.dismiss();
+                Intent intent = new Intent();
+                intent.putExtra(PickerEditor.RESULT_FILE, videoFile.getAbsolutePath());
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });

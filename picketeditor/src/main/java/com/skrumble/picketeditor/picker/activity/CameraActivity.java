@@ -39,6 +39,7 @@ import com.otaliastudios.cameraview.Facing;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Gesture;
 import com.otaliastudios.cameraview.GestureAction;
+import com.otaliastudios.cameraview.SessionType;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.gallery.GalleryActivity;
@@ -51,11 +52,11 @@ import com.skrumble.picketeditor.picker.utility.Constants;
 import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
 import com.skrumble.picketeditor.picker.utility.ImageFetcher;
 import com.skrumble.picketeditor.picker.utility.Utility;
-import com.skrumble.picketeditor.picker.utility.ui.FastScrollStateChangeListener;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -66,7 +67,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     private static final int sScrollbarHideDelay = 1000;
     public static final String SELECTION = "selection";
     private static final int sTrackSnapRange = 5;
-//    public static String IMAGE_RESULTS = "image_results";
 
     // Variables
     public static float TOPBAR_HEIGHT;
@@ -87,9 +87,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     private RecyclerView recyclerView, instantRecyclerView;
     private View status_bar_bg, mScrollbar, topbar, bottomButtons, sendButton;
     private View mBottomSheet;
-    private TextView mBubbleView, img_count;
+    private TextView mBubbleView, img_count, cameraViewTip;
     private TextView selection_count;
-    private ImageView mHandleView, selection_back, selection_check;
+    private ImageView mHandleView, selection_back, selection_check, captureButton, cameraFacingButton, flashButton;
 
     // Adapters
     private InstantImageAdapter initaliseadapter;
@@ -105,9 +105,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     // Behavior
     private BottomSheetBehavior mBottomSheetBehavior;
 
-    // State Change Listener
-    private FastScrollStateChangeListener mFastScrollStateChangeListener;
-
     // Runnables
     private Runnable mScrollbarHider = new Runnable() {
         @Override
@@ -115,6 +112,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             hideScrollbar();
         }
     };
+
+    // Touch Time
+    private long startTouchTime = 0;
 
     // *********************************************************************************************
     // region Life Cycle
@@ -257,6 +257,11 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         status_bar_bg = findViewById(R.id.status_bar_bg);
         instantRecyclerView = findViewById(R.id.instantRecyclerView);
         recyclerView = findViewById(R.id.recyclerView);
+        captureButton = findViewById(R.id.clickme);
+        cameraViewTip = findViewById(R.id.camera_view_tip);
+        cameraFacingButton = findViewById(R.id.front);
+        flashButton = findViewById(R.id.flash);
+
         FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
 
         //Layout Managers
@@ -339,7 +344,22 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void onClickMethods() {
+
+        cameraFacingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cameraFacingClickAction(v);
+            }
+        });
+
+        flashButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flashClickAction(v);
+            }
+        });
 
         findViewById(R.id.selection_ok).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -375,6 +395,41 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
                 DrawableCompat.setTint(selection_back.getDrawable(), Color.parseColor("#ffffff"));
                 LongSelection = true;
                 selection_check.setVisibility(View.GONE);
+            }
+        });
+
+        captureButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startTouchTime = new Date().getTime();
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                long finishTouchTime = new Date().getTime();
+                                if (finishTouchTime - startTouchTime >= 1000){
+                                    recordVideo();
+                                }
+                            }
+                        }, 1000);
+
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        long finishTouchTime = new Date().getTime();
+
+                        if (finishTouchTime - startTouchTime < 1000){
+                            capturePicture();
+                        }else {
+                            stopRecording();
+                        }
+
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        return false;
+                }
+                return false;
             }
         });
     }
@@ -460,6 +515,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }
     }
 
+    // *********************************************************************************************
+    // region Bubble
+
     private void showBubble() {
         if (!Utility.isViewVisible(mBubbleView)) {
             mBubbleView.setVisibility(View.VISIBLE);
@@ -497,6 +555,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }
     }
 
+    // endregion
 
     // *********************************************************************************************
     // region Fill Image
@@ -514,6 +573,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         int date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
         int data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
         int contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+        int type = MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
         Calendar calendar;
         for (int i = 0; i < limit; i++) {
             cursor.moveToNext();
@@ -523,9 +583,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             String dateDifference = Utility.getDateDifference(CameraActivity.this, calendar);
             if (!header.equalsIgnoreCase("" + dateDifference)) {
                 header = "" + dateDifference;
-                INSTANTLIST.add(new Img("" + dateDifference, "", "", ""));
+                INSTANTLIST.add(new Img("" + dateDifference, "", "", "", 0));
             }
-            INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), ""));
+            INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), "", cursor.getInt(type)));
         }
         cursor.close();
 
@@ -608,28 +668,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }).start();
     }
 
-    public void capture(View view) {
-        cameraView.addCameraListener(new CameraListener() {
-            @Override
-            public void onPictureTaken(byte[] jpeg) {
-
-                Utility.decodeBitmap(jpeg, new BitmapCallback() {
-                    @Override
-                    public void onBitmapReady(Bitmap bitmap) {
-
-                        File file = Utility.writeImageToCatchFolder(bitmap, CameraActivity.this);
-
-                        if (file != null && file.exists()){
-                            PickerEditor.starEditor(CameraActivity.this, file.getAbsolutePath());
-                        }
-                    }
-                });
-            }
-        });
-
-        cameraView.capturePicture();
-    }
-
     // endregion
 
     // *********************************************************************************************
@@ -655,9 +693,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
                     showBubble();
                 }
 
-                if (mFastScrollStateChangeListener != null) {
-                    mFastScrollStateChangeListener.onFastScrollStart(this);
-                }
             case MotionEvent.ACTION_MOVE:
                 final float y = event.getRawY();
              /*   String text = mainImageAdapter.getSectionText(recyclerView.getVerticalScrollbarPosition()).trim();
@@ -676,9 +711,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
                     handler.postDelayed(mScrollbarHider, sScrollbarHideDelay);
                 }
                 hideBubble();
-                if (mFastScrollStateChangeListener != null) {
-                    mFastScrollStateChangeListener.onFastScrollStop(this);
-                }
+
                 return true;
         }
         return super.onTouchEvent(event);
@@ -908,4 +941,66 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     };
 
     // endregion
+
+    // *********************************************************************************************
+    // region capture or record
+
+    private void capturePicture(){
+        // Capture Picture
+        cameraView.addCameraListener(new CameraListener() {
+            @Override
+            public void onPictureTaken(byte[] jpeg) {
+
+                Utility.decodeBitmap(jpeg, new BitmapCallback() {
+                    @Override
+                    public void onBitmapReady(Bitmap bitmap) {
+                        File file = Utility.writeImageToCatchFolder(bitmap, CameraActivity.this);
+                        if (file != null && file.exists()){
+                            PickerEditor.starEditor(CameraActivity.this, file.getAbsolutePath());
+                        }
+                    }
+                });
+            }
+        });
+
+        cameraView.capturePicture();
+    }
+
+    private void recordVideo(){
+        File videoFileInCatchFolder = Utility.getVideoFileInCatchFolder(this);
+        cameraView.setSessionType(SessionType.VIDEO);
+
+        cameraView.addCameraListener(new CameraListener() {
+            @Override
+            public void onVideoTaken(File video) {
+                PickerEditor.starVideoEditor(CameraActivity.this, video.getAbsolutePath());
+            }
+        });
+
+        cameraView.startCapturingVideo(videoFileInCatchFolder);
+
+        instantRecyclerView.setVisibility(View.GONE);
+        cameraViewTip.setVisibility(View.GONE);
+        flashButton.setVisibility(View.GONE);
+        cameraFacingButton.setVisibility(View.GONE);
+    }
+
+    private void stopRecording(){
+        if (cameraView.isCapturingVideo()){
+            cameraView.stopCapturingVideo();
+        }
+
+        cameraView.setSessionType(SessionType.PICTURE);
+
+        startTouchTime = 0;
+
+        instantRecyclerView.setVisibility(View.VISIBLE);
+        cameraViewTip.setVisibility(View.VISIBLE);
+        flashButton.setVisibility(View.VISIBLE);
+        cameraFacingButton.setVisibility(View.VISIBLE);
+    }
+
+
+    // endregion
+
 }

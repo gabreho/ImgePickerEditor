@@ -53,7 +53,7 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
 
         originalUri = Uri.fromFile(new File(imagePath));
 
-        destinationUri = Uri.fromFile(Utility.getDestinationImagePath());
+        destinationUri = Uri.fromFile(Utility.getImagePathInCameraFolder());
 
         UCrop uCrop = UCrop.of(originalUri, destinationUri);
 
