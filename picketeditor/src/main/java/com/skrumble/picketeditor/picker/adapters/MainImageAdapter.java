@@ -1,6 +1,7 @@
 package com.skrumble.picketeditor.picker.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,9 +20,11 @@ import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.interfaces.SectionIndexer;
 import com.skrumble.picketeditor.picker.modals.Img;
+import com.skrumble.picketeditor.picker.utility.Constants;
 import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
 import com.skrumble.picketeditor.picker.utility.Utility;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements HeaderItemDecoration.StickyHeaderInterface, SectionIndexer {
@@ -102,9 +105,9 @@ public class MainImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Img image = list.get(position);
-        if (holder instanceof Holder) {
+        if (holder instanceof Holder && image != null) {
             Holder imageHolder = (Holder) holder;
-            glide.load(image.getContentUrl()).apply(options).into(imageHolder.preview);
+            glide.load(image.getType() == Constants.TYPE_IMAGE ? image.getContentUrl() : Uri.fromFile(new File(image.getUrl()))).apply(options).thumbnail(0.1f).into(imageHolder.preview);
             imageHolder.selection.setVisibility(image.getSelected() ? View.VISIBLE : View.GONE);
         } else if (holder instanceof HeaderHolder) {
             HeaderHolder headerHolder = (HeaderHolder) holder;
