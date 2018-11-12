@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.Chronometer;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -65,6 +66,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     public static String EXTRA_CAMERA_TYPE = "EXTRA_CAMERA_TYPE";
     public static int ARG_CAMERA_TYPE_PICTURE = 0;
     public static int ARG_CAMERA_TYPE_VIDEO = 1;
+
+    // Camera Type
+    private int cameraType = 0;
 
     // Constants
     private static final int sBubbleAnimDuration = 1000;
@@ -120,6 +124,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     // Touch Time
     private long startTouchTime = 0;
 
+    private Chronometer chronometer;
+
     // *********************************************************************************************
     // region Life Cycle
 
@@ -129,7 +135,24 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         Utility.setupStatusBarHidden(this);
         Utility.hideStatusBar(this);
         setContentView(R.layout.activity_main_lib);
+
+
+        if (getIntent() != null){
+            cameraType = getIntent().getIntExtra(EXTRA_CAMERA_TYPE, 0);
+        }
+
         initialize();
+
+        if (cameraType == ARG_CAMERA_TYPE_VIDEO){
+            cameraView.setSessionType(SessionType.VIDEO);
+            captureButton.setImageResource(android.R.drawable.presence_video_busy);
+            instantRecyclerView.setVisibility(View.GONE);
+            cameraFacingButton.setVisibility(View.GONE);
+            flashButton.setVisibility(View.GONE);
+            cameraViewTip.setVisibility(View.GONE);
+
+            chronometer.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -265,6 +288,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         cameraViewTip = findViewById(R.id.camera_view_tip);
         cameraFacingButton = findViewById(R.id.front);
         flashButton = findViewById(R.id.flash);
+        chronometer = findViewById(R.id.timer_view);
+        chronometer.setVisibility(View.GONE);
 
         FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
 
@@ -327,6 +352,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         recyclerView.addOnScrollListener(mScrollListener);
         recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
         DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
+
         cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
         cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
@@ -334,18 +360,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         // View Methods
         onClickMethods();
         updateImages();
-
-        if (getIntent().getExtras().getBoolean("test")) {
-            setRecyclerViewPosition(200);
-            Utility.hideStatusBar(this);
-            instantRecyclerView.setVisibility(View.GONE);
-            topbar.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.VISIBLE);
-            recyclerView.setOnClickListener(null);
-            cameraView.setVisibility(View.GONE);
-            bottomButtons.setVisibility(View.GONE);
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -405,42 +419,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-            }
-        });
-
-        captureButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        startTouchTime = new Date().getTime();
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                long finishTouchTime = new Date().getTime();
-                                if (finishTouchTime - startTouchTime >= 1000){
-                                    recordVideo();
-                                }
-                            }
-                        }, 1000);
-
-                        return true;
-                    case MotionEvent.ACTION_UP:
-                        long finishTouchTime = new Date().getTime();
-
-                        if (finishTouchTime - startTouchTime < 1000){
-                            capturePicture();
-                        }else {
-                            stopRecording();
-                        }
-
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        return false;
-                }
-                return false;
+                captureButtonClickAction();
             }
         });
     }
@@ -956,6 +935,15 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     // *********************************************************************************************
     // region capture or record
 
+    private void captureButtonClickAction() {
+        if (cameraType == ARG_CAMERA_TYPE_VIDEO){
+            recordVideo();
+            return;
+        }
+
+        capturePicture();
+    }
+
     private void capturePicture(){
         // Capture Picture
         cameraView.addCameraListener(new CameraListener() {
@@ -978,6 +966,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     }
 
     private void recordVideo(){
+
+        if (cameraView.isCapturingVideo()){
+            stopRecording();
+            return;
+        }
+
         File videoFileInCatchFolder = Utility.getVideoFileInCatchFolder(this);
         cameraView.setSessionType(SessionType.VIDEO);
 
@@ -989,6 +983,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         });
 
         cameraView.startCapturingVideo(videoFileInCatchFolder);
+        chronometer.start();
 
         instantRecyclerView.setVisibility(View.GONE);
         cameraViewTip.setVisibility(View.GONE);
@@ -997,18 +992,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     }
 
     private void stopRecording(){
-        if (cameraView.isCapturingVideo()){
-            cameraView.stopCapturingVideo();
+        if (cameraView.isCapturingVideo() == false){
+            return;
         }
 
-        cameraView.setSessionType(SessionType.PICTURE);
-
-        startTouchTime = 0;
-
-        instantRecyclerView.setVisibility(View.VISIBLE);
-        cameraViewTip.setVisibility(View.VISIBLE);
-        flashButton.setVisibility(View.VISIBLE);
-        cameraFacingButton.setVisibility(View.VISIBLE);
+        cameraView.stopCapturingVideo();
+        chronometer.stop();
     }
 
 

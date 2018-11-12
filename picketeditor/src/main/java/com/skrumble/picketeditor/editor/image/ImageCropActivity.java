@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 

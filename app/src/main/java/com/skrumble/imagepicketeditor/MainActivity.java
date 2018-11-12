@@ -28,13 +28,15 @@ public class MainActivity extends AppCompatActivity {
     public void OnVideoPickerClick(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PermUtil.checkForCamaraWritePermissions(this, new WorkFinish() {
-
                 @Override
                 public void onWorkFinish(Boolean check) {
                     PickerEditor.openVideoGallery(MainActivity.this, 1);
                 }
             });
+            return;
         }
+
+        PickerEditor.openVideoGallery(MainActivity.this, 1);
     }
 
     public void OnImagePickClick(View view) {
@@ -46,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
                     PickerEditor.openPictureGallery(MainActivity.this, 1);
                 }
             });
+            return;
         }
+        PickerEditor.openPictureGallery(MainActivity.this, 1);
     }
 
     public void onCameraClick(View view) {
@@ -58,18 +62,37 @@ public class MainActivity extends AppCompatActivity {
                     PickerEditor.startCamera(MainActivity.this, 1);
                 }
             });
+            return;
         }
+        PickerEditor.startCamera(MainActivity.this, 1);
     }
 
     public void onImageAndVideoClick(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PermUtil.checkForCamaraWritePermissions(this, new WorkFinish() {
-
                 @Override
                 public void onWorkFinish(Boolean check) {
                     PickerEditor.openPictureAndVideoGallery(MainActivity.this, 1);
                 }
             });
+            return;
         }
+
+        PickerEditor.openPictureAndVideoGallery(MainActivity.this, 1);
+    }
+
+    public void onRecordVideoClick(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PermUtil.checkForCamaraWritePermissions(this, new WorkFinish() {
+                @Override
+                public void onWorkFinish(Boolean check) {
+                    PickerEditor.startCameraForVideo(MainActivity.this, 1);
+                }
+            });
+
+            return;
+        }
+
+        PickerEditor.startCameraForVideo(MainActivity.this, 1);
     }
 }
