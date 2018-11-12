@@ -125,7 +125,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Finish"
-                android:textColor="@android:color/holo_green_dark"
+                android:textColor="@color/ally_accent_color"
                 android:textSize="16dp" />
 
         </FrameLayout>
