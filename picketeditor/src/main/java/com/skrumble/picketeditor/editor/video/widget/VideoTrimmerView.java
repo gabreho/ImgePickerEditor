@@ -105,16 +105,23 @@ public class VideoTrimmerView extends FrameLayout implements ViewDestroyInterfac
     private void initRangeSeekBarView() {
         if (mRangeSeekBarView != null) return;
         int rangeWidth;
+
         mLeftProgressPos = 0;
-        if (mDuration <= VideoTrimmerUtil.MAX_SHOOT_DURATION) {
-            mThumbsTotalCount = VideoTrimmerUtil.MAX_COUNT_RANGE;
-            rangeWidth = mMaxWidth;
-            mRightProgressPos = mDuration;
-        } else {
-            mThumbsTotalCount = (int) (mDuration * 1.0f / (VideoTrimmerUtil.MAX_SHOOT_DURATION * 1.0f) * VideoTrimmerUtil.MAX_COUNT_RANGE);
-            rangeWidth = mMaxWidth / VideoTrimmerUtil.MAX_COUNT_RANGE * mThumbsTotalCount;
-            mRightProgressPos = VideoTrimmerUtil.MAX_SHOOT_DURATION;
-        }
+
+        mThumbsTotalCount = VideoTrimmerUtil.MAX_COUNT_RANGE;
+        rangeWidth = mMaxWidth;
+        mRightProgressPos = mDuration;
+
+//        if (mDuration <= VideoTrimmerUtil.MAX_SHOOT_DURATION) {
+//            mThumbsTotalCount = VideoTrimmerUtil.MAX_COUNT_RANGE;
+//            rangeWidth = mMaxWidth;
+//            mRightProgressPos = mDuration;
+//        } else {
+//            mThumbsTotalCount = (int) (mDuration * 1.0f / (VideoTrimmerUtil.MAX_SHOOT_DURATION * 1.0f) * VideoTrimmerUtil.MAX_COUNT_RANGE);
+//            rangeWidth = mMaxWidth / VideoTrimmerUtil.MAX_COUNT_RANGE * mThumbsTotalCount;
+//            mRightProgressPos = VideoTrimmerUtil.MAX_SHOOT_DURATION;
+//        }
+
         mVideoThumbRecyclerView.addItemDecoration(new SpacesItemDecoration2(VideoTrimmerUtil.RECYCLER_VIEW_PADDING, mThumbsTotalCount));
         mRangeSeekBarView = new RangeSeekBarView(mContext, mLeftProgressPos, mRightProgressPos);
         mRangeSeekBarView.setSelectedMinValue(mLeftProgressPos);
