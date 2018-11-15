@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000"
+    xmlns:cpb="http://schemas.android.com/apk/res-auto"
     tools:context=".picker.activity.CameraActivity">
 
     <com.otaliastudios.cameraview.CameraView
@@ -22,12 +23,12 @@
         app:cameraPlaySounds="true"
         app:cameraSessionType="picture"
         app:cameraVideoCodec="deviceDefault"
-        app:cameraVideoMaxDuration="-1"
+        app:cameraVideoMaxDuration="60000"
         app:cameraVideoMaxSize="-1"
         app:cameraVideoQuality="max480p"
         app:cameraWhiteBalance="auto" />
 
-    <Chronometer
+    <com.skrumble.picketeditor.VideoRecorderChronometer
         android:id="@+id/timer_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -224,13 +225,28 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom">
 
+            <com.skrumble.picketeditor.CircularProgressBar
+                android:id="@+id/record_circular_progress_bar"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center|bottom"
+                cpb:progressColor="@color/ally_accent_color"
+                cpb:barStrokeWidth="2"
+                cpb:backgroundWidth="1"
+                cpb:textSize="8sp"
+                cpb:roundedCorners="true"
+                cpb:suffix=""
+                cpb:prefix=""
+                cpb:progressText=""
+                cpb:progressTextColor="@color/ally_accent_color"
+                android:visibility="visible"/>
+
             <ImageView
                 android:id="@+id/clickme"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_gravity="center|bottom"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/ring"
                 android:contentDescription="@string/capture" />
 
             <ImageView
