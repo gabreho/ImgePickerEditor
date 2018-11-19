@@ -111,3 +111,4 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
         return mProgressDialog;
     }
 }
+
