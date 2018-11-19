@@ -96,3 +96,4 @@ public class MainActivity extends AppCompatActivity {
         PickerEditor.startCameraForVideo(MainActivity.this, 1);
     }
 }
+
