@@ -10,8 +10,8 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -42,9 +42,9 @@ import com.otaliastudios.cameraview.Gesture;
 import com.otaliastudios.cameraview.GestureAction;
 import com.otaliastudios.cameraview.SessionType;
 import com.skrumble.picketeditor.CircularProgressBar;
+import com.skrumble.picketeditor.Config;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
-import com.skrumble.picketeditor.VideoRecorderChronometer;
 import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.adapters.InstantImageAdapter;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
@@ -63,7 +63,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class CameraActivity extends AppCompatActivity implements View.OnTouchListener, VideoRecorderChronometer.OnChronometerTickListener {
+public class CameraActivity extends AppCompatActivity implements View.OnTouchListener {
 
     public static String EXTRA_CAMERA_TYPE = "EXTRA_CAMERA_TYPE";
     public static int ARG_CAMERA_TYPE_PICTURE = 0;
@@ -127,7 +127,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     // Touch Time
     private long startTouchTime = 0;
 
-    private VideoRecorderChronometer chronometer;
+    private CountDownTimer countDownTimer;
 
     // *********************************************************************************************
     // region Life Cycle
@@ -148,13 +148,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
 
         if (cameraType == ARG_CAMERA_TYPE_VIDEO){
             cameraView.setSessionType(SessionType.VIDEO);
-            captureButton.setImageResource(android.R.drawable.presence_video_busy);
             instantRecyclerView.setVisibility(View.GONE);
             cameraFacingButton.setVisibility(View.GONE);
             flashButton.setVisibility(View.GONE);
             cameraViewTip.setVisibility(View.GONE);
-
-//            chronometer.setVisibility(View.VISIBLE);
         }
     }
 
@@ -291,10 +288,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         cameraViewTip = findViewById(R.id.camera_view_tip);
         cameraFacingButton = findViewById(R.id.front);
         flashButton = findViewById(R.id.flash);
-        chronometer = findViewById(R.id.timer_view);
         mCircularProgressBar = findViewById(R.id.record_circular_progress_bar);
 
-        chronometer.setOnChronometerTickListener(this);
+        mCircularProgressBar.setMaxValue(60000);
+        mCircularProgressBar.setProgress(0);
 
         FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
 
@@ -363,6 +360,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
         cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
+        cameraView.setVideoMaxDuration(Config.MAX_VIDEO_RECORDING_LENGTH);
 
         // View Methods
         onClickMethods();
@@ -669,17 +667,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
 
     // *********************************************************************************************
     // region Listeners
-
-    @Override
-    public void onChronometerTick(VideoRecorderChronometer chronometer) {
-        long time = SystemClock.currentThreadTimeMillis() - chronometer.getTimeElapsed();
-
-        int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(time);
-
-        if (seconds > 0) {
-            mCircularProgressBar.setProgress(seconds);
-        }
-    }
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
@@ -1000,10 +987,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             }
         });
 
-        cameraView.startCapturingVideo(videoFileInCatchFolder);
-        chronometer.setOnChronometerTickListener(this);
-        chronometer.start();
-
         instantRecyclerView.setVisibility(View.GONE);
         cameraViewTip.setVisibility(View.GONE);
         flashButton.setVisibility(View.GONE);
@@ -1016,7 +999,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }
 
         cameraView.stopCapturingVideo();
-        chronometer.stop();
     }
     // endregion
 

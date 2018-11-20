@@ -23,18 +23,10 @@
         app:cameraPlaySounds="true"
         app:cameraSessionType="picture"
         app:cameraVideoCodec="deviceDefault"
-        app:cameraVideoMaxDuration="60000"
+        app:cameraVideoMaxDuration="-1"
         app:cameraVideoMaxSize="-1"
         app:cameraVideoQuality="max480p"
         app:cameraWhiteBalance="auto" />
-
-    <com.skrumble.picketeditor.VideoRecorderChronometer
-        android:id="@+id/timer_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@android:color/holo_red_dark"/>
 
     <FrameLayout
         android:id="@+id/mainFrameLayout"
@@ -227,12 +219,13 @@
 
             <com.skrumble.picketeditor.CircularProgressBar
                 android:id="@+id/record_circular_progress_bar"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_gravity="center|bottom"
                 cpb:progressColor="@color/ally_accent_color"
-                cpb:barStrokeWidth="2"
-                cpb:backgroundWidth="1"
+                cpb:barStrokeWidth="4"
+                cpb:backgroundWidth="4"
+                android:layout_marginBottom="30dp"
                 cpb:textSize="8sp"
                 cpb:roundedCorners="true"
                 cpb:suffix=""
