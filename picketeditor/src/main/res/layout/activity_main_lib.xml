@@ -232,7 +232,7 @@
                 cpb:prefix=""
                 cpb:progressText=""
                 cpb:progressTextColor="@color/ally_accent_color"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/clickme"
@@ -240,6 +240,7 @@
                 android:layout_height="70dp"
                 android:layout_gravity="center|bottom"
                 android:layout_marginBottom="30dp"
+                android:background="@drawable/ring"
                 android:contentDescription="@string/capture" />
 
             <ImageView

@@ -124,9 +124,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }
     };
 
-    // Touch Time
-    private long startTouchTime = 0;
-
     private CountDownTimer countDownTimer;
 
     // *********************************************************************************************
@@ -138,7 +135,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         Utility.setupStatusBarHidden(this);
         Utility.hideStatusBar(this);
         setContentView(R.layout.activity_main_lib);
-
 
         if (getIntent() != null){
             cameraType = getIntent().getIntExtra(EXTRA_CAMERA_TYPE, 0);
@@ -152,6 +148,11 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             cameraFacingButton.setVisibility(View.GONE);
             flashButton.setVisibility(View.GONE);
             cameraViewTip.setVisibility(View.GONE);
+            captureButton.setVisibility(View.GONE);
+            mCircularProgressBar.setVisibility(View.VISIBLE);
+        }else {
+            captureButton.setVisibility(View.VISIBLE);
+            mCircularProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -290,7 +291,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         flashButton = findViewById(R.id.flash);
         mCircularProgressBar = findViewById(R.id.record_circular_progress_bar);
 
-        mCircularProgressBar.setMaxValue(60000);
+        mCircularProgressBar.setMaxValue(Config.MAX_VIDEO_RECORDING_LENGTH);
         mCircularProgressBar.setProgress(0);
 
         FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
@@ -365,6 +366,18 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         // View Methods
         onClickMethods();
         updateImages();
+
+        countDownTimer = new CountDownTimer(Config.MAX_VIDEO_RECORDING_LENGTH, 10) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mCircularProgressBar.setProgress(millisUntilFinished);
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
     }
 
     @SuppressLint("ClickableViewAccessibility")

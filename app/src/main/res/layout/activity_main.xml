@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:onClick="onPhotoCameraClick"
+            android:onClick="onCameraClick"
             android:padding="5dp"
             android:text="Photo Camera" />
 
@@ -48,17 +48,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:onClick="onVideoCameraClick"
-            android:padding="5dp"
-            android:text="Video Camera" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:onClick="onRecordVideoClick"
             android:padding="5dp"
-            android:text="Record Video" />
+            android:text="Video Camera" />
 
     </LinearLayout>
 
