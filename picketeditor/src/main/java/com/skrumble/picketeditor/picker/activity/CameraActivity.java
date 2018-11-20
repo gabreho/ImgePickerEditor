@@ -148,8 +148,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             cameraFacingButton.setVisibility(View.GONE);
             flashButton.setVisibility(View.GONE);
             cameraViewTip.setVisibility(View.GONE);
-            captureButton.setVisibility(View.GONE);
-            mCircularProgressBar.setVisibility(View.VISIBLE);
+            captureButton.setVisibility(View.VISIBLE);
+            mCircularProgressBar.setVisibility(View.GONE);
+            captureButton.setImageResource(R.drawable.ic_and_icn_rec_video);
         }else {
             captureButton.setVisibility(View.VISIBLE);
             mCircularProgressBar.setVisibility(View.GONE);
@@ -1000,10 +1001,26 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             }
         });
 
+        captureButton.setImageResource(R.drawable.ic_and_icn_rec_stop);
+        mCircularProgressBar.setVisibility(View.VISIBLE);
+        cameraView.startCapturingVideo(videoFileInCatchFolder);
+
         instantRecyclerView.setVisibility(View.GONE);
         cameraViewTip.setVisibility(View.GONE);
         flashButton.setVisibility(View.GONE);
         cameraFacingButton.setVisibility(View.GONE);
+
+        countDownTimer = new CountDownTimer(Config.MAX_VIDEO_RECORDING_LENGTH, 10) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mCircularProgressBar.setProgress(Config.MAX_VIDEO_RECORDING_LENGTH - millisUntilFinished);
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
     }
 
     private void stopRecording(){
