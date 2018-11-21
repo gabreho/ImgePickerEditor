@@ -10,6 +10,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 
 /**
  * Created by akashpatel on 2017-09-18.
@@ -105,25 +106,12 @@ public class CircularProgressBar extends View {
         textPaint.setColor(Color.parseColor(c));
         textPaint.setTextSize(textSize);
         textPaint.setAntiAlias(true);
-
-        //paint.setAntiAlias(true);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mRadius = Math.min(w, h) / 2f;
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int w = MeasureSpec.getSize(widthMeasureSpec);
-        int h = MeasureSpec.getSize(heightMeasureSpec);
-
-        int size = Math.min(w, h);
-        setMeasuredDimension(size, size);
     }
 
     @Override
