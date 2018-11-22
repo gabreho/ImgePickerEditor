@@ -30,6 +30,7 @@ import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.modals.Img;
 import com.skrumble.picketeditor.picker.utility.Constants;
 import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
+import com.skrumble.picketeditor.picker.utility.ImageVideoFetcher;
 import com.skrumble.picketeditor.picker.utility.Utility;
 
 import java.util.ArrayList;
@@ -37,6 +38,28 @@ import java.util.Calendar;
 
 public class GalleryActivity  extends AppCompatActivity implements OnSelectionListener {
 
+    enum GalleryType{
+        PICTURE(R.string.photos),
+        VIDEO(R.string.videos),
+        PICTURE_VIDEO(R.string.gallery);
+
+        int title;
+
+        GalleryType(int title){
+            this.title = title;
+        }
+
+        public static GalleryType getGalleryTypeFromInt(int intExtra){
+            switch (intExtra) {
+                case 1:
+                    return PICTURE;
+                case 2:
+                    return VIDEO;
+                default:
+                    return PICTURE_VIDEO;
+            }
+        }
+    }
 
     public static GalleryActivity activity;
 
@@ -46,6 +69,8 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
     public static final int GAlLERY_TYPE_PHOTO_AND_VIDEO = 3;
 
     private int typeOfGallery;
+
+    private GalleryType galleryType;
 
     private RecyclerView recyclerView;
     private MainImageAdapter mainImageAdapter;
@@ -97,11 +122,24 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
     }
 
     private void setGalleryType(Intent intent) {
+
+        int intExtra = intent.getIntExtra(EXTRA_GALLERY_TYPE, GAlLERY_TYPE_PHOTO_AND_VIDEO);
+
+        galleryType = GalleryType.getGalleryTypeFromInt(intExtra);
+
         if (intent.getExtras().containsKey(EXTRA_GALLERY_TYPE)) {
             typeOfGallery = intent.getIntExtra(EXTRA_GALLERY_TYPE, GAlLERY_TYPE_PHOTO_AND_VIDEO);
         } else {
             // Default
             typeOfGallery = GAlLERY_TYPE_PHOTO_AND_VIDEO;
+        }
+
+        if (typeOfGallery == GAlLERY_TYPE_VIDEO){
+            setTitle(getString(R.string.videos));
+        }else if (typeOfGallery == GAlLERY_TYPE_PICTURE){
+            setTitle(getString(R.string.photos));
+        }else {
+            setTitle(getString(R.string.gallery));
         }
     }
 
@@ -131,66 +169,12 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
 
     @SuppressLint("StaticFieldLeak")
     private void updateImages() {
-        mainImageAdapter.clearList();
-        Cursor cursor = Utility.getCursor(GalleryActivity.this, typeOfGallery);
-        ArrayList<Img> INSTANTLIST = new ArrayList<>();
-        String header = "";
-        int limit = 100;
-        if (cursor.getCount() < 100) {
-            limit = cursor.getCount();
-        }
-
-        int date;
-        int data;
-        int contentUrl;
-        int type;
-
-        switch (typeOfGallery) {
-            case GAlLERY_TYPE_PICTURE:
-                date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-                data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                type = MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
-                break;
-            case GAlLERY_TYPE_VIDEO:
-                date = cursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN);
-                data = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
-                contentUrl = cursor.getColumnIndex(MediaStore.Video.Media._ID);
-                type = MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
-                break;
-            case GAlLERY_TYPE_PHOTO_AND_VIDEO:
-            default:
-                date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-                data = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
-                contentUrl = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID);
-                type = cursor.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE);
-                break;
-        }
-        Calendar calendar;
-        for (int i = 0; i < limit; i++) {
-            cursor.moveToNext();
-            Uri path = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + cursor.getInt(contentUrl));
-            calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(cursor.getLong(date));
-            String dateDifference = Utility.getDateDifference(GalleryActivity.this, calendar);
-            if (!header.equalsIgnoreCase("" + dateDifference)) {
-                header = "" + dateDifference;
-                INSTANTLIST.add(new Img("" + dateDifference, "", "", "", 1));
+        new ImageVideoFetcher(this){
+            @Override
+            protected void onPostExecute(ArrayList<Img> imgs) {
+                mainImageAdapter.addImageList(imgs);
             }
-            switch (typeOfGallery) {
-                case GAlLERY_TYPE_PICTURE:
-                case GAlLERY_TYPE_VIDEO:
-                    INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), "", type));
-                    break;
-                case GAlLERY_TYPE_PHOTO_AND_VIDEO:
-                    INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), "", cursor.getInt(type)));
-                    break;
-            }
-
-        }
-        cursor.close();
-
-        mainImageAdapter.addImageList(INSTANTLIST);
+        }.execute(typeOfGallery);
     }
 
 
@@ -215,7 +199,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowTitleEnabled(true);
         }
     }
 

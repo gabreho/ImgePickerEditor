@@ -53,7 +53,7 @@ import com.skrumble.picketeditor.picker.modals.Img;
 import com.skrumble.picketeditor.picker.public_interface.BitmapCallback;
 import com.skrumble.picketeditor.picker.utility.Constants;
 import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
-import com.skrumble.picketeditor.picker.utility.ImageFetcher;
+import com.skrumble.picketeditor.picker.utility.ImageVideoFetcher;
 import com.skrumble.picketeditor.picker.utility.Utility;
 
 import java.io.File;
@@ -61,7 +61,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class CameraActivity extends AppCompatActivity implements View.OnTouchListener {
 
@@ -571,44 +570,15 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
 
     @SuppressLint("StaticFieldLeak")
     private void updateImages() {
-        mainImageAdapter.clearList();
-        Cursor cursor = Utility.getCursor(CameraActivity.this, GalleryActivity.GAlLERY_TYPE_PICTURE);
-        ArrayList<Img> INSTANTLIST = new ArrayList<>();
-        String header = "";
-        int limit = 100;
-        if (cursor.getCount() < 100) {
-            limit = cursor.getCount();
-        }
-        int date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-        int data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-        int contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-        int type = MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
-        Calendar calendar;
-        for (int i = 0; i < limit; i++) {
-            cursor.moveToNext();
-            Uri path = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + cursor.getInt(contentUrl));
-            calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(cursor.getLong(date));
-            String dateDifference = Utility.getDateDifference(CameraActivity.this, calendar);
-            if (!header.equalsIgnoreCase("" + dateDifference)) {
-                header = "" + dateDifference;
-                INSTANTLIST.add(new Img("" + dateDifference, "", "", "", 0));
-            }
-            INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), "", cursor.getInt(type)));
-        }
-        cursor.close();
-
-        new ImageFetcher(CameraActivity.this) {
+        new ImageVideoFetcher(CameraActivity.this) {
             @Override
             protected void onPostExecute(ArrayList<Img> imgs) {
                 super.onPostExecute(imgs);
+                initaliseadapter.addImageList(imgs);
                 mainImageAdapter.addImageList(imgs);
+                setBottomSheetBehavior();
             }
-        }.execute(Utility.getCursor(CameraActivity.this, GalleryActivity.GAlLERY_TYPE_PICTURE));
-
-        initaliseadapter.addImageList(INSTANTLIST);
-        mainImageAdapter.addImageList(INSTANTLIST);
-        setBottomSheetBehavior();
+        }.execute(Constants.TYPE_IMAGE);
     }
 
 

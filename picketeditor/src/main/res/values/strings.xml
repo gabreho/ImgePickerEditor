@@ -17,4 +17,8 @@
     <string name="compressing">Compressing</string>
     <string name="trimming">Trimming</string>
     <string name="next">Next</string>
+    <string name="videos">Videos</string>
+    <string name="photos">Photos</string>
+    <string name="gallery">Gallery</string>
+
 </resources>

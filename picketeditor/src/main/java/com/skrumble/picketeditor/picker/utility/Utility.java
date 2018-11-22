@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Utility {
 
@@ -512,6 +513,10 @@ public class Utility {
             }
         }
         return inSampleSize;
+    }
+
+    public static String convertMillisecondToTime(long milliSecond){
+        return convertSecondsToTime(TimeUnit.MILLISECONDS.toSeconds(milliSecond));
     }
 
     public static String convertSecondsToTime(long seconds) {

@@ -1,6 +1,8 @@
 package com.skrumble.picketeditor.picker.adapters;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +22,7 @@ import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.interfaces.SectionIndexer;
 import com.skrumble.picketeditor.picker.modals.Img;
+import com.skrumble.picketeditor.picker.utility.Constants;
 import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
 import com.skrumble.picketeditor.picker.utility.Utility;
 
@@ -33,14 +37,14 @@ public class MainImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private ArrayList<Img> list;
     private OnSelectionListener onSelectionListener;
-    private FrameLayout.LayoutParams layoutParams;
+    private RelativeLayout.LayoutParams layoutParams;
     private RequestManager glide;
     private RequestOptions options;
 
     public MainImageAdapter(Context context) {
         this.list = new ArrayList<>();
         int size = Utility.WIDTH / SPAN_COUNT;
-        layoutParams = new FrameLayout.LayoutParams(size, size);
+        layoutParams = new RelativeLayout.LayoutParams(size, size);
         layoutParams.setMargins(MARGIN, MARGIN - 1, MARGIN, MARGIN - 1);
         options = new RequestOptions().override(360).transform(new CenterCrop()).transform(new FitCenter());
         glide = Glide.with(context);
@@ -106,6 +110,15 @@ public class MainImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             Holder imageHolder = (Holder) holder;
             glide.load(image.getContentUrl()).apply(options).into(imageHolder.preview);
             imageHolder.selection.setVisibility(image.getSelected() ? View.VISIBLE : View.GONE);
+
+            if (image.getType() == Constants.TYPE_IMAGE){
+                imageHolder.duration.setVisibility(View.GONE);
+
+                return;
+            }
+
+            imageHolder.duration.setText(String.valueOf(Utility.convertMillisecondToTime(image.getDuration())));
+
         } else if (holder instanceof HeaderHolder) {
             HeaderHolder headerHolder = (HeaderHolder) holder;
             headerHolder.header.setText(image.getHeaderDate());
@@ -159,11 +172,15 @@ public class MainImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public class Holder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private ImageView preview;
         private ImageView selection;
+        private TextView duration;
+        private Context context;
 
         Holder(View itemView) {
             super(itemView);
+            context = itemView.getContext();
             preview = itemView.findViewById(R.id.preview);
             selection = itemView.findViewById(R.id.selection);
+            duration = itemView.findViewById(R.id.duration);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             preview.setLayoutParams(layoutParams);

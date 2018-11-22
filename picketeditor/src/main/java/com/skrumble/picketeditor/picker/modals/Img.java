@@ -1,8 +1,11 @@
 package com.skrumble.picketeditor.picker.modals;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.skrumble.picketeditor.picker.utility.Constants;
+import com.skrumble.picketeditor.picker.utility.Utility;
 
 import java.io.Serializable;
 
@@ -14,6 +17,7 @@ public class Img implements Serializable {
     private String scrollerDate;
     private int position;
     private int type;
+    private int duration;
 
     public Img(String headerDate, String contentUrl, String url, String scrollerDate, int type) {
         this.headerDate = headerDate;
@@ -82,5 +86,13 @@ public class Img implements Serializable {
 
     public void setScrollerDate(String scrollerDate) {
         this.scrollerDate = scrollerDate;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }
