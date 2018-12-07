@@ -20,5 +20,7 @@
     <string name="videos">Videos</string>
     <string name="photos">Photos</string>
     <string name="gallery">Gallery</string>
+    <string name="file">Files</string>
+    <string name="audio">Audio</string>
 
 </resources>

@@ -22,6 +22,7 @@ import android.view.WindowManager;
 
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.modals.Img;
@@ -32,29 +33,6 @@ import com.skrumble.picketeditor.utility.Utility;
 import java.util.ArrayList;
 
 public class GalleryActivity  extends AppCompatActivity implements OnSelectionListener {
-
-    public enum GalleryType{
-        PICTURE(R.string.photos),
-        VIDEO(R.string.videos),
-        PICTURE_VIDEO(R.string.gallery);
-
-        int title;
-
-        GalleryType(int title){
-            this.title = title;
-        }
-
-        public static GalleryType getGalleryTypeFromInt(int intExtra){
-            switch (intExtra) {
-                case 1:
-                    return PICTURE;
-                case 2:
-                    return VIDEO;
-                default:
-                    return PICTURE_VIDEO;
-            }
-        }
-    }
 
     public static GalleryActivity activity;
 

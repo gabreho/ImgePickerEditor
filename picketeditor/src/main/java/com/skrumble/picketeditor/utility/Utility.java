@@ -42,7 +42,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import static com.skrumble.picketeditor.gallery.GalleryActivity.GalleryType;
+import com.skrumble.picketeditor.enumeration.GalleryType;
 
 public class Utility {
 

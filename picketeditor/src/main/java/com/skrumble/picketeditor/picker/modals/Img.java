@@ -2,7 +2,7 @@ package com.skrumble.picketeditor.picker.modals;
 
 import java.io.Serializable;
 
-import static com.skrumble.picketeditor.gallery.GalleryActivity.GalleryType;
+import com.skrumble.picketeditor.enumeration.GalleryType;
 
 public class Img implements Serializable {
     private String headerDate;

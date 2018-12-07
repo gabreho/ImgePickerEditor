@@ -12,7 +12,7 @@ import com.skrumble.picketeditor.picker.modals.Img;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import static com.skrumble.picketeditor.gallery.GalleryActivity.GalleryType;
+import com.skrumble.picketeditor.enumeration.GalleryType;
 
 public class ImageVideoFetcher extends AsyncTask<GalleryType, Void, ArrayList<Img>> {
     private Context context;

@@ -16,7 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.request.RequestOptions;
 import com.skrumble.picketeditor.R;
-import com.skrumble.picketeditor.gallery.GalleryActivity;
+import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.interfaces.SectionIndexer;
 import com.skrumble.picketeditor.picker.modals.Img;
@@ -108,7 +108,7 @@ public class MainImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             glide.load(image.getContentUrl()).apply(options).into(imageHolder.preview);
             imageHolder.selection.setVisibility(image.getSelected() ? View.VISIBLE : View.GONE);
 
-            if (image.getGalleryType() == GalleryActivity.GalleryType.PICTURE){
+            if (image.getGalleryType() == GalleryType.PICTURE){
                 imageHolder.duration.setVisibility(View.GONE);
                 return;
             }

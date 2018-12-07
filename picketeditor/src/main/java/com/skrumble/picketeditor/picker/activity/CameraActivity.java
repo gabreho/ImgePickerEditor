@@ -41,7 +41,7 @@ import com.otaliastudios.cameraview.SessionType;
 import com.skrumble.picketeditor.Config;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
-import com.skrumble.picketeditor.gallery.GalleryActivity.GalleryType;
+import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.picker.adapters.InstantImageAdapter;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
