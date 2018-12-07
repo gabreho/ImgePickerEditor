@@ -15,13 +15,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static com.skrumble.picketeditor.gallery.GalleryActivity.*;
 import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO;
 import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PICTURE;
 import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_VIDEO;
 
-public class ImageVideoFetcher extends AsyncTask<Integer, Void, ArrayList<Img>> {
-
-    private ArrayList<Img> LIST = new ArrayList<>();
+public class ImageVideoFetcher extends AsyncTask<GalleryType, Void, ArrayList<Img>> {
     private Context context;
 
     public ImageVideoFetcher(Context context) {
@@ -30,15 +29,17 @@ public class ImageVideoFetcher extends AsyncTask<Integer, Void, ArrayList<Img>> 
 
     public void setDuration(Img image){
         MediaPlayer mediaPlayer = MediaPlayer.create(context, Uri.parse(image.getContentUrl()));
-        int duration = mediaPlayer.getDuration();
-        image.setDuration(duration);
+        if (mediaPlayer != null){
+            int duration = mediaPlayer.getDuration();
+            image.setDuration(duration);
+        }
     }
 
     @Override
-    protected ArrayList<Img> doInBackground(Integer... ints) {
-        int typeOfGallery = ints[0];
+    protected ArrayList<Img> doInBackground(GalleryType... galleryTypes) {
+        GalleryType galleryType = galleryTypes[0];
 
-        Cursor cursor = Utility.getCursor(context, typeOfGallery);
+        Cursor cursor = Utility.getCursor(context, galleryType);
         ArrayList<Img> list = new ArrayList<>();
         String header = "";
         int limit = 100;
@@ -51,20 +52,19 @@ public class ImageVideoFetcher extends AsyncTask<Integer, Void, ArrayList<Img>> 
         int contentUrl;
         int type;
 
-        switch (typeOfGallery) {
-            case GAlLERY_TYPE_PICTURE:
+        switch (galleryType) {
+            case PICTURE:
                 date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
                 data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
                 type = MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
                 break;
-            case GAlLERY_TYPE_VIDEO:
+            case VIDEO:
                 date = cursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN);
                 data = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
                 contentUrl = cursor.getColumnIndex(MediaStore.Video.Media._ID);
                 type = MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
                 break;
-            case GAlLERY_TYPE_PHOTO_AND_VIDEO:
             default:
                 date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
                 data = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
@@ -79,26 +79,27 @@ public class ImageVideoFetcher extends AsyncTask<Integer, Void, ArrayList<Img>> 
             calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(date));
             String dateDifference = Utility.getDateDifference(context, calendar);
+
             if (!header.equalsIgnoreCase("" + dateDifference)) {
                 header = "" + dateDifference;
-                list.add(new Img("" + dateDifference, "", "", "", 1));
+                list.add(new Img("" + dateDifference, "", "", "", GalleryType.PICTURE));
             }
-            switch (typeOfGallery) {
-                case GAlLERY_TYPE_PICTURE:
-                    list.add(new Img("" + header, "" + path, cursor.getString(data), "", type));
+
+            switch (galleryType) {
+                case PICTURE:
+                    list.add(new Img("" + header, "" + path, cursor.getString(data), "", GalleryType.PICTURE));
                     break;
-                case GAlLERY_TYPE_VIDEO:
-                    Img img = new Img("" + header, "" + path, cursor.getString(data), "", Constants.TYPE_VIDEO);
+                case VIDEO:
+                    Img img = new Img("" + header, "" + path, cursor.getString(data), "", GalleryType.VIDEO);
                     setDuration(img);
                     list.add(img);
                     break;
-                case GAlLERY_TYPE_PHOTO_AND_VIDEO:
+                default:
                     Img img2;
-
                     if (cursor.getInt(type) == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) {
-                        img2 = new Img("" + header, "" + path, cursor.getString(data), "", Constants.TYPE_IMAGE);
+                        img2 = new Img("" + header, "" + path, cursor.getString(data), "", GalleryType.PICTURE);
                     } else {
-                        img2 = new Img("" + header, "" + path, cursor.getString(data), "", Constants.TYPE_VIDEO);
+                        img2 = new Img("" + header, "" + path, cursor.getString(data), "", GalleryType.VIDEO);
                         setDuration(img2);
                     }
 

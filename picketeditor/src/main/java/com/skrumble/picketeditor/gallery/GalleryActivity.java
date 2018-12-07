@@ -38,7 +38,7 @@ import java.util.Calendar;
 
 public class GalleryActivity  extends AppCompatActivity implements OnSelectionListener {
 
-    enum GalleryType{
+    public enum GalleryType{
         PICTURE(R.string.photos),
         VIDEO(R.string.videos),
         PICTURE_VIDEO(R.string.gallery);
@@ -68,7 +68,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
     public static final int GAlLERY_TYPE_VIDEO = 2;
     public static final int GAlLERY_TYPE_PHOTO_AND_VIDEO = 3;
 
-    private int typeOfGallery;
+//    private int typeOfGallery;
 
     private GalleryType galleryType;
 
@@ -127,20 +127,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
 
         galleryType = GalleryType.getGalleryTypeFromInt(intExtra);
 
-        if (intent.getExtras().containsKey(EXTRA_GALLERY_TYPE)) {
-            typeOfGallery = intent.getIntExtra(EXTRA_GALLERY_TYPE, GAlLERY_TYPE_PHOTO_AND_VIDEO);
-        } else {
-            // Default
-            typeOfGallery = GAlLERY_TYPE_PHOTO_AND_VIDEO;
-        }
-
-        if (typeOfGallery == GAlLERY_TYPE_VIDEO){
-            setTitle(getString(R.string.videos));
-        }else if (typeOfGallery == GAlLERY_TYPE_PICTURE){
-            setTitle(getString(R.string.photos));
-        }else {
-            setTitle(getString(R.string.gallery));
-        }
+        setTitle(galleryType.title);
     }
 
     @Override
@@ -174,7 +161,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
             protected void onPostExecute(ArrayList<Img> imgs) {
                 mainImageAdapter.addImageList(imgs);
             }
-        }.execute(typeOfGallery);
+        }.execute(galleryType);
     }
 
 
@@ -216,11 +203,11 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
 
     @Override
     public void onClick(Img object, View view, int position) {
-        switch (object.getType()) {
-            case Constants.TYPE_IMAGE:
+        switch (object.getGalleryType()) {
+            case PICTURE:
                 PickerEditor.starEditor(GalleryActivity.this, object.getUrl());
                 break;
-            case Constants.TYPE_VIDEO:
+            case VIDEO:
                 PickerEditor.starVideoEditor(this, object.getUrl());
                 break;
             default:

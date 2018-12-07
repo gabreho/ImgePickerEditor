@@ -32,8 +32,8 @@ public class Constants {
             MediaStore.Files.FileColumns.TITLE
     };
 
-    public static final int TYPE_IMAGE = 1;
-    public static final int TYPE_VIDEO = 2;
+//    public static final int TYPE_IMAGE = 1;
+//    public static final int TYPE_VIDEO = 2;
 
     public static Uri IMAGES_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
     public static Uri VIDEO_URI = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;

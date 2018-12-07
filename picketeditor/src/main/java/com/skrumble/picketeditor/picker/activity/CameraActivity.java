@@ -46,6 +46,7 @@ import com.skrumble.picketeditor.Config;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.gallery.GalleryActivity;
+import com.skrumble.picketeditor.gallery.GalleryActivity.GalleryType;
 import com.skrumble.picketeditor.picker.adapters.InstantImageAdapter;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
@@ -578,7 +579,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
                 mainImageAdapter.addImageList(imgs);
                 setBottomSheetBehavior();
             }
-        }.execute(Constants.TYPE_IMAGE);
+        }.execute(GalleryType.PICTURE);
     }
 
 

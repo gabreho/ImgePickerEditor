@@ -43,6 +43,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import static com.skrumble.picketeditor.gallery.GalleryActivity.*;
+
 public class Utility {
 
     public static int HEIGHT, WIDTH;
@@ -135,33 +137,32 @@ public class Utility {
         return topChild == null;
     }
 
-    public static Cursor getCursor(Context context, int typeOfGallery) {
+    public static Cursor getCursor(Context context, GalleryType galleryType) {
         Uri cursorUri;
         String[] cursorProjection;
         String cursorSelection = null;
         String cursorOrderBy;
 
-        switch (typeOfGallery) {
-            case GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO:
-                cursorUri = Constants.IMAGES_AND_VIDEO_URI;
-                cursorProjection = Constants.IMAGES_AND_VIDEOS_PROJECTION;
-                cursorSelection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
-                                + " OR "
-                                + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
-                cursorOrderBy = Constants.IMAGES_AND_VIDEOS_ORDERBY;
-                break;
-            case GalleryActivity.GAlLERY_TYPE_VIDEO:
+        switch (galleryType) {
+            case VIDEO:
                 cursorUri = Constants.VIDEO_URI;
                 cursorProjection = Constants.VIDEOS_PROJECTION;
                 cursorOrderBy = Constants.VIDEOS_ORDERBY;
                 break;
-            case GalleryActivity.GAlLERY_TYPE_PICTURE:
-            default:
+            case PICTURE:
                 cursorUri = Constants.IMAGES_URI;
                 cursorProjection = Constants.IMAGES_PROJECTION;
                 cursorOrderBy = Constants.IMAGES_ORDERBY;
+                break;
+            default:
+                cursorUri = Constants.IMAGES_AND_VIDEO_URI;
+                cursorProjection = Constants.IMAGES_AND_VIDEOS_PROJECTION;
+                cursorSelection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                        + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                        + " OR "
+                        + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                        + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+                cursorOrderBy = Constants.IMAGES_AND_VIDEOS_ORDERBY;
                 break;
         }
         return context.getContentResolver().query(cursorUri, cursorProjection, cursorSelection, null, cursorOrderBy);
