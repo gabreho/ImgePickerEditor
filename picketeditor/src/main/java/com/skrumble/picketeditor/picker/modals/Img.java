@@ -1,16 +1,8 @@
 package com.skrumble.picketeditor.picker.modals;
 
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.provider.MediaStore;
-
-import com.skrumble.picketeditor.gallery.GalleryActivity;
-import com.skrumble.picketeditor.picker.utility.Constants;
-import com.skrumble.picketeditor.picker.utility.Utility;
-
 import java.io.Serializable;
 
-import static com.skrumble.picketeditor.gallery.GalleryActivity.*;
+import static com.skrumble.picketeditor.gallery.GalleryActivity.GalleryType;
 
 public class Img implements Serializable {
     private String headerDate;

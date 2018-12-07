@@ -1,14 +1,11 @@
 package com.skrumble.picketeditor.picker.adapters;
 
 import android.content.Context;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,9 +20,8 @@ import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.interfaces.SectionIndexer;
 import com.skrumble.picketeditor.picker.modals.Img;
-import com.skrumble.picketeditor.picker.utility.Constants;
-import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
-import com.skrumble.picketeditor.picker.utility.Utility;
+import com.skrumble.picketeditor.utility.HeaderItemDecoration;
+import com.skrumble.picketeditor.utility.Utility;
 
 import java.util.ArrayList;
 

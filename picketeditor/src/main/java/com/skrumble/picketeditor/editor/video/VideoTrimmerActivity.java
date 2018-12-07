@@ -5,16 +5,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.editor.video.compress.VideoCompressor;
-import com.skrumble.picketeditor.editor.video.public_interface.VideoCompressListener;
-import com.skrumble.picketeditor.editor.video.public_interface.VideoTrimListener;
 import com.skrumble.picketeditor.editor.video.widget.VideoTrimmerView;
 import com.skrumble.picketeditor.gallery.GalleryActivity;
-import com.skrumble.picketeditor.picker.utility.Utility;
+import com.skrumble.picketeditor.public_interface.VideoCompressListener;
+import com.skrumble.picketeditor.public_interface.VideoTrimListener;
+import com.skrumble.picketeditor.utility.Utility;
 
 import java.io.File;
 

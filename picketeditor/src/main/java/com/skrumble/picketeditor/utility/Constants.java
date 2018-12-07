@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.picker.utility;
+package com.skrumble.picketeditor.utility;
 
 import android.net.Uri;
 import android.provider.MediaStore;

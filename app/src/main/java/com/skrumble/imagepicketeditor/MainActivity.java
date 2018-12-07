@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
-import com.skrumble.picketeditor.picker.utility.PermUtil;
+import com.skrumble.picketeditor.utility.PermUtil;
 
 public class MainActivity extends AppCompatActivity {
 

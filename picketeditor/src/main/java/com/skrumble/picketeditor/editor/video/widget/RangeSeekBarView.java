@@ -19,7 +19,7 @@ import android.view.ViewConfiguration;
 
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerUtil;
-import com.skrumble.picketeditor.picker.utility.Utility;
+import com.skrumble.picketeditor.utility.Utility;
 
 import java.text.DecimalFormat;
 

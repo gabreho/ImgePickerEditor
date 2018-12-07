@@ -7,9 +7,7 @@ import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -26,14 +24,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.skrumble.picketeditor.BackgroundExecutor;
 import com.skrumble.picketeditor.R;
-import com.skrumble.picketeditor.UiThreadExecutor;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerAdapter;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerUtil;
-import com.skrumble.picketeditor.editor.video.public_interface.OnCompletion;
-import com.skrumble.picketeditor.editor.video.public_interface.VideoTrimListener;
-import com.skrumble.picketeditor.editor.video.public_interface.ViewDestroyInterface;
+import com.skrumble.picketeditor.executor.BackgroundExecutor;
+import com.skrumble.picketeditor.executor.UiThreadExecutor;
+import com.skrumble.picketeditor.public_interface.OnCompletion;
+import com.skrumble.picketeditor.public_interface.VideoTrimListener;
+import com.skrumble.picketeditor.public_interface.ViewDestroyInterface;
 
 import java.io.File;
 

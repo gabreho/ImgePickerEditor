@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor;
+package com.skrumble.picketeditor.executor;
 
 import android.os.Handler;
 import android.os.Looper;

@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.picker.public_interface;
+package com.skrumble.picketeditor.public_interface;
 
 import android.graphics.Bitmap;
 import android.support.annotation.UiThread;

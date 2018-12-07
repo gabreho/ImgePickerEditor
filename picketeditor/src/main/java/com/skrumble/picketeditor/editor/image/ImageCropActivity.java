@@ -15,14 +15,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.gallery.GalleryActivity;
-import com.skrumble.picketeditor.picker.utility.Utility;
+import com.skrumble.picketeditor.utility.Utility;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
 import com.yalantis.ucrop.UCropFragment;

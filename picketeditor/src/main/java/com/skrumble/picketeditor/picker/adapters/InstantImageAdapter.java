@@ -17,7 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.modals.Img;
-import com.skrumble.picketeditor.picker.utility.Utility;
+import com.skrumble.picketeditor.utility.Utility;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.picker.utility;
+package com.skrumble.picketeditor.utility;
 
 import android.Manifest;
 import android.app.Activity;
@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
 import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
 

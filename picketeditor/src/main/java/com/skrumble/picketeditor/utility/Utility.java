@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.picker.utility;
+package com.skrumble.picketeditor.utility;
 
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
@@ -28,8 +28,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.skrumble.picketeditor.R;
-import com.skrumble.picketeditor.gallery.GalleryActivity;
-import com.skrumble.picketeditor.picker.public_interface.BitmapCallback;
+import com.skrumble.picketeditor.public_interface.BitmapCallback;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -43,7 +42,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import static com.skrumble.picketeditor.gallery.GalleryActivity.*;
+import static com.skrumble.picketeditor.gallery.GalleryActivity.GalleryType;
 
 public class Utility {
 

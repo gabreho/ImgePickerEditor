@@ -3,14 +3,11 @@ package com.skrumble.picketeditor.gallery;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -28,13 +25,11 @@ import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.modals.Img;
-import com.skrumble.picketeditor.picker.utility.Constants;
-import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
-import com.skrumble.picketeditor.picker.utility.ImageVideoFetcher;
-import com.skrumble.picketeditor.picker.utility.Utility;
+import com.skrumble.picketeditor.utility.HeaderItemDecoration;
+import com.skrumble.picketeditor.utility.ImageVideoFetcher;
+import com.skrumble.picketeditor.utility.Utility;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class GalleryActivity  extends AppCompatActivity implements OnSelectionListener {
 

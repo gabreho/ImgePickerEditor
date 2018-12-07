@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.picker.utility;
+package com.skrumble.picketeditor.utility;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,18 +7,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 
-import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.modals.Img;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
 
-import static com.skrumble.picketeditor.gallery.GalleryActivity.*;
-import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO;
-import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PICTURE;
-import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_VIDEO;
+import static com.skrumble.picketeditor.gallery.GalleryActivity.GalleryType;
 
 public class ImageVideoFetcher extends AsyncTask<GalleryType, Void, ArrayList<Img>> {
     private Context context;

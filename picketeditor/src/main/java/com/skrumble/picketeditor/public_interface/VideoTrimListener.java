@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.editor.video.public_interface;
+package com.skrumble.picketeditor.public_interface;
 
 public interface VideoTrimListener {
     void onStartTrim();

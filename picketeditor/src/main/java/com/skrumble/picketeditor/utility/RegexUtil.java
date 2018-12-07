@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.picker.utility;
+package com.skrumble.picketeditor.utility;
 
 public class RegexUtil {
     private static final String GIF_PATTERN = "(.+?)\\.gif$";

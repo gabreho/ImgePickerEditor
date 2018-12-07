@@ -2,22 +2,17 @@ package com.skrumble.picketeditor;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
 import com.skrumble.picketeditor.editor.image.ImageCropActivity;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerActivity;
 import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.picker.activity.CameraActivity;
-import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
-import com.skrumble.picketeditor.picker.utility.PermUtil;
 
 import static com.skrumble.picketeditor.gallery.GalleryActivity.EXTRA_GALLERY_TYPE;
 import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO;
 import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PICTURE;
 import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_VIDEO;
-
 import static com.skrumble.picketeditor.picker.activity.CameraActivity.SELECTION;
 
 public class PickerEditor {

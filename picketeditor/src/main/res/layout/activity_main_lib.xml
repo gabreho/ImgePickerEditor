@@ -217,7 +217,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom">
 
-            <com.skrumble.picketeditor.CircularProgressBar
+            <com.skrumble.picketeditor.view.CircularProgressBar
                 android:id="@+id/record_circular_progress_bar"
                 android:layout_width="110dp"
                 android:layout_height="110dp"

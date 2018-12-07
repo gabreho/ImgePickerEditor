@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor;
+package com.skrumble.picketeditor.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,7 +10,8 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
+
+import com.skrumble.picketeditor.R;
 
 /**
  * Created by akashpatel on 2017-09-18.
