@@ -3,8 +3,6 @@ package com.skrumble.picketeditor.data_loaders;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.BaseColumns;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -18,17 +16,15 @@ import com.skrumble.picketeditor.public_interface.OnCompletion;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import static android.provider.BaseColumns._ID;
+import static android.provider.MediaStore.Files.FileColumns._ID;
+import static android.provider.MediaStore.Files.FileColumns.TITLE;
+import static android.provider.MediaStore.Files.FileColumns.DATA;
+import static android.provider.MediaStore.Files.FileColumns.SIZE;
+import static android.provider.MediaStore.Files.FileColumns.DATE_ADDED;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE;
-import static android.provider.MediaStore.Files.FileColumns.MIME_TYPE;
-import static android.provider.MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME;
-import static android.provider.MediaStore.Images.ImageColumns.BUCKET_ID;
-import static android.provider.MediaStore.Images.ImageColumns.ORIENTATION;
-import static android.provider.MediaStore.MediaColumns.DATA;
-import static android.provider.MediaStore.MediaColumns.DATE_ADDED;
-import static android.provider.MediaStore.MediaColumns.SIZE;
-import static android.provider.MediaStore.MediaColumns.TITLE;
+
 import static android.provider.MediaStore.Video.VideoColumns.DURATION;
+import static android.provider.MediaStore.Files.FileColumns.MIME_TYPE;
 
 public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -106,7 +102,7 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             String path = cursor.getString(cursor.getColumnIndexOrThrow(DATA));
             long size = cursor.getLong(cursor.getColumnIndexOrThrow(SIZE));
             long dateTime = cursor.getLong(cursor.getColumnIndexOrThrow(DATE_ADDED));
-            String mediaType = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA_TYPE));
+            int mediaType = cursor.getInt(cursor.getColumnIndexOrThrow(MEDIA_TYPE));
 
             long duration = cursor.getLong(cursor.getColumnIndexOrThrow(DURATION));
 
@@ -139,7 +135,7 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             String path = cursor.getString(cursor.getColumnIndexOrThrow(DATA));
             long size = cursor.getLong(cursor.getColumnIndexOrThrow(SIZE));
             long dateTime = cursor.getLong(cursor.getColumnIndexOrThrow(DATE_ADDED));
-            String mediaType = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA_TYPE));
+            int mediaType = cursor.getInt(cursor.getColumnIndexOrThrow(MEDIA_TYPE));
 
             long duration = cursor.getLong(cursor.getColumnIndexOrThrow(DURATION));
 
@@ -172,7 +168,7 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             String path = cursor.getString(cursor.getColumnIndexOrThrow(DATA));
             long size = cursor.getLong(cursor.getColumnIndexOrThrow(SIZE));
             long dateTime = cursor.getLong(cursor.getColumnIndexOrThrow(DATE_ADDED));
-            String mediaType = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA_TYPE));
+            int mediaType = cursor.getInt(cursor.getColumnIndexOrThrow(MEDIA_TYPE));
 
             if (size < 1) continue;
             if (path == null || path.equals("")) continue;
@@ -202,7 +198,7 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             String path = cursor.getString(cursor.getColumnIndexOrThrow(DATA));
             long size = cursor.getLong(cursor.getColumnIndexOrThrow(SIZE));
             long dateTime = cursor.getLong(cursor.getColumnIndexOrThrow(DATE_ADDED));
-            String mediaType = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA_TYPE));
+            String mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MIME_TYPE));
 
             long duration = cursor.getLong(cursor.getColumnIndexOrThrow(DURATION));
 
@@ -212,7 +208,7 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             media.setId(id);
             media.setName(name);
             media.setTime(dateTime);
-            media.setMediaType(mediaType);
+            media.setMimeType(mimeType);
             media.setSize(size);
             media.setPath(path);
             media.setDuration(duration);
@@ -234,7 +230,7 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             String path = cursor.getString(cursor.getColumnIndexOrThrow(DATA));
             long size = cursor.getLong(cursor.getColumnIndexOrThrow(SIZE));
             long dateTime = cursor.getLong(cursor.getColumnIndexOrThrow(DATE_ADDED));
-            String mediaType = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA_TYPE));
+            String mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MIME_TYPE));
 
             if (size < 1) continue;
             if (path == null || path.equals("")) continue;
@@ -242,8 +238,8 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             media.setId(id);
             media.setName(name);
             media.setTime(dateTime);
-            media.setMediaType(mediaType);
             media.setSize(size);
+            media.setMimeType(mimeType);
             media.setPath(path);
 
             mediaArrayList.add(media);

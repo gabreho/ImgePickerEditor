@@ -10,11 +10,12 @@ import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
 public class AudioLoader extends CursorLoader {
     private static final String[] AUDIO_PROJECTION = {
             //Base File
-            MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.SIZE,
-            MediaStore.Audio.Media.DATE_ADDED,
+            MediaStore.Files.FileColumns._ID,
+            MediaStore.Files.FileColumns.TITLE,
+            MediaStore.Files.FileColumns.DATA,
+            MediaStore.Files.FileColumns.SIZE,
+            MediaStore.Files.FileColumns.DATE_ADDED,
+            MediaStore.Files.FileColumns.MEDIA_TYPE,
             //Audio File
             MediaStore.Audio.Media.DURATION
     };

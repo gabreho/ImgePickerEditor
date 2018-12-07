@@ -1,7 +1,6 @@
 package com.skrumble.picketeditor.data_loaders;
 
 import android.content.Context;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.CursorLoader;
@@ -15,11 +14,8 @@ public class ImageLoader extends CursorLoader {
             MediaStore.Images.Media.TITLE,
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.SIZE,
-            MediaStore.Images.Media.BUCKET_ID,
-            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Images.Media.DATE_ADDED,
-            //Image File
-            MediaStore.Images.Media.ORIENTATION
+            MediaStore.Images.Media.MIME_TYPE
     };
 
     public ImageLoader(@NonNull Context context) {

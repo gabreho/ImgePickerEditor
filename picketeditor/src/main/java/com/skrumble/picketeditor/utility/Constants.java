@@ -43,4 +43,6 @@ public class Constants {
     public static String VIDEOS_ORDERBY = MediaStore.Video.Media.DATE_TAKEN + " DESC";
     public static String IMAGES_AND_VIDEOS_ORDERBY = MediaStore.Files.FileColumns.DATE_ADDED + " DESC";
 
+    public static int SPAN_COUNT = 3;
+
 }

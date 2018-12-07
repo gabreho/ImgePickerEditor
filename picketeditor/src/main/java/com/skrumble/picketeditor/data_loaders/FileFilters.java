@@ -33,7 +33,8 @@ public class FileFilters {
     }
 
     public static void getImages(FragmentActivity activity, OnCompletion<GalleryType, ArrayList<Media>> callback){
-        LoaderManager.getInstance(activity).initLoader(0, null, new MediaLoaderCallBack(activity, GalleryType.PICTURE, callback));
+//        LoaderManager.getInstance(activity).initLoader(0, null, new MediaLoaderCallBack(activity, GalleryType.PICTURE, callback));
+        activity.getSupportLoaderManager().initLoader(0, null, new MediaLoaderCallBack(activity, GalleryType.PICTURE, callback));
     }
 
     public static void getVideos(FragmentActivity activity, OnCompletion<GalleryType, ArrayList<Media>> callback){

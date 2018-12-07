@@ -543,4 +543,21 @@ public class Utility {
         }
         return timeStr;
     }
+
+    public static String getSizeByUnit(double fileSize, boolean displayDecimal) {
+        if (fileSize <= 0) {
+            return "0";
+        }
+        final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(fileSize) / Math.log10(1024));
+
+        String size = "";
+        String pattern = displayDecimal ? "#,##0.#" : "#,##0";
+        try {
+            size = new DecimalFormat(pattern).format(fileSize / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+        }catch (Exception e){
+            size = "0";
+        }
+        return size;
+    }
 }

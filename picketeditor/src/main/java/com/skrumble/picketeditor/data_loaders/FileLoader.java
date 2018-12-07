@@ -14,6 +14,7 @@ public class FileLoader extends CursorLoader {
             MediaStore.Files.FileColumns.DATA,
             MediaStore.Files.FileColumns.SIZE,
             MediaStore.Files.FileColumns.DATE_ADDED,
+            MediaStore.Files.FileColumns.MEDIA_TYPE,
 
             //Normal File
             MediaStore.Files.FileColumns.MIME_TYPE

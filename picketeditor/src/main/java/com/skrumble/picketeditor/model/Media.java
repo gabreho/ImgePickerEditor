@@ -9,10 +9,11 @@ public class Media implements Parcelable {
     public String name;
     public String extension;
     public long time;
-    public String mediaType;
+    int mediaType;
     public long size;
     public int id;
     public long duration;
+    public String mimeType;
 
     public Media() {
         id = 0;
@@ -22,10 +23,19 @@ public class Media implements Parcelable {
         path = "";
 
         time = 0;
-        mediaType = "";
+        mediaType = 0;
+        mimeType = "";
         size = 0;
 
         duration = 0;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     public String getPath() {
@@ -62,11 +72,11 @@ public class Media implements Parcelable {
         this.time = time;
     }
 
-    public String getMediaType() {
+    public int getMediaType() {
         return mediaType;
     }
 
-    public void setMediaType(String mediaType) {
+    public void setMediaType(int mediaType) {
         this.mediaType = mediaType;
     }
 
@@ -106,7 +116,7 @@ public class Media implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.extension);
         dest.writeLong(this.time);
-        dest.writeString(this.mediaType);
+        dest.writeInt(this.mediaType);
         dest.writeLong(this.size);
         dest.writeInt(this.id);
     }
@@ -116,7 +126,7 @@ public class Media implements Parcelable {
         this.name = in.readString();
         this.extension = in.readString();
         this.time = in.readLong();
-        this.mediaType = in.readString();
+        this.mediaType = in.readInt();
         this.size = in.readLong();
         this.id = in.readInt();
     }

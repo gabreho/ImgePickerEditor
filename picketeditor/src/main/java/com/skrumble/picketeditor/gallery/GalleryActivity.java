@@ -127,7 +127,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
         FileFilters.getData(this, galleryType, new OnCompletion<GalleryType, ArrayList<Media>>() {
             @Override
             public void onCompleted(GalleryType galleryType, ArrayList<Media> media) {
-
+                mediaGridAdapter.setData(media);
             }
         });
     }

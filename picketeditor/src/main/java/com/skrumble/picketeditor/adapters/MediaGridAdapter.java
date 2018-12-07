@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,8 +16,11 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.OnClickAction;
+import com.skrumble.picketeditor.utility.Constants;
+import com.skrumble.picketeditor.utility.Utility;
 
 import java.util.ArrayList;
 
@@ -51,6 +55,11 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
         this.onClickAction = onClickAction;
     }
 
+    public void setData(ArrayList<Media> media) {
+        mediaArrayList.addAll(media);
+        notifyDataSetChanged();
+    }
+
     public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         ImageView previewImageView;
@@ -80,6 +89,12 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
                     onClickAction.onClick(media);
                 }
             });
+
+            itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getItemWidth()));
+        }
+
+        private int getItemWidth() {
+            return (Utility.WIDTH / Constants.SPAN_COUNT) - Constants.SPAN_COUNT;
         }
 
         public void setMediaFile(Media mediaFile) {
@@ -95,6 +110,16 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
             Glide.with(rootView.getContext()).load(path)
                     .apply(options)
                     .into(previewImageView);
+
+            gifInfoLayout.setVisibility(mediaFile.getExtension().contains("gif") ? View.VISIBLE : View.GONE);
+
+            if (mediaFile.getMimeType().contains("video")){
+                videoInfoLayout.setVisibility(View.VISIBLE);
+                videoDuration.setText(Utility.convertMillisecondToTime(mediaFile.duration));
+                videoSize.setText(Utility.getSizeByUnit(mediaFile.getSize(), true));
+            }else {
+                videoInfoLayout.setVisibility(View.GONE);
+            }
 
         }
     }
