@@ -22,17 +22,22 @@ import android.view.WindowManager;
 
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.adapters.MediaGridAdapter;
+import com.skrumble.picketeditor.data_loaders.FileFilters;
 import com.skrumble.picketeditor.enumeration.GalleryType;
+import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.modals.Img;
+import com.skrumble.picketeditor.public_interface.OnClickAction;
+import com.skrumble.picketeditor.public_interface.OnCompletion;
 import com.skrumble.picketeditor.utility.HeaderItemDecoration;
 import com.skrumble.picketeditor.utility.ImageVideoFetcher;
 import com.skrumble.picketeditor.utility.Utility;
 
 import java.util.ArrayList;
 
-public class GalleryActivity  extends AppCompatActivity implements OnSelectionListener {
+public class GalleryActivity  extends AppCompatActivity implements OnSelectionListener, OnClickAction<Media> {
 
     public static GalleryActivity activity;
 
@@ -46,7 +51,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
     private GalleryType galleryType;
 
     private RecyclerView recyclerView;
-    private MainImageAdapter mainImageAdapter;
+    private MediaGridAdapter mediaGridAdapter;
     private Toolbar toolbar;
 
     @Override
@@ -65,21 +70,14 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
 
         setupAppBar();
 
-        mainImageAdapter = new MainImageAdapter(this);
-        mainImageAdapter.addOnSelectionListener(this);
-
-        recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
+        mediaGridAdapter = new MediaGridAdapter();
+        mediaGridAdapter.setOnClickAction(this);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, MainImageAdapter.SPAN_COUNT);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (mainImageAdapter.getItemViewType(position) == MainImageAdapter.HEADER) {
-                    return MainImageAdapter.SPAN_COUNT;
-                }
-                return 1;
-            }
-        });
+
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        recyclerView.setAdapter(mediaGridAdapter);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,9 +86,6 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
             }
         });
 
-        recyclerView.setLayoutManager(gridLayoutManager);
-
-        recyclerView.setAdapter(mainImageAdapter);
         updateImages();
     }
 
@@ -129,14 +124,13 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
 
     @SuppressLint("StaticFieldLeak")
     private void updateImages() {
-        new ImageVideoFetcher(this){
+        FileFilters.getData(this, galleryType, new OnCompletion<GalleryType, ArrayList<Media>>() {
             @Override
-            protected void onPostExecute(ArrayList<Img> imgs) {
-                mainImageAdapter.addImageList(imgs);
-            }
-        }.execute(galleryType);
-    }
+            public void onCompleted(GalleryType galleryType, ArrayList<Media> media) {
 
+            }
+        });
+    }
 
     private void setupAppBar() {
         setStatusBarColor(Color.BLACK);
@@ -194,6 +188,11 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
 
     @Override
     public void onLongClick(Img img, View view, int position) {
+
+    }
+
+    @Override
+    public void onClick(Media object) {
 
     }
 }
