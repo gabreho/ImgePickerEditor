@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.gallery;
+package com.skrumble.picketeditor.activity;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -27,19 +27,13 @@ import com.skrumble.picketeditor.data_loaders.FileFilters;
 import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
-import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
-import com.skrumble.picketeditor.picker.modals.Img;
 import com.skrumble.picketeditor.public_interface.OnClickAction;
 import com.skrumble.picketeditor.public_interface.OnCompletion;
-import com.skrumble.picketeditor.utility.HeaderItemDecoration;
-import com.skrumble.picketeditor.utility.ImageVideoFetcher;
 import com.skrumble.picketeditor.utility.Utility;
 
 import java.util.ArrayList;
 
-public class GalleryActivity  extends AppCompatActivity implements OnSelectionListener, OnClickAction<Media> {
-
-    public static GalleryActivity activity;
+public class GalleryActivity  extends AppCompatActivity implements OnClickAction<Media> {
 
     public static final String EXTRA_GALLERY_TYPE = "GALLERY_TYPE";
     public static final int GAlLERY_TYPE_PICTURE = 1;
@@ -60,10 +54,6 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
         setContentView(R.layout.activity_gallery);
 
         setGalleryType(getIntent());
-
-        activity = this;
-
-        Utility.getScreenSize(this);
 
         recyclerView = findViewById(R.id.recyclerView);
         toolbar = findViewById(R.id.toolbar);
@@ -101,25 +91,21 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
     @Override
     protected void onRestart() {
         super.onRestart();
-        Utility.getScreenSize(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Utility.getScreenSize(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Utility.getScreenSize(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        activity = null;
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -169,30 +155,20 @@ public class GalleryActivity  extends AppCompatActivity implements OnSelectionLi
     }
 
     @Override
-    public void onClick(Img object, View view, int position) {
-        switch (object.getGalleryType()) {
-            case PICTURE:
-                PickerEditor.starEditor(GalleryActivity.this, object.getUrl());
-                break;
-            case VIDEO:
-                PickerEditor.starVideoEditor(this, object.getUrl());
-                break;
-            default:
-                Intent intent = new Intent();
-                intent.putExtra(PickerEditor.RESULT_FILE, object.getUrl());
-                setResult(RESULT_OK, intent);
-                finish();
-                break;
-        }
-    }
-
-    @Override
-    public void onLongClick(Img img, View view, int position) {
-
-    }
-
-    @Override
     public void onClick(Media object) {
+        if (object.isImage()) {
+            PickerEditor.starEditor(GalleryActivity.this, object.getPath());
+            return;
+        }
 
+        if (object.isVideo()) {
+            PickerEditor.starVideoEditor(this, object.getPath());
+            return;
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra(PickerEditor.RESULT_FILE, object.getPath());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

@@ -10,7 +10,7 @@ import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.editor.video.compress.VideoCompressor;
 import com.skrumble.picketeditor.editor.video.widget.VideoTrimmerView;
-import com.skrumble.picketeditor.gallery.GalleryActivity;
+import com.skrumble.picketeditor.activity.GalleryActivity;
 import com.skrumble.picketeditor.public_interface.VideoCompressListener;
 import com.skrumble.picketeditor.public_interface.VideoTrimListener;
 import com.skrumble.picketeditor.utility.Utility;

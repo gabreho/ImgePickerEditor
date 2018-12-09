@@ -16,7 +16,6 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.skrumble.picketeditor.R;
-import com.skrumble.picketeditor.gallery.GalleryActivity;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.OnClickAction;
 import com.skrumble.picketeditor.utility.Constants;

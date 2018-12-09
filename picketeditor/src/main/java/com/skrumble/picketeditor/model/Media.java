@@ -30,6 +30,14 @@ public class Media implements Parcelable {
         duration = 0;
     }
 
+    public boolean isVideo(){
+        return getMimeType().contains("video");
+    }
+
+    public boolean isImage(){
+        return getMimeType().contains("image");
+    }
+
     public String getMimeType() {
         return mimeType;
     }

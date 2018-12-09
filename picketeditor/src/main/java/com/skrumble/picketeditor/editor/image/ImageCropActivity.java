@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
-import com.skrumble.picketeditor.gallery.GalleryActivity;
+import com.skrumble.picketeditor.activity.GalleryActivity;
 import com.skrumble.picketeditor.utility.Utility;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;

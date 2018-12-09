@@ -41,6 +41,7 @@ import com.otaliastudios.cameraview.SessionType;
 import com.skrumble.picketeditor.Config;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.adapters.MediaGridAdapter;
 import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.picker.adapters.InstantImageAdapter;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
@@ -100,6 +101,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     // Adapters
     private InstantImageAdapter initaliseadapter;
     private MainImageAdapter mainImageAdapter;
+    private MediaGridAdapter mediaGridAdapter;
 
     // Handlers
     private Handler handler = new Handler();
