@@ -1,23 +1,23 @@
 package com.skrumble.imagepicketeditor;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.skrumble.picketeditor.PickerEditor;
+import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
+import com.skrumble.picketeditor.utility.PermUtil;
+import com.skrumble.picketeditor.utility.Utility;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-    }
-
-    public void OnTextViewClick(View view) {
 
     }
 
@@ -27,18 +27,73 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void OnVideoPickerClick(View view) {
-        PickerEditor.openVideoGallery(this, 1);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PermUtil.checkForCamaraWritePermissions(this, new WorkFinish() {
+                @Override
+                public void onWorkFinish(Boolean check) {
+                    PickerEditor.openVideoGallery(MainActivity.this, 1);
+                }
+            });
+            return;
+        }
+
+        PickerEditor.openVideoGallery(MainActivity.this, 1);
     }
 
     public void OnImagePickClick(View view) {
-        PickerEditor.openPictureGallery(this, 1);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PermUtil.checkForCamaraWritePermissions(this, new WorkFinish() {
+
+                @Override
+                public void onWorkFinish(Boolean check) {
+                    PickerEditor.openPictureGallery(MainActivity.this, 1);
+                }
+            });
+            return;
+        }
+        PickerEditor.openPictureGallery(MainActivity.this, 1);
     }
 
     public void onCameraClick(View view) {
-        PickerEditor.startCamera(this, 1);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PermUtil.checkForCamaraWritePermissions(this, new WorkFinish() {
+
+                @Override
+                public void onWorkFinish(Boolean check) {
+                    PickerEditor.startCamera(MainActivity.this, 1);
+                }
+            });
+            return;
+        }
+        PickerEditor.startCamera(MainActivity.this, 1);
     }
 
     public void onImageAndVideoClick(View view) {
-        PickerEditor.openPictureAndVideoGallery(this, 1);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PermUtil.checkForCamaraWritePermissions(this, new WorkFinish() {
+                @Override
+                public void onWorkFinish(Boolean check) {
+                    PickerEditor.openPictureAndVideoGallery(MainActivity.this, 1);
+                }
+            });
+            return;
+        }
+
+        PickerEditor.openPictureAndVideoGallery(MainActivity.this, 1);
+    }
+
+    public void onRecordVideoClick(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PermUtil.checkForCamaraWritePermissions(this, new WorkFinish() {
+                @Override
+                public void onWorkFinish(Boolean check) {
+                    PickerEditor.startCameraForVideo(MainActivity.this, 1);
+                }
+            });
+
+            return;
+        }
+
+        PickerEditor.startCameraForVideo(MainActivity.this, 1);
     }
 }

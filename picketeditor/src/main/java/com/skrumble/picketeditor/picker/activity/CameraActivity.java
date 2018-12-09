@@ -4,14 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -40,27 +38,35 @@ import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Gesture;
 import com.otaliastudios.cameraview.GestureAction;
 import com.otaliastudios.cameraview.SessionType;
+import com.skrumble.picketeditor.Config;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
-import com.skrumble.picketeditor.gallery.GalleryActivity;
+import com.skrumble.picketeditor.adapters.MediaGridAdapter;
+import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.picker.adapters.InstantImageAdapter;
 import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
 import com.skrumble.picketeditor.picker.modals.Img;
-import com.skrumble.picketeditor.picker.public_interface.BitmapCallback;
-import com.skrumble.picketeditor.picker.utility.Constants;
-import com.skrumble.picketeditor.picker.utility.HeaderItemDecoration;
-import com.skrumble.picketeditor.picker.utility.ImageFetcher;
-import com.skrumble.picketeditor.picker.utility.Utility;
+import com.skrumble.picketeditor.public_interface.BitmapCallback;
+import com.skrumble.picketeditor.utility.Constants;
+import com.skrumble.picketeditor.utility.HeaderItemDecoration;
+import com.skrumble.picketeditor.utility.ImageVideoFetcher;
+import com.skrumble.picketeditor.utility.Utility;
+import com.skrumble.picketeditor.view.CircularProgressBar;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class CameraActivity extends AppCompatActivity implements View.OnTouchListener {
+
+    public static String EXTRA_CAMERA_TYPE = "EXTRA_CAMERA_TYPE";
+    public static int ARG_CAMERA_TYPE_PICTURE = 0;
+    public static int ARG_CAMERA_TYPE_VIDEO = 1;
+
+    // Camera Type
+    private int cameraType = 0;
 
     // Constants
     private static final int sBubbleAnimDuration = 1000;
@@ -90,10 +96,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     private TextView mBubbleView, img_count, cameraViewTip;
     private TextView selection_count;
     private ImageView mHandleView, selection_back, selection_check, captureButton, cameraFacingButton, flashButton;
+    private CircularProgressBar mCircularProgressBar;
 
     // Adapters
     private InstantImageAdapter initaliseadapter;
     private MainImageAdapter mainImageAdapter;
+    private MediaGridAdapter mediaGridAdapter;
 
     // Handlers
     private Handler handler = new Handler();
@@ -113,8 +121,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }
     };
 
-    // Touch Time
-    private long startTouchTime = 0;
+    private CountDownTimer countDownTimer;
 
     // *********************************************************************************************
     // region Life Cycle
@@ -125,7 +132,26 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         Utility.setupStatusBarHidden(this);
         Utility.hideStatusBar(this);
         setContentView(R.layout.activity_main_lib);
+
+        if (getIntent() != null){
+            cameraType = getIntent().getIntExtra(EXTRA_CAMERA_TYPE, 0);
+        }
+
         initialize();
+
+        if (cameraType == ARG_CAMERA_TYPE_VIDEO){
+            cameraView.setSessionType(SessionType.VIDEO);
+            instantRecyclerView.setVisibility(View.GONE);
+            cameraFacingButton.setVisibility(View.GONE);
+            flashButton.setVisibility(View.GONE);
+            cameraViewTip.setVisibility(View.GONE);
+            captureButton.setVisibility(View.VISIBLE);
+            mCircularProgressBar.setVisibility(View.GONE);
+            captureButton.setImageResource(R.drawable.ic_and_icn_rec_video);
+        }else {
+            captureButton.setVisibility(View.VISIBLE);
+            mCircularProgressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -261,6 +287,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         cameraViewTip = findViewById(R.id.camera_view_tip);
         cameraFacingButton = findViewById(R.id.front);
         flashButton = findViewById(R.id.flash);
+        mCircularProgressBar = findViewById(R.id.record_circular_progress_bar);
+
+        mCircularProgressBar.setMaxValue(Config.MAX_VIDEO_RECORDING_LENGTH);
+        mCircularProgressBar.setProgress(0);
 
         FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
 
@@ -316,32 +346,36 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         BottomBarHeight = Utility.getSoftButtonsBarSizePort(this);
         flashDrawable = R.drawable.ic_flash_off_black_24dp;
         status_bar_bg.setBackgroundColor(Color.BLACK);
-        zoom = 0.0f;
-        cameraView.setZoom(zoom);
+
         TOPBAR_HEIGHT = Utility.convertDpToPixel(56, CameraActivity.this);
         mHandleView.setOnTouchListener(this);
         recyclerView.addOnScrollListener(mScrollListener);
         recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
         DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
+
+        zoom = 0.0f;
+        cameraView.setLifecycleOwner(this);
+        cameraView.setZoom(zoom);
         cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
         cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
+        cameraView.setVideoMaxDuration(Config.MAX_VIDEO_RECORDING_LENGTH);
 
         // View Methods
         onClickMethods();
         updateImages();
 
-        if (getIntent().getExtras().getBoolean("test")) {
-            setRecyclerViewPosition(200);
-            Utility.hideStatusBar(this);
-            instantRecyclerView.setVisibility(View.GONE);
-            topbar.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.VISIBLE);
-            recyclerView.setOnClickListener(null);
-            cameraView.setVisibility(View.GONE);
-            bottomButtons.setVisibility(View.GONE);
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
+        countDownTimer = new CountDownTimer(Config.MAX_VIDEO_RECORDING_LENGTH, 10) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mCircularProgressBar.setProgress(millisUntilFinished);
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -398,38 +432,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             }
         });
 
-        captureButton.setOnTouchListener(new View.OnTouchListener() {
+        captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        startTouchTime = new Date().getTime();
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                long finishTouchTime = new Date().getTime();
-                                if (finishTouchTime - startTouchTime >= 1000){
-                                    recordVideo();
-                                }
-                            }
-                        }, 1000);
-
-                        return true;
-                    case MotionEvent.ACTION_UP:
-                        long finishTouchTime = new Date().getTime();
-
-                        if (finishTouchTime - startTouchTime < 1000){
-                            capturePicture();
-                        }else {
-                            stopRecording();
-                        }
-
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        return false;
-                }
-                return false;
+            public void onClick(View v) {
+                captureButtonClickAction();
             }
         });
     }
@@ -562,44 +568,15 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
 
     @SuppressLint("StaticFieldLeak")
     private void updateImages() {
-        mainImageAdapter.clearList();
-        Cursor cursor = Utility.getCursor(CameraActivity.this, GalleryActivity.GAlLERY_TYPE_PICTURE);
-        ArrayList<Img> INSTANTLIST = new ArrayList<>();
-        String header = "";
-        int limit = 100;
-        if (cursor.getCount() < 100) {
-            limit = cursor.getCount();
-        }
-        int date = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-        int data = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-        int contentUrl = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-        int type = MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
-        Calendar calendar;
-        for (int i = 0; i < limit; i++) {
-            cursor.moveToNext();
-            Uri path = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + cursor.getInt(contentUrl));
-            calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(cursor.getLong(date));
-            String dateDifference = Utility.getDateDifference(CameraActivity.this, calendar);
-            if (!header.equalsIgnoreCase("" + dateDifference)) {
-                header = "" + dateDifference;
-                INSTANTLIST.add(new Img("" + dateDifference, "", "", "", 0));
-            }
-            INSTANTLIST.add(new Img("" + header, "" + path, cursor.getString(data), "", cursor.getInt(type)));
-        }
-        cursor.close();
-
-        new ImageFetcher(CameraActivity.this) {
+        new ImageVideoFetcher(CameraActivity.this) {
             @Override
             protected void onPostExecute(ArrayList<Img> imgs) {
                 super.onPostExecute(imgs);
+                initaliseadapter.addImageList(imgs);
                 mainImageAdapter.addImageList(imgs);
+                setBottomSheetBehavior();
             }
-        }.execute(Utility.getCursor(CameraActivity.this, GalleryActivity.GAlLERY_TYPE_PICTURE));
-
-        initaliseadapter.addImageList(INSTANTLIST);
-        mainImageAdapter.addImageList(INSTANTLIST);
-        setBottomSheetBehavior();
+        }.execute(GalleryType.PICTURE);
     }
 
 
@@ -945,6 +922,15 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     // *********************************************************************************************
     // region capture or record
 
+    private void captureButtonClickAction() {
+        if (cameraType == ARG_CAMERA_TYPE_VIDEO){
+            recordVideo();
+            return;
+        }
+
+        capturePicture();
+    }
+
     private void capturePicture(){
         // Capture Picture
         cameraView.addCameraListener(new CameraListener() {
@@ -967,6 +953,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     }
 
     private void recordVideo(){
+
+        if (cameraView.isCapturingVideo()){
+            stopRecording();
+            return;
+        }
+
         File videoFileInCatchFolder = Utility.getVideoFileInCatchFolder(this);
         cameraView.setSessionType(SessionType.VIDEO);
 
@@ -977,30 +969,35 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             }
         });
 
+        captureButton.setImageResource(R.drawable.ic_and_icn_rec_stop);
+        mCircularProgressBar.setVisibility(View.VISIBLE);
         cameraView.startCapturingVideo(videoFileInCatchFolder);
 
         instantRecyclerView.setVisibility(View.GONE);
         cameraViewTip.setVisibility(View.GONE);
         flashButton.setVisibility(View.GONE);
         cameraFacingButton.setVisibility(View.GONE);
+
+        countDownTimer = new CountDownTimer(Config.MAX_VIDEO_RECORDING_LENGTH, 10) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mCircularProgressBar.setProgress(Config.MAX_VIDEO_RECORDING_LENGTH - millisUntilFinished);
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
     }
 
     private void stopRecording(){
-        if (cameraView.isCapturingVideo()){
-            cameraView.stopCapturingVideo();
+        if (cameraView.isCapturingVideo() == false){
+            return;
         }
 
-        cameraView.setSessionType(SessionType.PICTURE);
-
-        startTouchTime = 0;
-
-        instantRecyclerView.setVisibility(View.VISIBLE);
-        cameraViewTip.setVisibility(View.VISIBLE);
-        flashButton.setVisibility(View.VISIBLE);
-        cameraFacingButton.setVisibility(View.VISIBLE);
+        cameraView.stopCapturingVideo();
     }
-
-
     // endregion
 
 }

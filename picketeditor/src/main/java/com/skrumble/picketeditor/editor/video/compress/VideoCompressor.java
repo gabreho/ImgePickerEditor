@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-import com.skrumble.picketeditor.editor.video.public_interface.VideoCompressListener;
+import com.skrumble.picketeditor.public_interface.VideoCompressListener;
 
 public class VideoCompressor {
 

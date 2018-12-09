@@ -2,22 +2,17 @@ package com.skrumble.picketeditor;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
 import com.skrumble.picketeditor.editor.image.ImageCropActivity;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerActivity;
-import com.skrumble.picketeditor.gallery.GalleryActivity;
+import com.skrumble.picketeditor.activity.GalleryActivity;
 import com.skrumble.picketeditor.picker.activity.CameraActivity;
-import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
-import com.skrumble.picketeditor.picker.utility.PermUtil;
 
-import static com.skrumble.picketeditor.gallery.GalleryActivity.EXTRA_GALLERY_TYPE;
-import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO;
-import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_PICTURE;
-import static com.skrumble.picketeditor.gallery.GalleryActivity.GAlLERY_TYPE_VIDEO;
-
+import static com.skrumble.picketeditor.activity.GalleryActivity.EXTRA_GALLERY_TYPE;
+import static com.skrumble.picketeditor.activity.GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO;
+import static com.skrumble.picketeditor.activity.GalleryActivity.GAlLERY_TYPE_PICTURE;
+import static com.skrumble.picketeditor.activity.GalleryActivity.GAlLERY_TYPE_VIDEO;
 import static com.skrumble.picketeditor.picker.activity.CameraActivity.SELECTION;
 
 public class PickerEditor {
@@ -51,21 +46,10 @@ public class PickerEditor {
     // region Camera
 
     public static void startCamera(final Fragment context, final int requestCode, final int selectionCount) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PermUtil.checkForCamaraWritePermissions(context, new WorkFinish() {
-                @Override
-                public void onWorkFinish(Boolean check) {
-                    Intent i = new Intent(context.getActivity(), CameraActivity.class);
-                    i.putExtra(SELECTION, selectionCount);
-                    context.startActivityForResult(i, requestCode);
-                }
-            });
-        } else {
-            Intent i = new Intent(context.getActivity(), CameraActivity.class);
-            i.putExtra(SELECTION, selectionCount);
-            context.startActivityForResult(i, requestCode);
-        }
-
+        Intent i = new Intent(context.getActivity(), CameraActivity.class);
+        i.putExtra(SELECTION, selectionCount);
+        i.putExtra(CameraActivity.EXTRA_CAMERA_TYPE, CameraActivity.ARG_CAMERA_TYPE_PICTURE);
+        context.startActivityForResult(i, requestCode);
     }
 
     public static void startCamera(Fragment context, int requestCode) {
@@ -73,24 +57,26 @@ public class PickerEditor {
     }
 
     public static void startCamera(final Activity context, final int requestCode, final int selectionCount) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PermUtil.checkForCamaraWritePermissions(context, new WorkFinish() {
-                @Override
-                public void onWorkFinish(Boolean check) {
-                    Intent i = new Intent(context, CameraActivity.class);
-                    i.putExtra(SELECTION, selectionCount);
-                    context.startActivityForResult(i, requestCode);
-                }
-            });
-        } else {
-            Intent i = new Intent(context, CameraActivity.class);
-            i.putExtra(SELECTION, selectionCount);
-            context.startActivityForResult(i, requestCode);
-        }
+        Intent i = new Intent(context, CameraActivity.class);
+        i.putExtra(SELECTION, selectionCount);
+        i.putExtra(CameraActivity.EXTRA_CAMERA_TYPE, CameraActivity.ARG_CAMERA_TYPE_PICTURE);
+        context.startActivityForResult(i, requestCode);
     }
 
     public static void startCamera(final Activity context, int requestCode) {
         startCamera(context, requestCode, 1);
+    }
+
+    public static void startCameraForVideo(final Fragment context, final int requestCode) {
+        Intent i = new Intent(context.getActivity(), CameraActivity.class);
+        i.putExtra(CameraActivity.EXTRA_CAMERA_TYPE, CameraActivity.ARG_CAMERA_TYPE_VIDEO);
+        context.startActivityForResult(i, requestCode);
+    }
+
+    public static void startCameraForVideo(final Activity context, final int requestCode) {
+        Intent i = new Intent(context, CameraActivity.class);
+        i.putExtra(CameraActivity.EXTRA_CAMERA_TYPE, CameraActivity.ARG_CAMERA_TYPE_VIDEO);
+        context.startActivityForResult(i, requestCode);
     }
 
     // endregion
