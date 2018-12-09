@@ -5,6 +5,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.CursorLoader;
 
+import com.skrumble.picketeditor.utility.Constants;
+
 import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
 
 public class ImageLoader extends CursorLoader {
@@ -27,7 +29,7 @@ public class ImageLoader extends CursorLoader {
         setSelection(MIME_TYPE + "=? or " + MIME_TYPE + "=? or "+ MIME_TYPE + "=? or " + MIME_TYPE + "=?");
 
         String[] selectionArgs;
-        selectionArgs = new String[] { "image/jpeg", "image/png", "image/jpg","image/gif" };
+        selectionArgs = new String[] { "image/jpeg", "image/png", "image/jpg", "image/gif"};
         setSelectionArgs(selectionArgs);
     }
 }

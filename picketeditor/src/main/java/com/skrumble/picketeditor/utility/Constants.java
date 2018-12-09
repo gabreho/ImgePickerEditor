@@ -38,6 +38,7 @@ public class Constants {
     public static Uri IMAGES_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
     public static Uri VIDEO_URI = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
     public static Uri IMAGES_AND_VIDEO_URI = MediaStore.Files.getContentUri("external");
+    public static Uri EXTERNAL_URI = MediaStore.Files.getContentUri("external");
 
     public static String IMAGES_ORDERBY = MediaStore.Images.Media.DATE_TAKEN + " DESC";
     public static String VIDEOS_ORDERBY = MediaStore.Video.Media.DATE_TAKEN + " DESC";

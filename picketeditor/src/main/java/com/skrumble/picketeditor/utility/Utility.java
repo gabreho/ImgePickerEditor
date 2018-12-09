@@ -28,7 +28,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.public_interface.BitmapCallback;
+import com.yalantis.ucrop.util.FileUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -41,8 +43,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-
-import com.skrumble.picketeditor.enumeration.GalleryType;
 
 public class Utility {
 

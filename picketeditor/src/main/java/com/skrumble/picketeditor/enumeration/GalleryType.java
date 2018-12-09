@@ -22,9 +22,9 @@ public enum GalleryType {
             case 2:
                 return VIDEO;
             case 3:
-                return FILE;
-            default:
                 return PICTURE_VIDEO;
+            default:
+                return FILE;
         }
     }
 }

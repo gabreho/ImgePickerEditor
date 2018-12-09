@@ -135,8 +135,7 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             String path = cursor.getString(cursor.getColumnIndexOrThrow(DATA));
             long size = cursor.getLong(cursor.getColumnIndexOrThrow(SIZE));
             long dateTime = cursor.getLong(cursor.getColumnIndexOrThrow(DATE_ADDED));
-            int mediaType = cursor.getInt(cursor.getColumnIndexOrThrow(MEDIA_TYPE));
-
+            String mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MIME_TYPE));
             long duration = cursor.getLong(cursor.getColumnIndexOrThrow(DURATION));
 
             if (size < 1) continue;
@@ -145,7 +144,7 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             media.setId(id);
             media.setName(name);
             media.setTime(dateTime);
-            media.setMediaType(mediaType);
+            media.setMimeType(mimeType);
             media.setSize(size);
             media.setPath(path);
             media.setDuration(duration);

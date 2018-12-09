@@ -6,6 +6,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.CursorLoader;
 
+import com.skrumble.picketeditor.utility.Constants;
+
 import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
 
 public class VideoLoader extends CursorLoader {
