@@ -39,6 +39,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
     public static final int GAlLERY_TYPE_PICTURE = 1;
     public static final int GAlLERY_TYPE_VIDEO = 2;
     public static final int GAlLERY_TYPE_PHOTO_AND_VIDEO = 3;
+    public static GalleryActivity activity;
 
 //    private int typeOfGallery;
 
@@ -52,6 +53,8 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+
+        activity = this;
 
         setGalleryType(getIntent());
 
@@ -106,6 +109,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        activity = null;
     }
 
     @SuppressLint("StaticFieldLeak")
