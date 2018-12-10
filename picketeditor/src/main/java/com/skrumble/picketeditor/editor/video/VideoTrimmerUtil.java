@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class VideoTrimmerUtil {
-    public static final long MIN_SHOOT_DURATION = 3000L;
+    public static final long MIN_SHOOT_DURATION = 1000L;
     public static final int VIDEO_MAX_TIME = 15;
     public static final long MAX_SHOOT_DURATION = VIDEO_MAX_TIME * 1000L;
     public static final int MAX_COUNT_RANGE = 10;
