@@ -109,7 +109,7 @@ public class MainImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         Img image = list.get(position);
         if (holder instanceof Holder && image != null) {
             Holder imageHolder = (Holder) holder;
-            glide.load(image.getType() == Constants.TYPE_IMAGE ? image.getContentUrl() : Uri.fromFile(new File(image.getUrl()))).apply(options).thumbnail(0.1f).into(imageHolder.preview);
+            glide.load(image.getContentUrl()).apply(options).thumbnail(0.1f).into(imageHolder.preview);
             imageHolder.selection.setVisibility(image.getSelected() ? View.VISIBLE : View.GONE);
 
             if (image.getGalleryType() == GalleryType.PICTURE){
