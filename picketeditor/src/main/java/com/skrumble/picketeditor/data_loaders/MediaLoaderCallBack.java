@@ -67,6 +67,9 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+        if (cursor.isClosed()){
+            return;
+        }
 
         if (cursor.getPosition() != -1) {
             cursor.moveToPosition(-1);
