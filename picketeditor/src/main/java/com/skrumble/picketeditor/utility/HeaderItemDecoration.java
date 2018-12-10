@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.picker.utility;
+package com.skrumble.picketeditor.utility;
 
 import android.content.Context;
 import android.graphics.Canvas;

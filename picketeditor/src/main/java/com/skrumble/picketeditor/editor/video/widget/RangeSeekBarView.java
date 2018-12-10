@@ -17,10 +17,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.skrumble.picketeditor.PickerEditorApplication;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerUtil;
-import com.skrumble.picketeditor.picker.utility.Utility;
+import com.skrumble.picketeditor.utility.Utility;
 
 import java.text.DecimalFormat;
 
@@ -28,7 +27,7 @@ public class RangeSeekBarView extends View {
   private static final String TAG = RangeSeekBarView.class.getSimpleName();
   public final int INVALID_POINTER_ID = 255;
   public final int ACTION_POINTER_INDEX_MASK = 0x0000ff00, ACTION_POINTER_INDEX_SHIFT = 8;
-  private final int TextPositionY = (int) Utility.convertDpToPixel(7, getContext());
+  private final int TextPositionY = (int) Utility.convertDpToPixel(8, getContext());
   private final int paddingTop = (int) Utility.convertDpToPixel(10, getContext());
   private int mActivePointerId = INVALID_POINTER_ID;
 

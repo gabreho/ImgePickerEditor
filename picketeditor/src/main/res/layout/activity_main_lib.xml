@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000"
+    xmlns:cpb="http://schemas.android.com/apk/res-auto"
     tools:context=".picker.activity.CameraActivity">
 
     <com.otaliastudios.cameraview.CameraView
@@ -216,13 +217,29 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom">
 
+            <com.skrumble.picketeditor.view.CircularProgressBar
+                android:id="@+id/record_circular_progress_bar"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center|bottom"
+                cpb:progressColor="@color/ally_accent_color"
+                cpb:barStrokeWidth="4"
+                cpb:backgroundWidth="4"
+                android:layout_marginBottom="5dp"
+                cpb:roundedCorners="true"
+                cpb:suffix=""
+                cpb:prefix=""
+                cpb:progressText=""
+                cpb:progressTextColor="@color/ally_accent_color"
+                android:visibility="visible"/>
+
             <ImageView
                 android:id="@+id/clickme"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_gravity="center|bottom"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/ring"
+                android:src="@drawable/ring"
                 android:contentDescription="@string/capture" />
 
             <ImageView

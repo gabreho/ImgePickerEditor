@@ -7,8 +7,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
+
     <application
-        android:name=".PickerEditorApplication"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
@@ -23,7 +26,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/ApplicationTheme"/>
 
-        <activity android:name=".gallery.GalleryActivity"
+        <activity android:name=".activity.GalleryActivity"
             android:theme="@style/ApplicationTheme"/>
 
         <activity android:name=".editor.video.VideoTrimmerActivity"

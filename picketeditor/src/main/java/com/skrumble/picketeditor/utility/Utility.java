@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.picker.utility;
+package com.skrumble.picketeditor.utility;
 
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
@@ -28,8 +28,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.skrumble.picketeditor.R;
-import com.skrumble.picketeditor.gallery.GalleryActivity;
-import com.skrumble.picketeditor.picker.public_interface.BitmapCallback;
+import com.skrumble.picketeditor.enumeration.GalleryType;
+import com.skrumble.picketeditor.public_interface.BitmapCallback;
+import com.yalantis.ucrop.util.FileUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -41,12 +42,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Utility {
-
-    public static int HEIGHT, WIDTH;
-    private String pathDir;
-
     public static void setupStatusBarHidden(AppCompatActivity appCompatActivity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = appCompatActivity.getWindow();
@@ -92,12 +90,7 @@ public class Utility {
         return 0;
     }
 
-    public static void getScreenSize(Activity activity) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        HEIGHT = displayMetrics.heightPixels;
-        WIDTH = displayMetrics.widthPixels;
-    }
+
 
     public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
@@ -134,33 +127,32 @@ public class Utility {
         return topChild == null;
     }
 
-    public static Cursor getCursor(Context context, int typeOfGallery) {
+    public static Cursor getCursor(Context context, GalleryType galleryType) {
         Uri cursorUri;
         String[] cursorProjection;
         String cursorSelection = null;
         String cursorOrderBy;
 
-        switch (typeOfGallery) {
-            case GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO:
-                cursorUri = Constants.IMAGES_AND_VIDEO_URI;
-                cursorProjection = Constants.IMAGES_AND_VIDEOS_PROJECTION;
-                cursorSelection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
-                                + " OR "
-                                + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
-                cursorOrderBy = Constants.IMAGES_AND_VIDEOS_ORDERBY;
-                break;
-            case GalleryActivity.GAlLERY_TYPE_VIDEO:
+        switch (galleryType) {
+            case VIDEO:
                 cursorUri = Constants.VIDEO_URI;
                 cursorProjection = Constants.VIDEOS_PROJECTION;
                 cursorOrderBy = Constants.VIDEOS_ORDERBY;
                 break;
-            case GalleryActivity.GAlLERY_TYPE_PICTURE:
-            default:
+            case PICTURE:
                 cursorUri = Constants.IMAGES_URI;
                 cursorProjection = Constants.IMAGES_PROJECTION;
                 cursorOrderBy = Constants.IMAGES_ORDERBY;
+                break;
+            default:
+                cursorUri = Constants.IMAGES_AND_VIDEO_URI;
+                cursorProjection = Constants.IMAGES_AND_VIDEOS_PROJECTION;
+                cursorSelection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                        + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                        + " OR "
+                        + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                        + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+                cursorOrderBy = Constants.IMAGES_AND_VIDEOS_ORDERBY;
                 break;
         }
         return context.getContentResolver().query(cursorUri, cursorProjection, cursorSelection, null, cursorOrderBy);
@@ -514,6 +506,10 @@ public class Utility {
         return inSampleSize;
     }
 
+    public static String convertMillisecondToTime(long milliSecond){
+        return convertSecondsToTime(TimeUnit.MILLISECONDS.toSeconds(milliSecond));
+    }
+
     public static String convertSecondsToTime(long seconds) {
         DecimalFormat formatter = new DecimalFormat("00");
         String timeStr;
@@ -537,5 +533,22 @@ public class Utility {
             }
         }
         return timeStr;
+    }
+
+    public static String getSizeByUnit(double fileSize, boolean displayDecimal) {
+        if (fileSize <= 0) {
+            return "0";
+        }
+        final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(fileSize) / Math.log10(1024));
+
+        String size = "";
+        String pattern = displayDecimal ? "#,##0.#" : "#,##0";
+        try {
+            size = new DecimalFormat(pattern).format(fileSize / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+        }catch (Exception e){
+            size = "0";
+        }
+        return size;
     }
 }
