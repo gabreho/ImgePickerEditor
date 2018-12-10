@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.skrumble.picketeditor.Config;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.OnClickAction;
@@ -93,7 +94,7 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
         }
 
         private int getItemWidth() {
-            return (Utility.WIDTH / Constants.SPAN_COUNT) - Constants.SPAN_COUNT;
+            return (Config.WIDTH / Constants.SPAN_COUNT) - Constants.SPAN_COUNT;
         }
 
         public void setMediaFile(Media mediaFile) {

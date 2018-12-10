@@ -257,8 +257,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     }
 
     private void initialize() {
-        Utility.getScreenSize(this);
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }

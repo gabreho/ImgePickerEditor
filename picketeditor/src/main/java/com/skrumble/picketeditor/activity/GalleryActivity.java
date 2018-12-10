@@ -20,9 +20,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.skrumble.picketeditor.Config;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.adapters.MediaGridAdapter;
+import com.skrumble.picketeditor.adapters.SpacingDecoration;
 import com.skrumble.picketeditor.data_loaders.FileFilters;
 import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.model.Media;
@@ -66,9 +68,11 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
         mediaGridAdapter = new MediaGridAdapter();
         mediaGridAdapter.setOnClickAction(this);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, MainImageAdapter.SPAN_COUNT);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, Config.GRID_SPAN_COUNT);
 
         recyclerView.setLayoutManager(gridLayoutManager);
+
+        recyclerView.addItemDecoration(new SpacingDecoration(Config.GRID_SPAN_COUNT, 4));
 
         recyclerView.setAdapter(mediaGridAdapter);
 

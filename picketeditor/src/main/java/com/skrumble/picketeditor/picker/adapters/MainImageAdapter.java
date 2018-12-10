@@ -15,6 +15,7 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.request.RequestOptions;
+import com.skrumble.picketeditor.Config;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
@@ -40,7 +41,7 @@ public class MainImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public MainImageAdapter(Context context) {
         this.list = new ArrayList<>();
-        int size = Utility.WIDTH / SPAN_COUNT;
+        int size = Config.WIDTH / SPAN_COUNT;
         layoutParams = new RelativeLayout.LayoutParams(size, size);
         layoutParams.setMargins(MARGIN, MARGIN - 1, MARGIN, MARGIN - 1);
         options = new RequestOptions().override(360).transform(new CenterCrop()).transform(new FitCenter());

@@ -45,10 +45,6 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Utility {
-
-    public static int HEIGHT, WIDTH;
-    private String pathDir;
-
     public static void setupStatusBarHidden(AppCompatActivity appCompatActivity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = appCompatActivity.getWindow();
@@ -94,12 +90,7 @@ public class Utility {
         return 0;
     }
 
-    public static void getScreenSize(Activity activity) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        HEIGHT = displayMetrics.heightPixels;
-        WIDTH = displayMetrics.widthPixels;
-    }
+
 
     public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
