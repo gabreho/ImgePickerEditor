@@ -7,13 +7,13 @@ import android.support.v4.app.Fragment;
 import com.skrumble.picketeditor.activity.ImageCropActivity;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerActivity;
 import com.skrumble.picketeditor.activity.GalleryActivity;
-import com.skrumble.picketeditor.picker.activity.CameraActivity;
+import com.skrumble.picketeditor.activity.CameraActivity;
 
 import static com.skrumble.picketeditor.activity.GalleryActivity.EXTRA_GALLERY_TYPE;
 import static com.skrumble.picketeditor.activity.GalleryActivity.GAlLERY_TYPE_PHOTO_AND_VIDEO;
 import static com.skrumble.picketeditor.activity.GalleryActivity.GAlLERY_TYPE_PICTURE;
 import static com.skrumble.picketeditor.activity.GalleryActivity.GAlLERY_TYPE_VIDEO;
-import static com.skrumble.picketeditor.picker.activity.CameraActivity.SELECTION;
+import static com.skrumble.picketeditor.activity.CameraActivity.SELECTION;
 
 public class PickerEditor {
 

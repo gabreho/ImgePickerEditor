@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.picker.activity;
+package com.skrumble.picketeditor.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -41,7 +41,6 @@ import com.skrumble.picketeditor.adapters.SpacingDecoration;
 import com.skrumble.picketeditor.data_loaders.FileFilters;
 import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.model.Media;
-import com.skrumble.picketeditor.picker.modals.Img;
 import com.skrumble.picketeditor.public_interface.BitmapCallback;
 import com.skrumble.picketeditor.public_interface.OnClickAction;
 import com.skrumble.picketeditor.public_interface.OnCompletion;
@@ -80,7 +79,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     private int SelectionCount = 1;
     private boolean isback = true;
     private int flashDrawable;
-    private Set<Img> selectionList = new HashSet<>();
+    private Set<Media> selectionList = new HashSet<>();
 
     // Views
     private CameraView cameraView;
@@ -199,15 +198,15 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     }
 
     public void returnObjects() {
-        ArrayList<String> list = new ArrayList<>();
-        for (Img i : selectionList) {
-            list.add(i.getUrl());
-            Log.e(CameraActivity.class.getSimpleName() + " images", "img " + i.getUrl());
-        }
-
-        Img next = selectionList.iterator().next();
-
-        PickerEditor.starEditor(this, next.getUrl());
+//        ArrayList<String> list = new ArrayList<>();
+//        for (Img i : selectionList) {
+//            list.add(i.getUrl());
+//            Log.e(CameraActivity.class.getSimpleName() + " images", "img " + i.getUrl());
+//        }
+//
+//        Img next = selectionList.iterator().next();
+//
+//        PickerEditor.starEditor(this, next.getUrl());
     }
 
     private void initialize() {
@@ -586,6 +585,11 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     // region Listeners
 
     @Override
+    public void onClick(Media object) {
+        PickerEditor.starEditor(this, object.getPath());
+    }
+
+    @Override
     public boolean onTouch(View view, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -735,11 +739,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }
 
         cameraView.stopCapturingVideo();
-    }
-
-    @Override
-    public void onClick(Media object) {
-
     }
 
     // endregion

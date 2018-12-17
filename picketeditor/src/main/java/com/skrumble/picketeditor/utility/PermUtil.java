@@ -7,7 +7,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 
-import com.skrumble.picketeditor.picker.interfaces.WorkFinish;
+import com.skrumble.picketeditor.public_interface.OnCompletion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public abstract class PermUtil {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public static void checkForCamaraWritePermissions(final Activity activity, WorkFinish workFinish) {
+    public static void checkForCamaraWritePermissions(final Activity activity, OnCompletion<Object, Boolean> workFinish) {
         List<String> permissionsNeeded = new ArrayList<String>();
         final List<String> permissionsList = new ArrayList<String>();
         if (!addPermission(permissionsList, Manifest.permission.CAMERA, activity))
@@ -56,12 +56,12 @@ public abstract class PermUtil {
             activity.requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
                     REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
         } else {
-            workFinish.onWorkFinish(true);
+            workFinish.onCompleted(null,true);
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public static void checkForCamaraWritePermissions(final Fragment fragment, WorkFinish workFinish) {
+    public static void checkForCamaraWritePermissions(final Fragment fragment, OnCompletion<Object, Boolean> workFinish) {
         List<String> permissionsNeeded = new ArrayList<String>();
         final List<String> permissionsList = new ArrayList<String>();
         if (!addPermission(permissionsList, Manifest.permission.CAMERA, fragment.getActivity()))
@@ -72,7 +72,7 @@ public abstract class PermUtil {
             fragment.requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
                     REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
         } else {
-            workFinish.onWorkFinish(true);
+            workFinish.onCompleted(null,true);
         }
     }
 

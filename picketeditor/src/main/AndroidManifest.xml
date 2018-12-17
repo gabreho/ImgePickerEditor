@@ -15,7 +15,7 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".picker.activity.CameraActivity"
+            android:name=".activity.CameraActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/ApplicationTheme"/>
