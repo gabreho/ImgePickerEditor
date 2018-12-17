@@ -1,4 +1,4 @@
-package com.skrumble.picketeditor.picker.activity;
+package com.skrumble.picketeditor.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -22,16 +21,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.otaliastudios.cameraview.CameraException;
 import com.otaliastudios.cameraview.CameraListener;
-import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Facing;
 import com.otaliastudios.cameraview.Flash;
@@ -42,15 +37,14 @@ import com.skrumble.picketeditor.Config;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.adapters.MediaGridAdapter;
+import com.skrumble.picketeditor.adapters.SpacingDecoration;
+import com.skrumble.picketeditor.data_loaders.FileFilters;
 import com.skrumble.picketeditor.enumeration.GalleryType;
-import com.skrumble.picketeditor.picker.adapters.InstantImageAdapter;
-import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
-import com.skrumble.picketeditor.picker.interfaces.OnSelectionListener;
-import com.skrumble.picketeditor.picker.modals.Img;
+import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.BitmapCallback;
+import com.skrumble.picketeditor.public_interface.OnClickAction;
+import com.skrumble.picketeditor.public_interface.OnCompletion;
 import com.skrumble.picketeditor.utility.Constants;
-import com.skrumble.picketeditor.utility.HeaderItemDecoration;
-import com.skrumble.picketeditor.utility.ImageVideoFetcher;
 import com.skrumble.picketeditor.utility.Utility;
 import com.skrumble.picketeditor.view.CircularProgressBar;
 
@@ -59,7 +53,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CameraActivity extends AppCompatActivity implements View.OnTouchListener {
+public class CameraActivity extends AppCompatActivity implements View.OnTouchListener, OnClickAction<Media> {
 
     public static String EXTRA_CAMERA_TYPE = "EXTRA_CAMERA_TYPE";
     public static int ARG_CAMERA_TYPE_PICTURE = 0;
@@ -79,14 +73,13 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     private int BottomBarHeight = 0;
     private int colorPrimaryDark;
     private float zoom = 0.0f;
-    private float dist = 0.0f;
     private float mViewHeight;
     private boolean mHideScrollbar = true;
     private boolean LongSelection = false;
     private int SelectionCount = 1;
     private boolean isback = true;
     private int flashDrawable;
-    private Set<Img> selectionList = new HashSet<>();
+    private Set<Media> selectionList = new HashSet<>();
 
     // Views
     private CameraView cameraView;
@@ -99,9 +92,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     private CircularProgressBar mCircularProgressBar;
 
     // Adapters
-    private InstantImageAdapter initaliseadapter;
-    private MainImageAdapter mainImageAdapter;
-    private MediaGridAdapter mediaGridAdapter;
+    private MediaGridAdapter mainImageAdapter;
+    private MediaGridAdapter initialImageAdapter;
 
     // Handlers
     private Handler handler = new Handler();
@@ -133,13 +125,13 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         Utility.hideStatusBar(this);
         setContentView(R.layout.activity_main_lib);
 
-        if (getIntent() != null){
+        if (getIntent() != null) {
             cameraType = getIntent().getIntExtra(EXTRA_CAMERA_TYPE, 0);
         }
 
         initialize();
 
-        if (cameraType == ARG_CAMERA_TYPE_VIDEO){
+        if (cameraType == ARG_CAMERA_TYPE_VIDEO) {
             cameraView.setSessionType(SessionType.VIDEO);
             instantRecyclerView.setVisibility(View.GONE);
             cameraFacingButton.setVisibility(View.GONE);
@@ -148,7 +140,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             captureButton.setVisibility(View.VISIBLE);
             mCircularProgressBar.setVisibility(View.GONE);
             captureButton.setImageResource(R.drawable.ic_and_icn_rec_video);
-        }else {
+        } else {
             captureButton.setVisibility(View.VISIBLE);
             mCircularProgressBar.setVisibility(View.GONE);
         }
@@ -175,46 +167,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
 
     @Override
     public void onBackPressed() {
-        if (selectionList.size() > 0) {
-            for (Img img : selectionList) {
-                mainImageAdapter.getItemList().get(img.getPosition()).setSelected(false);
-                mainImageAdapter.notifyItemChanged(img.getPosition());
-                initaliseadapter.getItemList().get(img.getPosition()).setSelected(false);
-                initaliseadapter.notifyItemChanged(img.getPosition());
-            }
-            LongSelection = false;
-            if (SelectionCount > 1) {
-                selection_check.setVisibility(View.VISIBLE);
-            }
-            DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
-            topbar.setBackgroundColor(Color.parseColor("#ffffff"));
-            Animation anim = new ScaleAnimation(
-                    1f, 0f, // Start and end values for the X axis scaling
-                    1f, 0f, // Start and end values for the Y axis scaling
-                    Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                    Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
-            anim.setFillAfter(true); // Needed to keep the result of the animation
-            anim.setDuration(300);
-            anim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    sendButton.setVisibility(View.GONE);
-                    sendButton.clearAnimation();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            sendButton.startAnimation(anim);
-            selectionList.clear();
-        } else if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+        if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         } else {
             super.onBackPressed();
@@ -245,15 +198,15 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     }
 
     public void returnObjects() {
-        ArrayList<String> list = new ArrayList<>();
-        for (Img i : selectionList) {
-            list.add(i.getUrl());
-            Log.e(CameraActivity.class.getSimpleName() + " images", "img " + i.getUrl());
-        }
-
-        Img next = selectionList.iterator().next();
-
-        PickerEditor.starEditor(this, next.getUrl());
+//        ArrayList<String> list = new ArrayList<>();
+//        for (Img i : selectionList) {
+//            list.add(i.getUrl());
+//            Log.e(CameraActivity.class.getSimpleName() + " images", "img " + i.getUrl());
+//        }
+//
+//        Img next = selectionList.iterator().next();
+//
+//        PickerEditor.starEditor(this, next.getUrl());
     }
 
     private void initialize() {
@@ -295,32 +248,22 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         //Layout Managers
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, MainImageAdapter.SPAN_COUNT);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (mainImageAdapter.getItemViewType(position) == MainImageAdapter.HEADER) {
-                    return MainImageAdapter.SPAN_COUNT;
-                }
-                return 1;
-            }
-        });
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, Config.GRID_SPAN_COUNT);
 
         // Set Layout Managers
         instantRecyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.addItemDecoration(new SpacingDecoration(Config.GRID_SPAN_COUNT, 4));
 
         // Adapters
-        initaliseadapter = new InstantImageAdapter(this);
-        initaliseadapter.addOnSelectionListener(onSelectionListener);
-        instantRecyclerView.setAdapter(initaliseadapter);
-
-        mainImageAdapter = new MainImageAdapter(this);
-        mainImageAdapter.addOnSelectionListener(onSelectionListener);
+        mainImageAdapter = new MediaGridAdapter(this);
+        initialImageAdapter = new MediaGridAdapter(this, MediaGridAdapter.LayoutManagerType.Liner);
+        mainImageAdapter.setOnClickAction(this);
+        initialImageAdapter.setOnClickAction(this);
 
         // Set Adapters
         recyclerView.setAdapter(mainImageAdapter);
+        instantRecyclerView.setAdapter(initialImageAdapter);
 
         // Layout Params
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
@@ -348,7 +291,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         TOPBAR_HEIGHT = Utility.convertDpToPixel(56, CameraActivity.this);
         mHandleView.setOnTouchListener(this);
         recyclerView.addOnScrollListener(mScrollListener);
-        recyclerView.addItemDecoration(new HeaderItemDecoration(this, mainImageAdapter));
+
         DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
 
         zoom = 0.0f;
@@ -447,7 +390,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED){
-                    initaliseadapter.notifyDataSetChanged();
+                    initialImageAdapter.notifyDataSetChanged();
                 }
 
                 if (newState == BottomSheetBehavior.STATE_EXPANDED){
@@ -511,14 +454,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
             int scrolledItemCount = Math.round(proportion * itemCount);
             int targetPos = Utility.getValueInRange(0, itemCount - 1, scrolledItemCount);
             recyclerView.getLayoutManager().scrollToPosition(targetPos);
-
-            if (mainImageAdapter != null) {
-                String text = mainImageAdapter.getSectionMonthYearText(targetPos);
-                mBubbleView.setText(text);
-                if (text.equalsIgnoreCase("")) {
-                    mBubbleView.setVisibility(View.GONE);
-                }
-            }
         }
     }
 
@@ -569,24 +504,22 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
 
     @SuppressLint("StaticFieldLeak")
     private void updateImages() {
-        new ImageVideoFetcher(CameraActivity.this) {
+        FileFilters.getImages(this, new OnCompletion<GalleryType, ArrayList<Media>>() {
             @Override
-            protected void onPostExecute(ArrayList<Img> imgs) {
-                super.onPostExecute(imgs);
-                initaliseadapter.addImageList(imgs);
-                mainImageAdapter.addImageList(imgs);
+            public void onCompleted(GalleryType galleryType, ArrayList<Media> media) {
+                mainImageAdapter.setData(media);
+                initialImageAdapter.setData(media);
                 setBottomSheetBehavior();
             }
-        }.execute(GalleryType.PICTURE);
+        });
     }
-
 
     // endregion
 
     // *********************************************************************************************
     // region Click Action
 
-    public void cameraFacingClickAction(View view){
+    public void cameraFacingClickAction(View view) {
 
         final ImageView front = (ImageView) view;
 
@@ -613,7 +546,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }
     }
 
-    public void flashClickAction(final View view){
+    public void flashClickAction(final View view) {
         final int height = view.getHeight();
 
         final ImageView imageView = (ImageView) view;
@@ -652,6 +585,11 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     // region Listeners
 
     @Override
+    public void onClick(Media object) {
+        PickerEditor.starEditor(this, object.getPath());
+    }
+
+    @Override
     public boolean onTouch(View view, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -667,18 +605,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
                     mScrollbarAnimator = Utility.showScrollbar(mScrollbar, CameraActivity.this);
                 }
 
-                if (mainImageAdapter != null) {
-                    showBubble();
-                }
+                showBubble();
 
             case MotionEvent.ACTION_MOVE:
                 final float y = event.getRawY();
-             /*   String text = mainImageAdapter.getSectionText(recyclerView.getVerticalScrollbarPosition()).trim();
-                mBubbleView.setText("hello------>"+text+"<--");
-                if (text.equalsIgnoreCase("")) {
-                    mBubbleView.setVisibility(View.GONE);
-                }
-                Log.e("hello"," -->> "+ mBubbleView.getText());*/
                 setViewPositions(y - TOPBAR_HEIGHT);
                 setRecyclerViewPosition(y);
                 return true;
@@ -694,53 +624,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }
         return super.onTouchEvent(event);
     }
-
-    private CameraListener mCameraListener = new CameraListener() {
-        @Override
-        public void onCameraOpened(CameraOptions options) {
-            super.onCameraOpened(options);
-        }
-
-        @Override
-        public void onCameraClosed() {
-            super.onCameraClosed();
-        }
-
-        @Override
-        public void onCameraError(@NonNull CameraException exception) {
-            super.onCameraError(exception);
-        }
-
-        @Override
-        public void onVideoTaken(File video) {
-            super.onVideoTaken(video);
-        }
-
-        @Override
-        public void onOrientationChanged(int orientation) {
-            super.onOrientationChanged(orientation);
-        }
-
-        @Override
-        public void onFocusStart(PointF point) {
-            super.onFocusStart(point);
-        }
-
-        @Override
-        public void onFocusEnd(boolean successful, PointF point) {
-            super.onFocusEnd(successful, point);
-        }
-
-        @Override
-        public void onZoomChanged(float newValue, float[] bounds, PointF[] fingers) {
-            super.onZoomChanged(newValue, bounds, fingers);
-        }
-
-        @Override
-        public void onExposureCorrectionChanged(float newValue, float[] bounds, PointF[] fingers) {
-            super.onExposureCorrectionChanged(newValue, bounds, fingers);
-        }
-    };
 
     private RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
 
@@ -776,155 +659,13 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }
     };
 
-    private OnSelectionListener onSelectionListener = new OnSelectionListener() {
-        @Override
-        public void onClick(Img img, View view, int position) {
-            //Log.e("onClick", "onClick");
-            if (LongSelection) {
-                if (selectionList.contains(img)) {
-                    selectionList.remove(img);
-                    initaliseadapter.select(false, position);
-                    mainImageAdapter.select(false, position);
-                } else {
-                    if (SelectionCount <= selectionList.size()) {
-                        Toast.makeText(CameraActivity.this, String.format(getResources().getString(R.string.selection_limiter), selectionList.size()), Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    img.setPosition(position);
-                    selectionList.add(img);
-                    initaliseadapter.select(true, position);
-                    mainImageAdapter.select(true, position);
-                }
-                if (selectionList.size() == 0) {
-                    LongSelection = false;
-                    selection_check.setVisibility(View.VISIBLE);
-                    DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
-                    topbar.setBackgroundColor(Color.parseColor("#ffffff"));
-                    Animation anim = new ScaleAnimation(
-                            1f, 0f, // Start and end values for the X axis scaling
-                            1f, 0f, // Start and end values for the Y axis scaling
-                            Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                            Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
-                    anim.setFillAfter(true); // Needed to keep the result of the animation
-                    anim.setDuration(300);
-                    anim.setAnimationListener(new Animation.AnimationListener() {
-
-                        /**
-                         * <p>Notifies the start of the animation.</p>
-                         *
-                         * @param animation The started animation.
-                         */
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            sendButton.setVisibility(View.GONE);
-                            sendButton.clearAnimation();
-                        }
-
-                        /**
-                         * <p>Notifies the repetition of the animation.</p>
-                         *
-                         * @param animation The animation which was repeated.
-                         */
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-
-                        }
-                    });
-                    sendButton.startAnimation(anim);
-
-                }
-                selection_count.setText(getResources().getString(R.string.selected) + " " + selectionList.size());
-                img_count.setText(String.valueOf(selectionList.size()));
-            } else {
-                img.setPosition(position);
-                selectionList.add(img);
-                returnObjects();
-                DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
-                topbar.setBackgroundColor(Color.parseColor("#ffffff"));
-            }
-        }
-
-        @Override
-        public void onLongClick(Img img, View view, int position) {
-            if (SelectionCount > 1) {
-                Utility.vibe(CameraActivity.this, 50);
-                //Log.e("onLongClick", "onLongClick");
-                LongSelection = true;
-                if ((selectionList.size() == 0) && (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED)) {
-                    sendButton.setVisibility(View.VISIBLE);
-                    Animation anim = new ScaleAnimation(
-                            0f, 1f, // Start and end values for the X axis scaling
-                            0f, 1f, // Start and end values for the Y axis scaling
-                            Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                            Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
-                    anim.setFillAfter(true); // Needed to keep the result of the animation
-                    anim.setDuration(300);
-                    sendButton.startAnimation(anim);
-                }
-                if (selectionList.contains(img)) {
-                    selectionList.remove(img);
-                    initaliseadapter.select(false, position);
-                    mainImageAdapter.select(false, position);
-                } else {
-                    img.setPosition(position);
-                    selectionList.add(img);
-                    initaliseadapter.select(true, position);
-                    mainImageAdapter.select(true, position);
-                }
-                selection_check.setVisibility(View.GONE);
-                topbar.setBackgroundColor(colorPrimaryDark);
-                selection_count.setText(getResources().getString(R.string.selected) + " " + selectionList.size());
-                img_count.setText(String.valueOf(selectionList.size()));
-                DrawableCompat.setTint(selection_back.getDrawable(), Color.parseColor("#ffffff"));
-            }
-
-        }
-    };
-
-    private View.OnTouchListener onCameraTouchListner = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (event.getPointerCount() > 1) {
-
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_POINTER_DOWN:
-                        dist = Utility.getFingerSpacing(event);
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        float maxZoom = 1f;
-
-                        float newDist = Utility.getFingerSpacing(event);
-                        if (newDist > dist) {
-                            //zoom in
-                            if (zoom < maxZoom)
-                                zoom = zoom + 0.01f;
-                        } else if ((newDist < dist) && (zoom > 0)) {
-                            //zoom out
-                            zoom = zoom - 0.01f;
-                        }
-                        dist = newDist;
-                        cameraView.setZoom(zoom);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return true;
-        }
-    };
-
     // endregion
 
     // *********************************************************************************************
     // region capture or record
 
     private void captureButtonClickAction() {
-        if (cameraType == ARG_CAMERA_TYPE_VIDEO){
+        if (cameraType == ARG_CAMERA_TYPE_VIDEO) {
             recordVideo();
             return;
         }
@@ -932,7 +673,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         capturePicture();
     }
 
-    private void capturePicture(){
+    private void capturePicture() {
         // Capture Picture
         cameraView.addCameraListener(new CameraListener() {
             @Override
@@ -942,7 +683,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
                     @Override
                     public void onBitmapReady(Bitmap bitmap) {
                         File file = Utility.writeImageToCatchFolder(bitmap, CameraActivity.this);
-                        if (file != null && file.exists()){
+                        if (file != null && file.exists()) {
                             PickerEditor.starEditor(CameraActivity.this, file.getAbsolutePath());
                         }
                     }
@@ -953,9 +694,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         cameraView.capturePicture();
     }
 
-    private void recordVideo(){
+    private void recordVideo() {
 
-        if (cameraView.isCapturingVideo()){
+        if (cameraView.isCapturingVideo()) {
             stopRecording();
             return;
         }
@@ -992,13 +733,14 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         }.start();
     }
 
-    private void stopRecording(){
-        if (cameraView.isCapturingVideo() == false){
+    private void stopRecording() {
+        if (cameraView.isCapturingVideo() == false) {
             return;
         }
 
         cameraView.stopCapturingVideo();
     }
+
     // endregion
 
 }

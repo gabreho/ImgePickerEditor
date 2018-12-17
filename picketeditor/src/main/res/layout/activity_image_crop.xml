@@ -3,12 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".editor.image.ImageCropActivity">
+    tools:context=".activity.ImageCropActivity">
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/top_container"/>
+
+    <RelativeLayout
+        android:id="@+id/top_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:padding="10dp">
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -17,16 +25,12 @@
         android:background="@android:color/transparent"
         android:tint="@color/white"
         android:onClick="backButtonClickAction"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         android:padding="5dp" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_alignParentEnd="true">
 
         <TextView
             android:id="@+id/crop_text_view"
@@ -41,6 +45,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:indeterminateTint="@color/white"/>
+
+    </RelativeLayout>
 
     </RelativeLayout>
 

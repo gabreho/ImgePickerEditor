@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#000"
     xmlns:cpb="http://schemas.android.com/apk/res-auto"
-    tools:context=".picker.activity.CameraActivity">
+    tools:context=".activity.CameraActivity">
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera_view"

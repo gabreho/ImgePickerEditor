@@ -28,10 +28,8 @@ import com.skrumble.picketeditor.adapters.SpacingDecoration;
 import com.skrumble.picketeditor.data_loaders.FileFilters;
 import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.model.Media;
-import com.skrumble.picketeditor.picker.adapters.MainImageAdapter;
 import com.skrumble.picketeditor.public_interface.OnClickAction;
 import com.skrumble.picketeditor.public_interface.OnCompletion;
-import com.skrumble.picketeditor.utility.Utility;
 
 import java.util.ArrayList;
 
@@ -65,7 +63,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
 
         setupAppBar();
 
-        mediaGridAdapter = new MediaGridAdapter();
+        mediaGridAdapter = new MediaGridAdapter(this);
         mediaGridAdapter.setOnClickAction(this);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, Config.GRID_SPAN_COUNT);
