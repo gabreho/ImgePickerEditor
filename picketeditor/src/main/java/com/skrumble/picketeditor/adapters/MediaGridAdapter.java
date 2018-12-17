@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,13 +29,24 @@ import java.util.ArrayList;
 
 public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.MediaViewHolder> {
 
-    ArrayList<Media> mediaArrayList = new ArrayList<>();
+    public enum LayoutManagerType{
+        Liner,
+        Grid
+    }
+
+    ArrayList<Media> mediaArrayList;
     OnClickAction<Media> onClickAction;
     RequestManager glide;
     RequestOptions options;
+    LayoutManagerType layoutManagerType;
 
     public MediaGridAdapter(Context context){
+        this(context, LayoutManagerType.Grid);
+    }
+
+    public MediaGridAdapter(Context context, LayoutManagerType type){
         mediaArrayList = new ArrayList<>();
+        layoutManagerType = type;
 
         options = new RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -102,7 +114,17 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
                 }
             });
 
-            itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getItemWidth()));
+            switch (layoutManagerType){
+                case Grid:
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getItemWidth());
+                    itemView.setLayoutParams(layoutParams);
+                    break;
+                case Liner:
+                    FrameLayout.LayoutParams layoutParams2 = new FrameLayout.LayoutParams(250, 250);
+                    layoutParams2.setMarginEnd(5);
+                    itemView.setLayoutParams(layoutParams2);
+                    break;
+            }
         }
 
         private int getItemWidth() {
