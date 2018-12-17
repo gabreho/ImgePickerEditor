@@ -446,6 +446,13 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
 
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED){
+                    initaliseadapter.notifyDataSetChanged();
+                }
+
+                if (newState == BottomSheetBehavior.STATE_EXPANDED){
+                    mainImageAdapter.notifyDataSetChanged();
+                }
 
             }
 
@@ -456,7 +463,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
                         topbar, bottomButtons, sendButton, LongSelection);
                 if (slideOffset == 1) {
                     Utility.showScrollbar(mScrollbar, CameraActivity.this);
-                    mainImageAdapter.notifyDataSetChanged();
                     mViewHeight = mScrollbar.getMeasuredHeight();
                     handler.post(new Runnable() {
                         @Override
@@ -467,11 +473,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
                     sendButton.setVisibility(View.GONE);
 
                 } else if (slideOffset == 0) {
-
-                    initaliseadapter.notifyDataSetChanged();
                     hideScrollbar();
                     img_count.setText(String.valueOf(selectionList.size()));
-
                     cameraView.start();
                 }
             }
