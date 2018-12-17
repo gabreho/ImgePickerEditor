@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.skrumble.picketeditor.editor.image.ImageCropActivity;
+import com.skrumble.picketeditor.activity.ImageCropActivity;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerActivity;
 import com.skrumble.picketeditor.activity.GalleryActivity;
 import com.skrumble.picketeditor.picker.activity.CameraActivity;
