@@ -5,15 +5,16 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 public class Media implements Parcelable {
-    public String path;
-    public String name;
-    public String extension;
-    public long time;
-    int mediaType;
-    public long size;
-    public int id;
-    public long duration;
-    public String mimeType;
+    private String path;
+    private String name;
+    private String extension;
+    private long time;
+    private int mediaType;
+    private long size;
+    private int id;
+    private long duration;
+    private String mimeType;
+    private boolean selected;
 
     public Media() {
         id = 0;
@@ -28,6 +29,8 @@ public class Media implements Parcelable {
         size = 0;
 
         duration = 0;
+
+        selected = false;
     }
 
     public boolean isVideo(){
@@ -111,6 +114,18 @@ public class Media implements Parcelable {
 
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     @Override

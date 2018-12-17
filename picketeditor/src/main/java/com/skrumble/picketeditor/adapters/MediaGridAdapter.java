@@ -1,5 +1,6 @@
 package com.skrumble.picketeditor.adapters;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -7,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.skrumble.picketeditor.Config;
@@ -26,11 +29,30 @@ import java.util.ArrayList;
 
 public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.MediaViewHolder> {
 
-    ArrayList<Media> mediaArrayList = new ArrayList<>();
-    OnClickAction<Media> onClickAction;
+    public enum LayoutManagerType{
+        Liner,
+        Grid
+    }
 
-    public MediaGridAdapter(){
+    ArrayList<Media> mediaArrayList;
+    OnClickAction<Media> onClickAction;
+    RequestManager glide;
+    RequestOptions options;
+    LayoutManagerType layoutManagerType;
+
+    public MediaGridAdapter(Context context){
+        this(context, LayoutManagerType.Grid);
+    }
+
+    public MediaGridAdapter(Context context, LayoutManagerType type){
         mediaArrayList = new ArrayList<>();
+        layoutManagerType = type;
+
+        options = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .priority(Priority.IMMEDIATE);
+
+        glide = Glide.with(context);
     }
 
     @NonNull
@@ -43,7 +65,7 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
     @Override
     public void onBindViewHolder(@NonNull MediaViewHolder mediaViewHolder, int i) {
         final Media media = mediaArrayList.get(i);
-        mediaViewHolder.setMediaFile(media);
+        mediaViewHolder.setMediaFile(media, glide, options);
     }
 
     @Override
@@ -63,6 +85,7 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
     public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         ImageView previewImageView;
+        ImageView selectionImageView;
         View maskView;
         RelativeLayout videoInfoLayout;
         RelativeLayout gifInfoLayout;
@@ -82,6 +105,7 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
             gifInfoLayout = itemView.findViewById(R.id.gif_info);
             videoDuration = itemView.findViewById(R.id.video_duration);
             videoSize = itemView.findViewById(R.id.video_size);
+            selectionImageView = itemView.findViewById(R.id.selection);
 
             rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -90,24 +114,32 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
                 }
             });
 
-            itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getItemWidth()));
+            switch (layoutManagerType){
+                case Grid:
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getItemWidth());
+                    itemView.setLayoutParams(layoutParams);
+                    break;
+                case Liner:
+                    FrameLayout.LayoutParams layoutParams2 = new FrameLayout.LayoutParams(250, 250);
+                    layoutParams2.setMarginEnd(5);
+                    itemView.setLayoutParams(layoutParams2);
+                    break;
+            }
         }
 
         private int getItemWidth() {
             return (Config.WIDTH / Constants.SPAN_COUNT) - Constants.SPAN_COUNT;
         }
 
-        public void setMediaFile(Media mediaFile) {
+        public void setMediaFile(Media mediaFile, RequestManager glide, RequestOptions options) {
 
             media = mediaFile;
 
-            Uri path = Uri.parse("file://" + mediaFile.path);
+            selectionImageView.setVisibility(mediaFile.isSelected() ? View.VISIBLE : View.GONE);
 
-            RequestOptions options = new RequestOptions()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .priority(Priority.IMMEDIATE);
+            Uri path = Uri.parse("file://" + mediaFile.getPath());
 
-            Glide.with(rootView.getContext()).load(path)
+            glide.load(path)
                     .apply(options)
                     .into(previewImageView);
 
@@ -115,7 +147,7 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
 
             if (mediaFile.getMimeType().contains("video")){
                 videoInfoLayout.setVisibility(View.VISIBLE);
-                videoDuration.setText(Utility.convertMillisecondToTime(mediaFile.duration));
+                videoDuration.setText(Utility.convertMillisecondToTime(mediaFile.getDuration()));
                 videoSize.setText(Utility.getSizeByUnit(mediaFile.getSize(), true));
             }else {
                 videoInfoLayout.setVisibility(View.GONE);

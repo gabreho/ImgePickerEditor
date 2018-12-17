@@ -78,4 +78,13 @@
             android:textSize="12sp" />
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/selection"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center"
+        android:background="#30000000"
+        android:src="@drawable/ic_check_black_24dp"
+        android:visibility="gone"/>
+
 </FrameLayout>
