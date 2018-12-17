@@ -65,7 +65,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
 
         setupAppBar();
 
-        mediaGridAdapter = new MediaGridAdapter();
+        mediaGridAdapter = new MediaGridAdapter(this);
         mediaGridAdapter.setOnClickAction(this);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, Config.GRID_SPAN_COUNT);
