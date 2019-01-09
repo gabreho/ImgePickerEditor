@@ -263,6 +263,9 @@ public class VideoTrimmerView extends FrameLayout implements ViewDestroyInterfac
     private void onSaveClicked() {
         if (mRightProgressPos - mLeftProgressPos < VideoTrimmerUtil.MIN_SHOOT_DURATION) {
             Toast.makeText(mContext, "Video is too short. Please use a longer video.", Toast.LENGTH_SHORT).show();
+        } else if (mDuration == mRightProgressPos - mLeftProgressPos){
+            mVideoView.pause();
+            mOnTrimVideoListener.onFinishTrim(mSourceUri.getPath());
         } else {
             mVideoView.pause();
             VideoTrimmerUtil.trim(mContext, mSourceUri.getPath(), getTrimmedVideoPath(), mLeftProgressPos, mRightProgressPos, mOnTrimVideoListener);

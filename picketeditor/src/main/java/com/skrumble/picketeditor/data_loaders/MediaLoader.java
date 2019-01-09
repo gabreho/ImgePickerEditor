@@ -19,7 +19,8 @@ public class MediaLoader extends CursorLoader {
             MediaStore.Files.FileColumns.DATE_ADDED,
             MediaStore.Files.FileColumns.MEDIA_TYPE,
             MediaStore.Files.FileColumns.MIME_TYPE,
-            MediaStore.Video.Media.DURATION };
+            MediaStore.Video.Media.DURATION
+    };
 
     public MediaLoader(@NonNull Context context) {
         super(context);

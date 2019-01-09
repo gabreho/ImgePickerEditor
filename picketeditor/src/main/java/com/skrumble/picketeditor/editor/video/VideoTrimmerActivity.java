@@ -71,7 +71,7 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
     public void onFinishTrim(String in) {
         final File videoFile = Utility.getVideoFile();
 
-        buildDialog(getResources().getString(R.string.compressing)).show();
+        buildDialog(getResources().getString(R.string.loading)).show();
         VideoCompressor.compress(this, in, videoFile.getAbsolutePath(), new VideoCompressListener() {
             @Override
             public void onSuccess(String message) {
