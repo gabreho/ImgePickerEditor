@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.skrumble.picketeditor.Config;
+import com.skrumble.picketeditor.PickerEditorConfig;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.adapters.MediaGridAdapter;
@@ -66,11 +66,11 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
         mediaGridAdapter = new MediaGridAdapter(this);
         mediaGridAdapter.setOnClickAction(this);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, Config.GRID_SPAN_COUNT);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, PickerEditorConfig.GRID_SPAN_COUNT);
 
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        recyclerView.addItemDecoration(new SpacingDecoration(Config.GRID_SPAN_COUNT, 4));
+        recyclerView.addItemDecoration(new SpacingDecoration(PickerEditorConfig.GRID_SPAN_COUNT, 4));
 
         recyclerView.setAdapter(mediaGridAdapter);
 
@@ -167,7 +167,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
             return;
         }
 
-        if (object.isVideo()) {
+        if (object.isVideo() && PickerEditorConfig.isConfigVideoTrimmingFeature()) {
             PickerEditor.starVideoEditor(this, object.getPath());
             return;
         }

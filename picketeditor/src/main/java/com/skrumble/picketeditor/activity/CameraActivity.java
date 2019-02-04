@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
@@ -33,7 +32,7 @@ import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Gesture;
 import com.otaliastudios.cameraview.GestureAction;
 import com.otaliastudios.cameraview.SessionType;
-import com.skrumble.picketeditor.Config;
+import com.skrumble.picketeditor.PickerEditorConfig;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.adapters.MediaGridAdapter;
@@ -240,7 +239,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         flashButton = findViewById(R.id.flash);
         mCircularProgressBar = findViewById(R.id.record_circular_progress_bar);
 
-        mCircularProgressBar.setMaxValue(Config.MAX_VIDEO_RECORDING_LENGTH);
+        mCircularProgressBar.setMaxValue(PickerEditorConfig.MAX_VIDEO_RECORDING_LENGTH);
         mCircularProgressBar.setProgress(0);
 
         FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
@@ -248,12 +247,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         //Layout Managers
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, Config.GRID_SPAN_COUNT);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, PickerEditorConfig.GRID_SPAN_COUNT);
 
         // Set Layout Managers
         instantRecyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.addItemDecoration(new SpacingDecoration(Config.GRID_SPAN_COUNT, 4));
+        recyclerView.addItemDecoration(new SpacingDecoration(PickerEditorConfig.GRID_SPAN_COUNT, 4));
 
         // Adapters
         mainImageAdapter = new MediaGridAdapter(this);
@@ -300,13 +299,13 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
         cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
-        cameraView.setVideoMaxDuration(Config.MAX_VIDEO_RECORDING_LENGTH);
+        cameraView.setVideoMaxDuration(PickerEditorConfig.MAX_VIDEO_RECORDING_LENGTH);
 
         // View Methods
         onClickMethods();
         updateImages();
 
-        countDownTimer = new CountDownTimer(Config.MAX_VIDEO_RECORDING_LENGTH, 10) {
+        countDownTimer = new CountDownTimer(PickerEditorConfig.MAX_VIDEO_RECORDING_LENGTH, 10) {
             @Override
             public void onTick(long millisUntilFinished) {
                 mCircularProgressBar.setProgress(millisUntilFinished);
@@ -720,10 +719,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         flashButton.setVisibility(View.GONE);
         cameraFacingButton.setVisibility(View.GONE);
 
-        countDownTimer = new CountDownTimer(Config.MAX_VIDEO_RECORDING_LENGTH, 10) {
+        countDownTimer = new CountDownTimer(PickerEditorConfig.MAX_VIDEO_RECORDING_LENGTH, 10) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mCircularProgressBar.setProgress(Config.MAX_VIDEO_RECORDING_LENGTH - millisUntilFinished);
+                mCircularProgressBar.setProgress(PickerEditorConfig.MAX_VIDEO_RECORDING_LENGTH - millisUntilFinished);
             }
 
             @Override

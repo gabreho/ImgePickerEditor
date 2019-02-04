@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -18,7 +17,7 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.skrumble.picketeditor.Config;
+import com.skrumble.picketeditor.PickerEditorConfig;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.OnClickAction;
@@ -128,7 +127,7 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
         }
 
         private int getItemWidth() {
-            return (Config.WIDTH / Constants.SPAN_COUNT) - Constants.SPAN_COUNT;
+            return (PickerEditorConfig.WIDTH / Constants.SPAN_COUNT) - Constants.SPAN_COUNT;
         }
 
         public void setMediaFile(Media mediaFile, RequestManager glide, RequestOptions options) {

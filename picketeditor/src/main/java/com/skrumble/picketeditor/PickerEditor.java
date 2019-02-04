@@ -35,7 +35,7 @@ public class PickerEditor {
     }
 
     private static void openGallery(Activity activity, int requestCode, int typeOfGallery) {
-        Config.updateScreenSize(activity);
+        PickerEditorConfig.updateScreenSize(activity);
 
         Intent intent = new Intent(activity, GalleryActivity.class);
         intent.putExtra(EXTRA_GALLERY_TYPE, typeOfGallery);
@@ -48,7 +48,7 @@ public class PickerEditor {
     // region Camera
 
     public static void startCamera(final Fragment context, final int requestCode, final int selectionCount) {
-        Config.updateScreenSize(context.getActivity());
+        PickerEditorConfig.updateScreenSize(context.getActivity());
 
         Intent i = new Intent(context.getActivity(), CameraActivity.class);
         i.putExtra(SELECTION, selectionCount);
@@ -57,13 +57,13 @@ public class PickerEditor {
     }
 
     public static void startCamera(Fragment context, int requestCode) {
-        Config.updateScreenSize(context.getActivity());
+        PickerEditorConfig.updateScreenSize(context.getActivity());
 
         startCamera(context, requestCode, 1);
     }
 
     public static void startCamera(final Activity context, final int requestCode, final int selectionCount) {
-        Config.updateScreenSize(context);
+        PickerEditorConfig.updateScreenSize(context);
 
         Intent i = new Intent(context, CameraActivity.class);
         i.putExtra(SELECTION, selectionCount);
@@ -72,13 +72,13 @@ public class PickerEditor {
     }
 
     public static void startCamera(final Activity context, int requestCode) {
-        Config.updateScreenSize(context);
+        PickerEditorConfig.updateScreenSize(context);
 
         startCamera(context, requestCode, 1);
     }
 
     public static void startCameraForVideo(final Fragment context, final int requestCode) {
-        Config.updateScreenSize(context.getActivity());
+        PickerEditorConfig.updateScreenSize(context.getActivity());
 
         Intent i = new Intent(context.getActivity(), CameraActivity.class);
         i.putExtra(CameraActivity.EXTRA_CAMERA_TYPE, CameraActivity.ARG_CAMERA_TYPE_VIDEO);
@@ -86,7 +86,7 @@ public class PickerEditor {
     }
 
     public static void startCameraForVideo(final Activity context, final int requestCode) {
-        Config.updateScreenSize(context);
+        PickerEditorConfig.updateScreenSize(context);
 
         Intent i = new Intent(context, CameraActivity.class);
         i.putExtra(CameraActivity.EXTRA_CAMERA_TYPE, CameraActivity.ARG_CAMERA_TYPE_VIDEO);
@@ -99,7 +99,7 @@ public class PickerEditor {
     // region Image Editor
 
     static void starEditor(Fragment fragment, String originalImagePath){
-        Config.updateScreenSize(fragment.getActivity());
+        PickerEditorConfig.updateScreenSize(fragment.getActivity());
 
         Intent intent = new Intent(fragment.getActivity(), ImageCropActivity.class);
         intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, originalImagePath);
@@ -108,7 +108,7 @@ public class PickerEditor {
     }
 
     public static void starEditor(Activity activity, String originalImagePath){
-        Config.updateScreenSize(activity);
+        PickerEditorConfig.updateScreenSize(activity);
 
         Intent intent = new Intent(activity, ImageCropActivity.class);
         intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, originalImagePath);
@@ -117,7 +117,7 @@ public class PickerEditor {
     }
 
     public static void startEditorForResult(Activity activity, String originalImagePath, int requestCode){
-        Config.updateScreenSize(activity);
+        PickerEditorConfig.updateScreenSize(activity);
 
         Intent intent = new Intent(activity, ImageCropActivity.class);
         intent.putExtra(ImageCropActivity.EXTRA_IMAGE_SRC, originalImagePath);
@@ -130,7 +130,7 @@ public class PickerEditor {
     // region Video Editor
 
     public static void starVideoEditor(Activity activity, String originalVideoPath){
-        Config.updateScreenSize(activity);
+        PickerEditorConfig.updateScreenSize(activity);
 
         Intent intent = new Intent(activity, VideoTrimmerActivity.class);
         intent.putExtra(VideoTrimmerActivity.EXTRA_VIDEO_SRC, originalVideoPath);
@@ -139,7 +139,7 @@ public class PickerEditor {
     }
 
     public static void starVideoEditorForResult(Activity activity, String originalVideoPath, int requestCode){
-        Config.updateScreenSize(activity);
+        PickerEditorConfig.updateScreenSize(activity);
 
         Intent intent = new Intent(activity, VideoTrimmerActivity.class);
         intent.putExtra(VideoTrimmerActivity.EXTRA_VIDEO_SRC, originalVideoPath);

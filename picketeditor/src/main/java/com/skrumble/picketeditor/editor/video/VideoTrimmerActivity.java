@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.skrumble.picketeditor.PickerEditor;
+import com.skrumble.picketeditor.PickerEditorConfig;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.editor.video.compress.VideoCompressor;
 import com.skrumble.picketeditor.editor.video.widget.VideoTrimmerView;
@@ -70,6 +71,13 @@ public class VideoTrimmerActivity extends AppCompatActivity implements VideoTrim
     @Override
     public void onFinishTrim(String in) {
         final File videoFile = Utility.getVideoFile();
+
+        if (PickerEditorConfig.isConfigCompress() == false){
+            Intent intent = new Intent();
+            intent.putExtra(PickerEditor.RESULT_FILE, videoFile.getAbsolutePath());
+            setResult(RESULT_OK, intent);
+            finish();
+        }
 
         buildDialog(getResources().getString(R.string.loading)).show();
         VideoCompressor.compress(this, in, videoFile.getAbsolutePath(), new VideoCompressListener() {
