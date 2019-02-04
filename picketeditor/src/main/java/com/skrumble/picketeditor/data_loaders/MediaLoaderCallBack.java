@@ -13,6 +13,7 @@ import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.OnCompletion;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -120,7 +121,9 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             media.setPath(path);
             media.setDuration(duration);
 
-            mediaArrayList.add(media);
+            if (new File(path).exists()){
+                mediaArrayList.add(media);
+            }
         }
 
         completion.onCompleted(galleryType, mediaArrayList);
@@ -152,7 +155,9 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             media.setPath(path);
             media.setDuration(duration);
 
-            mediaArrayList.add(media);
+            if (new File(path).exists()){
+                mediaArrayList.add(media);
+            }
         }
 
         completion.onCompleted(galleryType, mediaArrayList);
@@ -182,7 +187,9 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             media.setSize(size);
             media.setPath(path);
 
-            mediaArrayList.add(media);
+            if (new File(path).exists()){
+                mediaArrayList.add(media);
+            }
         }
 
         completion.onCompleted(galleryType, mediaArrayList);
@@ -215,7 +222,9 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             media.setPath(path);
             media.setDuration(duration);
 
-            mediaArrayList.add(media);
+            if (new File(path).exists()){
+                mediaArrayList.add(media);
+            }
         }
 
         completion.onCompleted(galleryType, mediaArrayList);
@@ -244,7 +253,9 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             media.setMimeType(mimeType);
             media.setPath(path);
 
-            mediaArrayList.add(media);
+            if (new File(path).exists()){
+                mediaArrayList.add(media);
+            }
         }
 
         completion.onCompleted(galleryType, mediaArrayList);
