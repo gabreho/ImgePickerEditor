@@ -18,7 +18,7 @@
             android:layout_marginEnd="10dp">
 
             <ImageView
-                android:id="@+id/message_content_downloadable_document_icon_image_view"
+                android:id="@+id/image_view"
                 android:layout_width="25dp"
                 android:layout_height="34dp"
                 android:layout_centerInParent="true"

@@ -190,7 +190,7 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             media.setSize(size);
             media.setPath(path);
 
-            String ex = media.getExtension().replace(".", "").toLowerCase();
+            String ex = media.getExtension().ext;
 
             if (ex.isEmpty() || ex.length() != 3){
                 continue;

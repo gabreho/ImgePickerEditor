@@ -2,12 +2,12 @@ package com.skrumble.picketeditor.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
+
+import com.skrumble.picketeditor.enumeration.FileExtension;
 
 public class Media implements Parcelable {
     private String path;
     private String name;
-    private String extension;
     private long time;
     private int mediaType;
     private long size;
@@ -15,11 +15,11 @@ public class Media implements Parcelable {
     private long duration;
     private String mimeType;
     private boolean selected;
+    private FileExtension extension;
 
     public Media() {
         id = 0;
         name = "";
-        extension = "";
 
         path = "";
 
@@ -31,14 +31,15 @@ public class Media implements Parcelable {
         duration = 0;
 
         selected = false;
+        extension = FileExtension.Unknow;
     }
 
     public String getFileName(){
-        return getName() + getExtension();
+        return getName() + "." + getExtension().ext;
     }
 
     public String getExtensionString(){
-        return extension.replace(".", "").toLowerCase();
+        return extension.ext;
     }
 
     public boolean isVideo(){
@@ -65,10 +66,10 @@ public class Media implements Parcelable {
         this.path = path;
 
         try {
-            this.extension = this.path.substring(this.path.lastIndexOf("."));
+            this.extension = FileExtension.fromString(this.path.substring(this.path.lastIndexOf(".")).replace(".", ""));
         } catch (Exception e){
             e.printStackTrace();
-            this.extension = "";
+            this.extension = FileExtension.Unknow;
         }
     }
 
@@ -80,7 +81,7 @@ public class Media implements Parcelable {
         this.name = name;
     }
 
-    public String getExtension() {
+    public FileExtension getExtension() {
         return extension;
     }
 
@@ -125,7 +126,7 @@ public class Media implements Parcelable {
         this.duration = duration;
     }
 
-    public void setExtension(String extension) {
+    public void setExtension(FileExtension extension) {
         this.extension = extension;
     }
 
@@ -146,7 +147,7 @@ public class Media implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.path);
         dest.writeString(this.name);
-        dest.writeString(this.extension);
+        dest.writeString(this.extension.ext);
         dest.writeLong(this.time);
         dest.writeInt(this.mediaType);
         dest.writeLong(this.size);
@@ -156,7 +157,7 @@ public class Media implements Parcelable {
     protected Media(Parcel in) {
         this.path = in.readString();
         this.name = in.readString();
-        this.extension = in.readString();
+        this.extension = FileExtension.fromString(in.readString());
         this.time = in.readLong();
         this.mediaType = in.readInt();
         this.size = in.readLong();

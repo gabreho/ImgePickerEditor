@@ -14,7 +14,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -31,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FileActivity extends AppCompatActivity implements TabLayout.BaseOnTabSelectedListener {
+public class FileActivity extends AppCompatActivity implements TabLayout.BaseOnTabSelectedListener, SearchView.OnQueryTextListener {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -69,6 +72,18 @@ public class FileActivity extends AppCompatActivity implements TabLayout.BaseOnT
         recyclerView.setAdapter(fileAdapter);
 
         loadData();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_file, menu);
+
+        MenuItem mSearchMenuItem = menu.findItem(R.id.search);
+        SearchView mSearchView = (SearchView) mSearchMenuItem.getActionView();
+        mSearchView.setQueryHint(getString(R.string.menu_title_search));
+        mSearchView.setOnQueryTextListener(this);
+
+        return true;
     }
 
     private void loadData() {
@@ -208,4 +223,14 @@ public class FileActivity extends AppCompatActivity implements TabLayout.BaseOnT
     }
 
 
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        fileAdapter.filterData(s);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        return false;
+    }
 }

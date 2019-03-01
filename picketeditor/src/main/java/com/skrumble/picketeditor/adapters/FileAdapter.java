@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.skrumble.picketeditor.R;
@@ -63,21 +64,36 @@ public class FileAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public void filterData(String s) {
+        ArrayList<Media> filteredList = new ArrayList<>();
+
+        for (Media media: mediaArrayList){
+            if (media.getName().contains(s)){
+                filteredList.add(media);
+            }
+        }
+
+        mediaArrayList = filteredList;
+    }
+
     public class FileViewHolder extends RecyclerView.ViewHolder{
 
         TextView titleTextView;
         TextView subTitleTextView;
+        ImageView iconImageView;
 
         public FileViewHolder(@NonNull View itemView) {
             super(itemView);
 
             titleTextView = itemView.findViewById(R.id.title);
             subTitleTextView = itemView.findViewById(R.id.sub_title);
+            iconImageView = itemView.findViewById(R.id.image_view);
         }
 
         public void setFile(Media media) {
             titleTextView.setText(media.getFileName());
             subTitleTextView.setText(Utility.getSizeByUnit(media.getSize()));
+            iconImageView.setImageResource(media.getExtension().getImageIconSource());
         }
     }
 }

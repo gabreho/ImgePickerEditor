@@ -29,5 +29,6 @@
     <string name="doc">DOC</string>
     <string name="zip">ZIP</string>
     <string name="others">OTHERS</string>
+    <string name="menu_title_search">Search</string>
 
 </resources>
