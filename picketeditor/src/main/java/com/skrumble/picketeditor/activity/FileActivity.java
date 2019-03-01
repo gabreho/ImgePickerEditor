@@ -22,20 +22,25 @@ import android.view.WindowManager;
 import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.adapters.FileAdapter;
 import com.skrumble.picketeditor.data_loaders.FileFilters;
-import com.skrumble.picketeditor.data_loaders.MediaLoader;
 import com.skrumble.picketeditor.enumeration.FileTypeTab;
 import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.OnCompletion;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class FileActivity extends AppCompatActivity {
+public class FileActivity extends AppCompatActivity implements TabLayout.BaseOnTabSelectedListener {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private RecyclerView recyclerView;
     FileAdapter fileAdapter;
+
+    private TabLayout.Tab currentTab;
+
+    private ArrayList<Media> mediaArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +57,10 @@ public class FileActivity extends AppCompatActivity {
             tabLayout.addTab(tabLayout.newTab().setText(typeTab.title));
         }
 
+        currentTab = tabLayout.getTabAt(0);
+
+        tabLayout.addOnTabSelectedListener(this);
+
         recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -66,6 +75,7 @@ public class FileActivity extends AppCompatActivity {
         FileFilters.getFiles(this, new OnCompletion<GalleryType, ArrayList<Media>>() {
             @Override
             public void onCompleted(GalleryType galleryType, ArrayList<Media> media) {
+                mediaArrayList = media;
                 fileAdapter.addFiles(media);
             }
         });
@@ -113,4 +123,89 @@ public class FileActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void filterByTab(FileTypeTab tab) {
+        ArrayList<Media> finalList = new ArrayList<>();
+        List<String> extensionList = new ArrayList<>();
+        switch (tab) {
+            case DOC:
+                extensionList = Arrays.asList("xls", "doc", "ppt", "xlsx", "docx", "pptx");
+                for (Media media: mediaArrayList){
+                    if (extensionList.contains(media.getExtensionString())){
+                        finalList.add(media);
+                    }
+                }
+
+                fileAdapter.addFiles(finalList);
+
+                break;
+            case PDF:
+                for (Media media: mediaArrayList){
+                    if ("pdf".contains(media.getExtensionString())){
+                        finalList.add(media);
+                    }
+                }
+
+                fileAdapter.addFiles(finalList);
+
+                break;
+            case ZIP:
+                for (Media media: mediaArrayList){
+                    if ("zip".contains(media.getExtensionString())){
+                        finalList.add(media);
+                    }
+                }
+
+                fileAdapter.addFiles(finalList);
+
+                break;
+            case OTHERS:
+                extensionList =Arrays.asList("pdf", "xls", "doc", "ppt", "xlsx", "docx", "pptx");
+
+                for (Media media: mediaArrayList){
+                    if (extensionList.contains(media.getExtensionString())){
+                        continue;
+                    }
+
+                    finalList.add(media);
+                }
+
+                fileAdapter.addFiles(finalList);
+
+                break;
+            default:
+                fileAdapter.addFiles(mediaArrayList);
+                break;
+        }
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        currentTab = tab;
+
+        String text;
+        try{
+            text = tab.getText().toString();
+        }catch (Exception e){
+            e.printStackTrace();
+            text = "";
+        }
+
+        FileTypeTab tab1 = FileTypeTab.getFromString(this, text);
+        filterByTab(tab1);
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+        if (currentTab == tab){
+            recyclerView.smoothScrollToPosition(0);
+        }
+    }
+
+
 }

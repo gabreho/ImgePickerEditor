@@ -12,6 +12,12 @@
         android:visibility="visible"
         app:titleTextColor="@color/white" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tab_layout"/>
+
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
@@ -19,12 +25,9 @@
         app:tabGravity="center"
         app:tabTextColor="#99d53c27"
         app:tabSelectedTextColor="#d53c27"
-        android:layout_below="@+id/toolbar"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/tab_layout"/>
+        android:layout_below="@+id/toolbar"
+        app:tabIndicatorColor="#d53c27"
+        android:elevation="10dp"
+        android:background="#FFFFFF"/>
 
 </RelativeLayout>

@@ -58,6 +58,7 @@ public class FileAdapter extends RecyclerView.Adapter {
     }
 
     public void addFiles(ArrayList<Media> media) {
+        mediaArrayList.clear();
         mediaArrayList.addAll(media);
         notifyDataSetChanged();
     }

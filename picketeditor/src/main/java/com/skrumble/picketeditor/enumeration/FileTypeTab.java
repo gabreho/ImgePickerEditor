@@ -1,5 +1,7 @@
 package com.skrumble.picketeditor.enumeration;
 
+import android.content.Context;
+
 import com.skrumble.picketeditor.R;
 
 public enum  FileTypeTab {
@@ -13,5 +15,14 @@ public enum  FileTypeTab {
 
     FileTypeTab(int title){
         this.title = title;
+    }
+
+    public static FileTypeTab getFromString(Context context, String toString) {
+        for (FileTypeTab tab : FileTypeTab.values()){
+            if (context.getString(tab.title).equals(toString)){
+                return tab;
+            }
+        }
+        return ALL;
     }
 }

@@ -37,6 +37,10 @@ public class Media implements Parcelable {
         return getName() + getExtension();
     }
 
+    public String getExtensionString(){
+        return extension.replace(".", "").toLowerCase();
+    }
+
     public boolean isVideo(){
         return getMimeType().contains("video");
     }
