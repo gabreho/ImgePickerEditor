@@ -93,4 +93,19 @@ public class MainActivity extends AppCompatActivity {
 
         PickerEditor.startCameraForVideo(MainActivity.this, 1);
     }
+
+    public void onPickFileAction(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PermUtil.checkForCamaraWritePermissions(this, new OnCompletion<Object, Boolean>() {
+                @Override
+                public void onCompleted(Object o, Boolean aBoolean) {
+                    PickerEditor.pickFile(MainActivity.this, 1);
+                }
+            });
+
+            return;
+        }
+
+        PickerEditor.pickFile(MainActivity.this, 1);
+    }
 }

@@ -23,5 +23,11 @@
     <string name="file">Files</string>
     <string name="audio">Audio</string>
     <string name="loading">Loading...</string>
+    <string name="attachement">Attachments</string>
+    <string name="all">All</string>
+    <string name="pdf">PDF</string>
+    <string name="doc">DOC</string>
+    <string name="zip">ZIP</string>
+    <string name="others">OTHERS</string>
 
 </resources>

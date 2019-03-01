@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.skrumble.picketeditor.activity.FileActivity;
 import com.skrumble.picketeditor.activity.ImageCropActivity;
 import com.skrumble.picketeditor.editor.video.VideoTrimmerActivity;
 import com.skrumble.picketeditor.activity.GalleryActivity;
@@ -146,6 +147,17 @@ public class PickerEditor {
         activity.startActivityForResult(intent, requestCode);
     }
 
+    // endregion..r
+
+    // *********************************************************************************************
+    // region File
+
+    public static void pickFile(Activity activity, int requestCode){
+        Intent intent = new Intent(activity, FileActivity.class);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
     // endregion
+
 
 }

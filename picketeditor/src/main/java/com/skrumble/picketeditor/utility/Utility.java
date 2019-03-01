@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -89,8 +90,6 @@ public class Utility {
         }
         return 0;
     }
-
-
 
     public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
@@ -535,6 +534,10 @@ public class Utility {
         return timeStr;
     }
 
+    public static String getSizeByUnit(double fileSize) {
+        return getSizeByUnit(fileSize, true);
+    }
+
     public static String getSizeByUnit(double fileSize, boolean displayDecimal) {
         if (fileSize <= 0) {
             return "0";
@@ -543,10 +546,24 @@ public class Utility {
         int digitGroups = (int) (Math.log10(fileSize) / Math.log10(1024));
 
         String size = "";
+        //        String pattern = displayDecimal ? "#,##0.#" : "#,##0";
         String pattern = displayDecimal ? "#,##0.#" : "#,##0";
+        double number = fileSize / Math.pow(1024, digitGroups);
+        if ((number / 1000) >= 1 && displayDecimal && digitGroups < units.length - 1) {
+            digitGroups += 1;
+            number = fileSize / Math.pow(1024, digitGroups);
+            String numberString = String.format("%f", number);
+            int i = numberString.indexOf(".");
+            numberString = numberString.substring(0, i + 4);
+            size = String.format("%s %s", numberString, units[digitGroups]);
+            return size;
+        }
+
         try {
-            size = new DecimalFormat(pattern).format(fileSize / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-        }catch (Exception e){
+            DecimalFormat decimalFormat = new DecimalFormat(pattern);
+            decimalFormat.setRoundingMode(RoundingMode.HALF_DOWN);
+            size = decimalFormat.format(number) + " " + units[digitGroups];
+        } catch (Exception e) {
             size = "0";
         }
         return size;

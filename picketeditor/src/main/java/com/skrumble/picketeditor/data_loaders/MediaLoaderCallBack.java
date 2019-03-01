@@ -16,6 +16,8 @@ import com.skrumble.picketeditor.public_interface.OnCompletion;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static android.provider.MediaStore.Files.FileColumns._ID;
 import static android.provider.MediaStore.Files.FileColumns.TITLE;
@@ -166,6 +168,7 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
 
     private void onFileResult(Cursor cursor) {
         ArrayList<Media> mediaArrayList = new ArrayList<>();
+        List<String> ignoreList = Arrays.asList("png", "jpg", "jpeg", "gif","wmv", "mp4", "mpg", "m4v", "mov", "avi");
 
         while (cursor.moveToNext()) {
             Media media = new Media();
@@ -187,9 +190,21 @@ public class MediaLoaderCallBack implements LoaderManager.LoaderCallbacks<Cursor
             media.setSize(size);
             media.setPath(path);
 
-            if (new File(path).exists()){
-                mediaArrayList.add(media);
+            String ex = media.getExtension().replace(".", "").toLowerCase();
+
+            if (ex.isEmpty() || ex.length() != 3){
+                continue;
             }
+
+            if (ignoreList.contains(ex)){
+                continue;
+            }
+
+            if (new File(path).exists() == false){
+                continue;
+            }
+
+            mediaArrayList.add(media);
         }
 
         completion.onCompleted(galleryType, mediaArrayList);

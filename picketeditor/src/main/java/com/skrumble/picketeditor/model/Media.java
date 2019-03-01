@@ -33,6 +33,10 @@ public class Media implements Parcelable {
         selected = false;
     }
 
+    public String getFileName(){
+        return getName() + getExtension();
+    }
+
     public boolean isVideo(){
         return getMimeType().contains("video");
     }
@@ -55,6 +59,13 @@ public class Media implements Parcelable {
 
     public void setPath(String path) {
         this.path = path;
+
+        try {
+            this.extension = this.path.substring(this.path.lastIndexOf("."));
+        } catch (Exception e){
+            e.printStackTrace();
+            this.extension = "";
+        }
     }
 
     public String getName() {
@@ -63,12 +74,6 @@ public class Media implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
-        try {
-            this.extension = name.substring(name.lastIndexOf("."), name.length());
-        } catch (Exception e){
-            e.printStackTrace();
-            this.extension = "";
-        }
     }
 
     public String getExtension() {
