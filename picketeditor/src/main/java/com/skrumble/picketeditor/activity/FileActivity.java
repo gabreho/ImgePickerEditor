@@ -83,7 +83,7 @@ public class FileActivity extends AppCompatActivity implements TabLayout.BaseOnT
         mSearchView.setQueryHint(getString(R.string.menu_title_search));
         mSearchView.setOnQueryTextListener(this);
 
-        return true;
+        return false;
     }
 
     private void loadData() {

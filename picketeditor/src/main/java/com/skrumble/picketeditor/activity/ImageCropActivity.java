@@ -82,7 +82,7 @@ public class ImageCropActivity extends AppCompatActivity implements UCropFragmen
 
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
 
-        options.setCompressionQuality(100);
+        options.setCompressionQuality(50);
 
         options.setHideBottomControls(false);
         options.setFreeStyleCropEnabled(true);

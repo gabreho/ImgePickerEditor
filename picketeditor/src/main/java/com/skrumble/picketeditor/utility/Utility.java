@@ -260,6 +260,8 @@ public class Utility {
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 40, fos);
             // fos.write(jpeg);
+
+
             fos.close();
         } catch (Exception e) {
             Log.e("PictureDemo", "Exception in photoCallback", e);
