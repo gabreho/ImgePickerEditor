@@ -28,6 +28,14 @@ public class FileLoader extends CursorLoader {
         setUri(Constants.EXTERNAL_URI);
         setSortOrder(MediaStore.Files.FileColumns.DATE_ADDED + " DESC");
 
+        setSelection(MediaStore.Files.FileColumns.MEDIA_TYPE
+                + "!="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                + " AND "
+                + MediaStore.Files.FileColumns.MEDIA_TYPE
+                + "!="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
+
 //        setSelection(MIME_TYPE + "=? or "
 ////                + MIME_TYPE + "=? or "
 ////                + MIME_TYPE + "=? or "

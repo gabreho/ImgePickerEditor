@@ -19,6 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.skrumble.picketeditor.PickerEditorConfig;
 import com.skrumble.picketeditor.R;
+import com.skrumble.picketeditor.enumeration.FileExtension;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.OnClickAction;
 import com.skrumble.picketeditor.utility.Constants;
@@ -142,7 +143,7 @@ public class MediaGridAdapter extends RecyclerView.Adapter<MediaGridAdapter.Medi
                     .apply(options)
                     .into(previewImageView);
 
-            gifInfoLayout.setVisibility(mediaFile.getExtension().contains("gif") ? View.VISIBLE : View.GONE);
+            gifInfoLayout.setVisibility(mediaFile.getExtension() == FileExtension.Gif ? View.VISIBLE : View.GONE);
 
             if (mediaFile.getMimeType().contains("video")){
                 videoInfoLayout.setVisibility(View.VISIBLE);

@@ -30,6 +30,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/ApplicationTheme"/>
 
+        <activity android:name=".activity.FileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ApplicationTheme"/>
+
         <activity android:name=".editor.video.VideoTrimmerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ApplicationTheme"/>
