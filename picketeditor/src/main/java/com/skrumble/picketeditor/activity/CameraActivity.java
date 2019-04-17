@@ -70,7 +70,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     // Variables
     public static float TOPBAR_HEIGHT;
     private int BottomBarHeight = 0;
-    private int colorPrimaryDark;
     private float zoom = 0.0f;
     private float mViewHeight;
     private boolean mHideScrollbar = true;
@@ -242,6 +241,11 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         mCircularProgressBar.setMaxValue(PickerEditorConfig.MAX_VIDEO_RECORDING_LENGTH);
         mCircularProgressBar.setProgress(0);
 
+        // Set Variables
+        BottomBarHeight = Utility.getSoftButtonsBarSizePort(this);
+        flashDrawable = R.drawable.ic_flash_off_black_24dp;
+        status_bar_bg.setBackgroundColor(Color.BLACK);
+
         FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
 
         //Layout Managers
@@ -282,16 +286,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         mScrollbar.setVisibility(View.GONE);
         mBubbleView.setVisibility(View.GONE);
 
-        // Set Variables
-        BottomBarHeight = Utility.getSoftButtonsBarSizePort(this);
-        flashDrawable = R.drawable.ic_flash_off_black_24dp;
-        status_bar_bg.setBackgroundColor(Color.BLACK);
-
         TOPBAR_HEIGHT = Utility.convertDpToPixel(56, CameraActivity.this);
         mHandleView.setOnTouchListener(this);
         recyclerView.addOnScrollListener(mScrollListener);
-
-        DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
 
         zoom = 0.0f;
         cameraView.setLifecycleOwner(this);
@@ -363,7 +360,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         selection_check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                topbar.setBackgroundColor(colorPrimaryDark);
                 selection_count.setText(getResources().getString(R.string.tap_to_select));
                 img_count.setText(String.valueOf(selectionList.size()));
                 DrawableCompat.setTint(selection_back.getDrawable(), Color.parseColor("#ffffff"));
