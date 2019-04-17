@@ -26,6 +26,7 @@ import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.adapters.MediaGridAdapter;
 import com.skrumble.picketeditor.adapters.SpacingDecoration;
 import com.skrumble.picketeditor.data_loaders.FileFilters;
+import com.skrumble.picketeditor.enumeration.FileExtension;
 import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.OnClickAction;
@@ -162,6 +163,16 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
 
     @Override
     public void onClick(Media object) {
+
+        if (object.getExtension() == FileExtension.Gif){
+            Intent intent = new Intent();
+            intent.putExtra(PickerEditor.RESULT_FILE, object.getPath());
+            setResult(RESULT_OK, intent);
+            finish();
+
+            return;
+        }
+
         if (object.isImage()) {
             PickerEditor.starEditor(GalleryActivity.this, object.getPath());
             return;

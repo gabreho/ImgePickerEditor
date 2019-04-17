@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import com.skrumble.picketeditor.R;
 import com.skrumble.picketeditor.adapters.MediaGridAdapter;
 import com.skrumble.picketeditor.adapters.SpacingDecoration;
 import com.skrumble.picketeditor.data_loaders.FileFilters;
+import com.skrumble.picketeditor.enumeration.FileExtension;
 import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.BitmapCallback;
@@ -70,7 +72,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
     // Variables
     public static float TOPBAR_HEIGHT;
     private int BottomBarHeight = 0;
-    private int colorPrimaryDark;
     private float zoom = 0.0f;
     private float mViewHeight;
     private boolean mHideScrollbar = true;
@@ -242,6 +243,11 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         mCircularProgressBar.setMaxValue(PickerEditorConfig.MAX_VIDEO_RECORDING_LENGTH);
         mCircularProgressBar.setProgress(0);
 
+        // Set Variables
+        BottomBarHeight = Utility.getSoftButtonsBarSizePort(this);
+        flashDrawable = R.drawable.ic_flash_off_black_24dp;
+        status_bar_bg.setBackgroundColor(Color.BLACK);
+
         FrameLayout mainFrameLayout = findViewById(R.id.mainFrameLayout);
 
         //Layout Managers
@@ -282,16 +288,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         mScrollbar.setVisibility(View.GONE);
         mBubbleView.setVisibility(View.GONE);
 
-        // Set Variables
-        BottomBarHeight = Utility.getSoftButtonsBarSizePort(this);
-        flashDrawable = R.drawable.ic_flash_off_black_24dp;
-        status_bar_bg.setBackgroundColor(Color.BLACK);
-
         TOPBAR_HEIGHT = Utility.convertDpToPixel(56, CameraActivity.this);
         mHandleView.setOnTouchListener(this);
         recyclerView.addOnScrollListener(mScrollListener);
-
-        DrawableCompat.setTint(selection_back.getDrawable(), colorPrimaryDark);
 
         zoom = 0.0f;
         cameraView.setLifecycleOwner(this);
@@ -363,7 +362,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
         selection_check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                topbar.setBackgroundColor(colorPrimaryDark);
                 selection_count.setText(getResources().getString(R.string.tap_to_select));
                 img_count.setText(String.valueOf(selectionList.size()));
                 DrawableCompat.setTint(selection_back.getDrawable(), Color.parseColor("#ffffff"));
@@ -585,7 +583,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
 
     @Override
     public void onClick(Media object) {
-        PickerEditor.starEditor(this, object.getPath());
+        goToNextScreenAfterSelecting(object);
     }
 
     @Override
@@ -683,7 +681,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
                     public void onBitmapReady(Bitmap bitmap) {
                         File file = Utility.writeImageToCatchFolder(bitmap, CameraActivity.this);
                         if (file != null && file.exists()) {
-                            PickerEditor.starEditor(CameraActivity.this, file.getAbsolutePath());
+                            goToNextScreenAfterTakingPicture(file.getPath());
                         }
                     }
                 });
@@ -742,4 +740,23 @@ public class CameraActivity extends AppCompatActivity implements View.OnTouchLis
 
     // endregion
 
+    // *********************************************************************************************
+    // region
+
+    private void goToNextScreenAfterSelecting(Media object){
+        if (object.getExtension() == FileExtension.Gif){
+            Intent intent = new Intent();
+            intent.putExtra(PickerEditor.RESULT_FILE, object.getPath());
+            setResult(RESULT_OK, intent);
+            finish();
+        }else {
+            PickerEditor.starEditor(this, object.getPath());
+        }
+    }
+
+    private void goToNextScreenAfterTakingPicture(String path){
+        PickerEditor.starEditor(CameraActivity.this, path);
+    }
+
+    // endregion
 }
