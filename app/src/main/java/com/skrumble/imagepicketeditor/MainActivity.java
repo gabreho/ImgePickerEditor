@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.public_interface.OnCompletion;
 import com.skrumble.picketeditor.utility.PermUtil;
+
+import static com.skrumble.picketeditor.PickerEditor.RESULT_FILE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +25,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        if (resultCode == RESULT_OK){
+            if (requestCode == 1 && data != null){
+                String stringExtra = data.getStringExtra(RESULT_FILE);
+                Toast.makeText(this, stringExtra, Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
