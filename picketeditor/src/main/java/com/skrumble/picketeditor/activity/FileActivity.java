@@ -10,6 +10,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,10 +30,13 @@ import com.skrumble.picketeditor.enumeration.FileTypeTab;
 import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.OnCompletion;
+import com.skrumble.picketeditor.utility.PickerEditorStyleParams;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.skrumble.picketeditor.PickerEditor.PICKER_EDITOR_STYLE;
 
 public class FileActivity extends AppCompatActivity implements TabLayout.BaseOnTabSelectedListener, SearchView.OnQueryTextListener {
 
@@ -40,6 +44,8 @@ public class FileActivity extends AppCompatActivity implements TabLayout.BaseOnT
     private TabLayout tabLayout;
     private RecyclerView recyclerView;
     FileAdapter fileAdapter;
+
+    private PickerEditorStyleParams mStyleParams;
 
     private TabLayout.Tab currentTab;
 
@@ -50,11 +56,20 @@ public class FileActivity extends AppCompatActivity implements TabLayout.BaseOnT
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_file);
+
+        mStyleParams = getIntent().getParcelableExtra(PICKER_EDITOR_STYLE);
+
         setupAppBar();
 
         setTitle(R.string.attachement);
 
         tabLayout = findViewById(R.id.tab_layout);
+
+        if (mStyleParams != null) {
+            tabLayout.setTabTextColors(ColorUtils.setAlphaComponent(mStyleParams.getAccentColor(), 255/2), mStyleParams.getAccentColor());
+            tabLayout.setSelectedTabIndicatorColor(mStyleParams.getAccentColor());
+        }
+
 
         for (FileTypeTab typeTab: FileTypeTab.values()){
             tabLayout.addTab(tabLayout.newTab().setText(typeTab.title));
@@ -108,8 +123,13 @@ public class FileActivity extends AppCompatActivity implements TabLayout.BaseOnT
             }
         });
 
+
+
         // Set all of the Toolbar coloring
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.ally_accent_color));
+        if (mStyleParams != null) {
+            toolbar.setBackgroundColor(mStyleParams.getAccentColor());
+            toolbar.setTitleTextColor(mStyleParams.getTitleColor());
+        }
 
         toolbar.setVisibility(View.VISIBLE);
 

@@ -31,8 +31,11 @@ import com.skrumble.picketeditor.enumeration.GalleryType;
 import com.skrumble.picketeditor.model.Media;
 import com.skrumble.picketeditor.public_interface.OnClickAction;
 import com.skrumble.picketeditor.public_interface.OnCompletion;
+import com.skrumble.picketeditor.utility.PickerEditorStyleParams;
 
 import java.util.ArrayList;
+
+import static com.skrumble.picketeditor.PickerEditor.PICKER_EDITOR_STYLE;
 
 public class GalleryActivity  extends AppCompatActivity implements OnClickAction<Media> {
 
@@ -49,6 +52,8 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
     private RecyclerView recyclerView;
     private MediaGridAdapter mediaGridAdapter;
     private Toolbar toolbar;
+
+    private PickerEditorStyleParams mStyleParams;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,7 +93,7 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
     private void setGalleryType(Intent intent) {
 
         int intExtra = intent.getIntExtra(EXTRA_GALLERY_TYPE, GAlLERY_TYPE_PHOTO_AND_VIDEO);
-
+        mStyleParams = intent.getParcelableExtra(PICKER_EDITOR_STYLE);
         galleryType = GalleryType.getGalleryTypeFromInt(intExtra);
 
         setTitle(galleryType.title);
@@ -131,7 +136,10 @@ public class GalleryActivity  extends AppCompatActivity implements OnClickAction
         toolbar = findViewById(R.id.toolbar);
 
         // Set all of the Toolbar coloring
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.ally_accent_color));
+        if (mStyleParams != null) {
+            toolbar.setBackgroundColor(mStyleParams.getAccentColor());
+            toolbar.setTitleTextColor(mStyleParams.getTitleColor());
+        }
 
         toolbar.setVisibility(View.VISIBLE);
 

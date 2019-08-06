@@ -1,6 +1,7 @@
 package com.skrumble.imagepicketeditor;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,16 +12,20 @@ import android.widget.Toast;
 import com.skrumble.picketeditor.PickerEditor;
 import com.skrumble.picketeditor.public_interface.OnCompletion;
 import com.skrumble.picketeditor.utility.PermUtil;
+import com.skrumble.picketeditor.utility.PickerEditorStyleParams;
 
 import static com.skrumble.picketeditor.PickerEditor.RESULT_FILE;
 
 public class MainActivity extends AppCompatActivity {
+
+    private PickerEditorStyleParams mStyleParams = new PickerEditorStyleParams(Color.parseColor("#4285f4"), Color.WHITE);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        PickerEditor.setGlobalStyleParams(mStyleParams);
     }
 
     @Override
@@ -42,13 +47,13 @@ public class MainActivity extends AppCompatActivity {
             PermUtil.checkForCamaraWritePermissions(this, new OnCompletion<Object, Boolean>() {
                 @Override
                 public void onCompleted(Object o, Boolean aBoolean) {
-                    PickerEditor.openVideoGallery(MainActivity.this, 1);
+                    PickerEditor.openVideoGallery(MainActivity.this, 1, mStyleParams);
                 }
             });
             return;
         }
 
-        PickerEditor.openVideoGallery(MainActivity.this, 1);
+        PickerEditor.openVideoGallery(MainActivity.this, 1, mStyleParams);
     }
 
     public void OnImagePickClick(View view) {
@@ -56,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
             PermUtil.checkForCamaraWritePermissions(this, new OnCompletion<Object, Boolean>() {
                 @Override
                 public void onCompleted(Object o, Boolean aBoolean) {
-                    PickerEditor.openPictureGallery(MainActivity.this, 1);
+                    PickerEditor.openPictureGallery(MainActivity.this, 1, mStyleParams);
                 }
             });
             return;
         }
-        PickerEditor.openPictureGallery(MainActivity.this, 1);
+        PickerEditor.openPictureGallery(MainActivity.this, 1, mStyleParams);
     }
 
     public void onCameraClick(View view) {
